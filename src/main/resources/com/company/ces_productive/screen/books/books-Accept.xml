@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://booksAccept.caption"
+        focusComponent="form">
+    <data>
+        <collection id="bookTypesDc" class="com.company.ces_productive.entity.BookType">
+            <fetchPlan extends="_base"/>
+            <loader id="bookTypesDl">
+                <query>
+                    <![CDATA[select e from CES_BookType e]]>
+                </query>
+            </loader>
+        </collection>
+        <instance id="booksDc"
+                  class="com.company.ces_productive.entity.Books">
+            <fetchPlan extends="_base">
+                <property name="bookAcceptUser" fetchPlan="_base"/>
+                <property name="bookType" fetchPlan="_base"/>
+                <property name="bookSendUser" fetchPlan="_base"/>
+                <property name="bookSendBranch" fetchPlan="_base"/>
+                <property name="bookAcceptBranch" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="windowCommitAndClose" caption="msg:///actions.Ok"
+                icon="EDITOR_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="windowClose"
+                caption="msg:///actions.Close"
+                icon="EDITOR_CANCEL"/>
+        <action id="acceptBooks" caption="msg://acceptBooks.caption" icon="OK"/>
+    </actions>
+    <dialogMode height="AUTO"
+                width="AUTO"
+                modal="true"
+                forceDialog="true"/>
+    <layout spacing="true" expand="scrollBox">
+        <scrollBox id="scrollBox" spacing="true">
+            <form id="form" dataContainer="booksDc">
+                <column width="350px">
+                    <entityComboBox id="bookTypeField" property="bookType"
+                                    caption="msg://bookTypeField.caption" dataContainer="booksDc"
+                                    optionsContainer="bookTypesDc"/>
+                    <textField caption="msg://textField.caption" id="bookCount" required="true" datatype="int"
+                               width="70px" maxLength="3"/>
+                    <comboBox id="bookStatusField" property="bookStatus" dataContainer="booksDc"
+                              caption="msg://bookStatusField.caption" enable="false"/>
+                    <entityPicker id="bookAcceptUserField" property="bookAcceptUser" dataContainer="booksDc"
+                                  caption="msg://bookAcceptUserField.caption" enable="false">
+                    </entityPicker>
+                    <dateField id="bookAcceptDateField" property="bookAcceptDate" enable="false"
+                               caption="msg://bookAcceptDateField.caption"/>
+                    <entityPicker id="bookSendBranchField" property="bookSendBranch" enable="false" visible="false"/>
+                </column>
+            </form>
+        </scrollBox>
+        <hbox id="editActions" spacing="true" align="TOP_CENTER">
+            <button action="acceptBooks" id="acceptBooksBtn"/>
+            <button id="commitAndCloseBtn" action="windowCommitAndClose" visible="false"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

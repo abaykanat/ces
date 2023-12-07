@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.11.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="CES">
+        <modifyDataType columnName="STUD_IIN" newDataType="VARCHAR(20)" tableName="CES_STUDENTS"/>
+    </changeSet>
+    <changeSet id="2" author="CES">
+        <addNotNullConstraint columnDataType="VARCHAR(20)" columnName="STUD_IIN" tableName="CES_STUDENTS"
+                              validate="true"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://coursesBrowseAll.caption"
+        focusComponent="calendar">
+    <data>
+        <collection id="coursesCalendarDc" class="com.company.ces_productive.entity.courses.Courses">
+            <fetchPlan extends="_base">
+                <property fetchPlan="_base" name="courseTeacher"/>
+                <property fetchPlan="_base" name="courseGroup"/>
+                <property fetchPlan="_base" name="courseCabinet"/>
+                <property fetchPlan="_base" name="courseManager"/>
+                <property fetchPlan="_base" name="courseBranch"/>
+            </fetchPlan>
+            <loader id="coursesCalendarDl">
+                <query>
+                    <![CDATA[select c from CES_Courses c
+                    where c.courseBranch in :currBranch
+                    and c.courseTeacher in :currTeacher
+                    and c.courseStartDate >= :courseStartDate
+                    and c.courseEndDate <= :courseEndDate
+                    ]]>
+                    <condition>
+                        <c:jpql>
+                            <c:where>c.type in :type</c:where>
+                        </c:jpql>
+                    </condition>
+                </query>
+            </loader>
+        </collection>
+        <collection id="branchesesDc" class="com.company.ces_productive.entity.Branches">
+            <fetchPlan extends="_base"/>
+            <loader id="branchesesDl">
+                <query>
+                    <![CDATA[select b from CES_Branches b]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="usersDc" class="com.company.ces_productive.entity.User">
+            <fetchPlan extends="_base"/>
+            <loader id="usersDl">
+                <query>
+                    <![CDATA[select u from CES_User u where u.branch in :currBranch]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <actions>
+        <action id="createCourseSchedule" icon="CALENDAR_PLUS_O" caption="msg:///createCourseSchedule.caption"/>
+        <action id="editCourseSchedule" caption="msg://editCourseSchedule.caption" icon="CALENDAR_O"/>
+        <action id="deleteCourseSchedule" caption="msg://deleteCourseSchedule.caption" icon="CALENDAR_MINUS_O"/>
+        <action id="showCourseAction" caption="msg://showCourseAction.caption" icon="EYE"/>
+        <action id="showTeacherAction" caption="msg://showTeacherAction.caption" icon="EYE"/>
+    </actions>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+        <presentations auto="true"/>
+    </facets>
+    <dialogMode height="600"
+                width="800"/>
+    <layout spacing="true" height="100%" width="100%">
+        <scrollBox orientation="vertical" spacing="true" align="TOP_CENTER" contentHeight="100%"
+                   contentWidth="100%" height="100%">
+            <groupBox orientation="vertical" spacing="true" width="100%" height="100%">
+                <hbox spacing="true" id="calendarFilter" expand="split" width="100%" height="100%">
+                    <split orientation="horizontal"
+                           id="split"
+                           pos="20"
+                           height="100%"
+                           dockable="true"
+                           dockMode="LEFT">
+                        <vbox id="filterBox" spacing="true" align="TOP_CENTER" margin="true" width="95%">
+                            <groupBox stylename="light"
+                                      width="100%"
+                                      caption="msg:///overview">
+                                <datePicker id="calendarNavigator"
+                                            datatype="localDate"
+                                            width="100%"/>
+                            </groupBox>
+                            <groupBox stylename="light"
+                                      width="100%"
+                                      caption="msg:///calendarMode">
+                                <radioButtonGroup
+                                        width="100%"
+                                        orientation="horizontal"
+                                        stylename="button-switcher"
+                                        optionsEnum="com.company.ces_productive.screen.courses.calendar.CalendarMode"
+                                        id="calendarMode"
+                                />
+                            </groupBox>
+                            <groupBox stylename="light" width="100%" caption="msg:///type">
+                                <checkBoxGroup id="typeMultiFilter"
+                                               stylename="visit-type"
+                                               orientation="vertical"/>
+                            </groupBox>
+                            <groupBox orientation="vertical" spacing="true" expand="branchField"
+                                      caption="msg://groupBox3.caption" id="branchBox">
+                                <entityComboBox id="branchField"
+                                                optionsContainer="branchesesDc" width="100%"
+                                                nullOptionVisible="false"/>
+                                <button id="showCourseBtn" action="showCourseAction"/>
+                            </groupBox>
+                            <groupBox orientation="vertical" spacing="true" expand="teacherField" visible="false"
+                                      id="techerBox" caption="msg://techerBox.caption">
+                                <entityComboBox id="teacherField"
+                                                optionsContainer="usersDc" width="100%"
+                                                nullOptionVisible="false"/>
+                                <button id="showTeacherBtn" action="showTeacherAction"/>
+                            </groupBox>
+                        </vbox>
+                        <vbox id="calendarBox"
+                              spacing="true"
+                              margin="true"
+                              width="100%"
+                              expand="calendar"
+                              height="100%">
+                            <hbox expand="navigator" spacing="true" margin="true">
+                                <buttonsPanel id="navigator" align="MIDDLE_RIGHT" margin="false" spacing="false">
+                                    <button id="navigatorCurrent"
+                                            stylename="borderless-colored"
+                                            icon="HOME"/>
+                                    <button id="navigatorPrevious"
+                                            stylename="borderless-colored"
+                                            icon="CARET_LEFT"/>
+                                    <button id="navigatorNext"
+                                            stylename="borderless-colored"
+                                            icon="CARET_RIGHT"/>
+                                </buttonsPanel>
+                                <label id="calendarTitle"
+                                       stylename="h3"
+                                       align="MIDDLE_CENTER"
+                                       icon="font-icon:CALENDAR"
+                                       width="200px"/>
+                            </hbox>
+                            <calendar id="calendar"
+                                      dataContainer="coursesCalendarDc"
+                                      captionProperty="courseName"
+                                      startDateProperty="courseStartDate"
+                                      endDateProperty="courseEndDate"
+                                      firstVisibleDayOfWeek="2"
+                                      firstVisibleHourOfDay="5"
+                                      lastVisibleHourOfDay="20"
+                                      stylenameProperty="typeStyle"
+                                      navigationButtonsVisible="false"
+                                      width="100%"/>
+                        </vbox>
+                    </split>
+                </hbox>
+            </groupBox>
+        </scrollBox>
+    </layout>
+</window>

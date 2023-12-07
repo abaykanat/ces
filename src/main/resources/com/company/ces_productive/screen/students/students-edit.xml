@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://studentsEdit.caption"
+        focusComponent="scrollBox">
+    <data>
+        <instance id="studentsDc" class="com.company.ces_productive.entity.Students">
+            <collection id="studOrdersDc" property="studOrders"/>
+            <fetchPlan extends="_base">
+                <property fetchPlan="_base" name="studParent"/>
+                <property fetchPlan="_base" name="studGroups"/>
+                <property fetchPlan="_base" name="studBranch"/>
+                <property fetchPlan="_base" name="studManager"/>
+                <property fetchPlan="_base" name="studOrders"/>
+                <property fetchPlan="_base" name="studBooks"/>
+                <property fetchPlan="_base" name="studDiscountReason"/>
+            </fetchPlan>
+            <loader/>
+            <collection id="studPaymentsDc" property="studPayments"/>
+            <collection id="studVisitsDc" property="studVisits">
+            </collection>
+            <collection id="studGroupsDc" property="studGroups">
+            </collection>
+            <collection id="studBooksDc" property="studBooks">
+            </collection>
+        </instance>
+        <collection id="freezesDc" class="com.company.ces_productive.entity.Freeze">
+            <fetchPlan extends="_base">
+                <property name="freezeStudent" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="freezesDl">
+                <query>
+                    <![CDATA[select e from CES_Freeze e
+                    where e.freezeStudent = :freezeStud ]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="stoppedsDc" class="com.company.ces_productive.entity.Stopped">
+            <fetchPlan extends="_base">
+                <property name="stoppedStudent" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="stoppedsDl">
+                <query>
+                    <![CDATA[select e from CES_Stopped e
+                    where e.stoppedStudent = :stoppedStud ]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="paymentParamsDc" class="com.company.ces_productive.entity.PaymentParam">
+            <fetchPlan extends="_base">
+                <property name="payParamStudent" fetchPlan="_base"/>
+                <property name="payParamGroups" fetchPlan="_base"/>
+                <property name="payParamDiscountReason" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="paymentParamsDl">
+                <query>
+                    <![CDATA[select e from CES_PaymentParam e
+                    where e.payParamStudent = :currStudent ]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="discountReasonsDc" class="com.company.ces_productive.entity.DiscountReason">
+            <fetchPlan extends="_base"/>
+            <loader id="discountReasonsDl">
+                <query>
+                    <![CDATA[select e from CES_DiscountReason e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="windowCommitAndClose" caption="msg:///actions.Ok"
+                icon="EDITOR_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="windowClose"
+                caption="msg:///actions.Close"
+                icon="EDITOR_CANCEL"/>
+    </actions>
+    <dialogMode height="AUTO"
+                modal="true"
+                forceDialog="true" width="AUTO"/>
+    <layout spacing="true" expand="scrollBox" width="AUTO">
+        <scrollBox id="scrollBox" spacing="true" width="AUTO">
+            <gridLayout spacing="true">
+                <columns count="3"/>
+                <rows>
+                    <row>
+                        <textField id="studIDField" property="studID" caption="msg:///studIDField.caption"
+                                   dataContainer="studentsDc" enable="false"/>
+                        <textField id="studOldIdField" property="studOldId" dataContainer="studentsDc"
+                                   caption="msg://studOldIdField.caption"/>
+                        <comboBox id="studStatusField" property="studStatus" caption="msg://studStatus.caption"
+                                  dataContainer="studentsDc" enable="false"/>
+                    </row>
+                    <row>
+                        <textField id="studIINField" property="studIIN" caption="msg://studIINField1.caption"
+                                   maxLength="12" dataContainer="studentsDc"/>
+                        <maskedField mask="+# (###) ###-##-##" id="studMoblieNumberField"
+                                     property="studMoblieNumber" caption="msg://studMoblieNumber.caption"
+                                     valueMode="masked" dataContainer="studentsDc"/>
+                        <dateField id="studBeginDateField" property="studBeginDate" enable="false"
+                                   caption="msg://studBeginDate.caption"
+                                   datatype="localDate" dateFormat="msg://studBeginDateField.dateFormat"
+                                   dataContainer="studentsDc"/>
+                    </row>
+                    <row>
+                        <textField id="studLastNameField" property="studLastName"
+                                   caption="msg://studLastName.caption" dataContainer="studentsDc"/>
+                        <comboBox id="studEngLevelField" property="studEngLevel"
+                                  caption="msg://studEngLevel.caption" dataContainer="studentsDc"/>
+                        <textField id="studActualAmountField" property="studActualAmount"
+                                   caption="msg://studActualAmount.caption" dataContainer="studentsDc"/>
+                    </row>
+                    <row>
+                        <textField id="studFirstNameField" property="studFirstName"
+                                   caption="msg://studFirstName.caption" dataContainer="studentsDc"/>
+                        <dateField id="studDateOfBirthField" property="studDateOfBirth"
+                                   caption="msg://studDateOfBirth.caption" dataContainer="studentsDc"/>
+                        <entityPicker id="studManagerField" property="studManager" enable="false"
+                                      caption="msg://studManager.caption" dataContainer="studentsDc">
+                            <actions>
+                                <action id="entityLookup" type="entity_lookup"/>
+                                <action id="entityClear" type="entity_clear"/>
+                            </actions>
+                        </entityPicker>
+                    </row>
+                    <row>
+                        <textField id="studMiddleNameField" property="studMiddleName"
+                                   caption="msg://studMiddleName.caption" dataContainer="studentsDc"/>
+                        <entityPicker id="studParentField" property="studParent" caption="msg://studParent.caption"
+                                      dataContainer="studentsDc">
+                            <actions>
+                                <action id="entityLookup" type="entity_lookup"/>
+                                <action id="entityClear" type="entity_clear"/>
+                            </actions>
+                        </entityPicker>
+                        <button id="showParent" caption="msg://showParent.caption" align="BOTTOM_LEFT"/>
+                    </row>
+                    <row>
+                        <textField id="studEmailField" property="studEmail" caption="msg://studEmail.caption"
+                                   dataContainer="studentsDc"/>
+                        <comboBox id="studSexField" property="studSex" caption="msg://studSex.caption"
+                                  dataContainer="studentsDc"/>
+                        <entityPicker id="studBranchField" property="studBranch" enable="false"
+                                      caption="msg://studBranch.caption" dataContainer="studentsDc">
+                            <actions>
+                                <action id="entityLookup" type="entity_lookup"/>
+                                <action id="entityClear" type="entity_clear"/>
+                            </actions>
+                        </entityPicker>
+                    </row>
+                    <row>
+                        <textField id="studDiscountField" property="studDiscount"
+                                   caption="msg://studDiscountField.caption" dataContainer="studentsDc"
+                                   contextHelpText="msg://studDiscountField.contextHelpText"
+                                   visible="false"/>
+                        <entityComboBox id="studDiscountReason" dataContainer="studentsDc" property="studDiscountReason"
+                                        caption="msg://studDiscountReason.caption"
+                                        optionsContainer="discountReasonsDc" visible="false"/>
+                        <dateField id="studOrderPeriodField" property="studOrderPeriod"
+                                   caption="msg://studOrderPeriodField.caption" datatype="localDate"
+                                   dateFormat="msg://studOrderPeriodField.dateFormat" dataContainer="studentsDc"
+                                   enable="false" contextHelpText="msg://studOrderPeriodField.contextHelpText"
+                                   visible="false"/>
+                    </row>
+                </rows>
+            </gridLayout>
+            <tabSheet height="300px" width="AUTO" id="studSheets">
+                <tab caption="msg://studGroups.caption" id="studParam" spacing="true">
+                    <tabSheet height="100%">
+                        <tab caption="msg://tab_2.caption" id="studPayParams" spacing="true">
+                            <table id="paymentParamsTable" height="100%" width="100%" dataContainer="paymentParamsDc">
+                                <actions>
+                                    <action id="edit" type="edit"/>
+                                    <action id="refresh" type="refresh"/>
+                                    <action id="remove" type="remove"/>
+                                </actions>
+                                <buttonsPanel alwaysVisible="true">
+                                    <button id="paymentParamsTableEditBtn" action="paymentParamsTable.edit"/>
+                                    <button id="paymentParamsTableRefreshBtn" action="paymentParamsTable.refresh"/>
+                                    <button id="paymentParamsTableRemoveBtn" action="paymentParamsTable.remove"/>
+                                </buttonsPanel>
+                                <columns>
+                                    <column id="payParamPayDay" caption="msg://payParamPayDay.caption"/>
+                                    <column id="payParamGroups" caption="msg://payParamGroups.caption"/>
+                                    <column id="payParamDiscountReason" caption="msg://payParamDiscountReason.caption"/>
+                                    <column id="payParamDiscontAmount" caption="msg://payParamDiscontAmount.caption"/>
+                                </columns>
+                            </table>
+                        </tab>
+                        <tab caption="msg://studOrders.caption" id="studOrders" spacing="true" expand="ordersesTable">
+                            <groupTable id="ordersesTable" height="100%" width="100%" dataContainer="studOrdersDc"
+                            >
+                                <actions>
+                                    <action id="refresh" type="refresh"/>
+                                </actions>
+                                <buttonsPanel alwaysVisible="true">
+                                    <button id="ordersesTableRefreshBtn" action="ordersesTable.refresh"/>
+                                </buttonsPanel>
+                                <columns>
+                                    <group>
+                                        <column id="orderGroup" caption="msg://orderGroup.caption"/>
+                                    </group>
+                                    <column id="orderStatus" caption="msg://orderStatus.caption"/>
+                                    <column id="orderNumber" caption="msg://orderNumber.caption"/>
+                                    <column id="orderAmount" caption="msg://orderAmount.caption"/>
+                                    <column id="orderPartAmount" caption="msg://orderPartAmount.caption"/>
+                                    <column id="orderPeriodEnd" caption="msg://orderPeriodEnd.caption"/>
+                                    <column id="orderBook" caption="msg://orderBook.caption"/>
+                                    <column id="orderDateTime" caption="msg://orderDateTime.caption"/>
+                                </columns>
+                            </groupTable>
+                        </tab>
+                        <tab id="studPayments" caption="msg://studPayments.caption">
+                            <table id="paymentsesTable" height="100%" width="100%" dataContainer="studPaymentsDc">
+                                <actions>
+                                    <action id="refresh" type="refresh"/>
+                                </actions>
+                                <buttonsPanel alwaysVisible="true">
+                                    <button id="paymentsesTableRefreshBtn" action="paymentsesTable.refresh"/>
+                                </buttonsPanel>
+                                <columns>
+                                    <column id="payNumber" caption="msg://payNumber.caption"/>
+                                    <column id="payAmount" caption="msg://payAmount.caption"/>
+                                    <column id="payDateTime" caption="msg://payDateTime.caption"/>
+                                    <column id="payMode" caption="msg://payMode.caption"/>
+                                    <column id="payOrder" caption="msg://payOrder.caption"/>
+                                    <column id="payUser" caption="msg://payUser.caption"/>
+                                </columns>
+                            </table>
+                        </tab>
+                    </tabSheet>
+                </tab>
+                <tab caption="msg://tab_1.caption" id="studActiv" spacing="true">
+                    <tabSheet height="100%">
+                        <tab caption="msg://studGroups1.caption" id="studGroups" spacing="true">
+                            <table id="groupsesTable" height="100%" width="100%" dataContainer="studGroupsDc">
+                                <actions>
+                                    <action id="refresh" type="refresh"/>
+                                </actions>
+                                <buttonsPanel alwaysVisible="true">
+                                    <button id="groupsesTableRefreshBtn" action="groupsesTable.refresh"/>
+                                </buttonsPanel>
+                                <columns>
+                                    <column id="groupName" caption="msg://groupName.caption"/>
+                                    <column id="groupTeacher" caption="msg://groupTeacher.caption"/>
+                                    <column id="groupStatus" caption="msg://groupStatus.caption"/>
+                                    <column id="groupCost" caption="msg://groupCost.caption"/>
+                                    <column id="groupDirection" caption="msg://groupDirection.caption"/>
+                                </columns>
+                            </table>
+                        </tab>
+                        <tab caption="msg://studVisits1.caption" id="studVisits" spacing="true">
+                            <groupTable id="visitsesTable" height="100%" width="100%" dataContainer="studVisitsDc">
+                                <actions>
+                                    <action id="refresh" type="refresh"/>
+                                </actions>
+                                <buttonsPanel alwaysVisible="true">
+                                    <button id="visitsesTableRefreshBtn" action="visitsesTable.refresh"/>
+                                </buttonsPanel>
+                                <columns>
+                                    <group>
+                                        <column id="visitUser" caption="msg://visitUser1.caption"/>
+                                    </group>
+                                    <column id="visitStartDateTime" caption="msg://visitStartDateTime1.caption"/>
+                                    <column id="visitCourse" caption="msg://visitCourse1.caption" maxTextLength="10"/>
+                                    <column id="visitAmount" caption="msg://visitAmount1.caption"/>
+                                    <column id="visitStatus" caption="msg://visitStatus1.caption"/>
+                                    <column id="visitStudent" caption="msg://visitStudent.caption"/>
+                                </columns>
+                            </groupTable>
+                        </tab>
+                    </tabSheet>
+                </tab>
+                <tab caption="msg://studBooks.caption" id="studBooks" spacing="true" expand="booksesTable">
+                    <table id="booksesTable" height="100%" width="100%" dataContainer="studBooksDc">
+                        <actions>
+                            <action id="refresh" type="refresh"/>
+                        </actions>
+                        <buttonsPanel alwaysVisible="true">
+                            <button id="booksesTableRefreshBtn" action="booksesTable.refresh"/>
+                        </buttonsPanel>
+                        <columns>
+                            <column id="bookNumber" caption="msg://bookNumber.caption"/>
+                            <column id="bookType" caption="msg://bookType.caption"/>
+                            <column id="bookStatus" caption="msg://bookStatus.caption"/>
+                            <column id="bookOrder" caption="msg://bookOrder.caption"/>
+                            <column id="bookSoldUser" caption="msg://bookSoldUser.caption"/>
+                        </columns>
+                    </table>
+                </tab>
+                <tab id="otherInfo" spacing="true" caption="msg://otherInfo.caption">
+                    <tabSheet height="AUTO">
+                        <tab id="studDesc" spacing="true" caption="msg://studDesc.caption">
+                            <groupBox orientation="vertical" spacing="true">
+                                <textArea id="studPeriodDescField" dataContainer="studentsDc" property="studPeriodDesc"
+                                          width="300px" height="50px" maxLength="500"
+                                          caption="msg://studPeriodDescField.caption"
+                                          contextHelpTextHtmlEnabled="true"/>
+                                <textArea id="studDescField" dataContainer="studentsDc" property="studDescription"
+                                          width="700px" height="70px" maxLength="4999"
+                                          caption="msg://studDescField.caption"/>
+                            </groupBox>
+                        </tab>
+                        <tab caption="msg://freezeInfo.caption" id="freezeInfo" spacing="true" expand="freezesTable">
+                            <table id="freezesTable" height="100%" width="100%" dataContainer="freezesDc">
+                                <actions>
+                                    <action id="cancelFreeze" caption="msg://cancelFreeze.caption"/>
+                                    <action id="refresh" type="refresh"/>
+                                </actions>
+                                <buttonsPanel>
+                                    <button action="freezesTable.cancelFreeze" id="cancelFreezeBtn" enable="false"/>
+                                    <button id="freezesTableRefreshBtn" action="freezesTable.refresh"/>
+                                </buttonsPanel>
+                                <columns>
+                                    <column id="freezeReason" caption="msg://freezeReason.caption" maxTextLength="50"/>
+                                    <column id="freezeStartDate" caption="msg://freezeStartDate.caption"/>
+                                    <column id="freezeEndDate" caption="msg://freezeEndDate.caption"/>
+                                </columns>
+                            </table>
+                        </tab>
+                        <tab caption="msg://stopInfo.caption" id="stopInfo" spacing="true" expand="stoppedsTable">
+                            <table id="stoppedsTable" dataContainer="stoppedsDc" height="100%" width="100%">
+                                <columns>
+                                    <column id="stoppedReason" caption="msg://stoppedReason.caption"
+                                            maxTextLength="50"/>
+                                    <column id="stoppedDate" caption="msg://stoppedDate.caption"/>
+                                </columns>
+                            </table>
+                        </tab>
+                    </tabSheet>
+                </tab>
+            </tabSheet>
+        </scrollBox>
+        <hbox id="editActions" spacing="true">
+            <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

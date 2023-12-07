@@ -1,0 +1,106 @@
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://cabinetsBrowse.caption"
+        focusComponent="table">
+    <data>
+        <instance id="cabinetsDc"
+                  class="com.company.ces_productive.entity.Cabinets">
+            <fetchPlan extends="_base">
+                <property name="cabinetBranch" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader/>
+        </instance>
+        <collection id="cabinetsesDc"
+                    class="com.company.ces_productive.entity.Cabinets">
+            <fetchPlan extends="_base">
+                <property name="cabinetBranch" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="cabinetsesDl">
+                <query>
+                    <![CDATA[select c from CES_Cabinets c]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="branchesesDc" class="com.company.ces_productive.entity.Branches">
+            <loader>
+                <query>
+                    <![CDATA[select e from CES_Branches e ]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="save" icon="OK" caption="msg:///actions.Ok" shortcut="CTRL-ENTER"/>
+        <action id="cancel" icon="CANCEL" caption="msg:///actions.Cancel" description="Esc"/>
+    </actions>
+    <dialogMode height="600" width="800"/>
+    <layout expand="split">
+        <filter id="filter" columnsCount="3" dataLoader="cabinetsesDl">
+            <properties include=".*"/>
+            <configurations>
+                <configuration id="defaultFilter"
+                               operation="AND"
+                               name="msg://defaultFilter.name"
+                               default="true">
+                    <propertyFilter property="cabinetBranch" operation="EQUAL" operationEditable="true"
+                                    caption="msg://propertyFilter.caption"/>
+                </configuration>
+            </configurations>
+        </filter>
+        <split id="split" orientation="horizontal" reversePosition="true" width="100%" locked="true">
+            <vbox id="lookupBox" expand="table" height="100%" margin="false,true,false,false" spacing="true">
+                <groupTable id="table"
+                            width="100%"
+                            dataContainer="cabinetsesDc">
+                    <actions>
+                        <action id="create" type="create"/>
+                        <action id="edit" type="edit"/>
+                        <action id="remove" type="remove"/>
+                        <action id="excelExport" type="excelExport"/>
+                    </actions>
+                    <columns>
+                        <group>
+                            <column id="cabinetBranch" caption="msg://cabinetBranch.caption"/>
+                        </group>
+                        <column id="cabinetName" caption="msg://cabinetName.caption"/>
+                        <column id="cabinetArea" caption="msg://cabinetArea.caption"/>
+                    </columns>
+                    <simplePagination itemsPerPageVisible="true"/>
+                    <buttonsPanel id="buttonsPanel"
+                                  alwaysVisible="true">
+                        <button id="tableExcelExportBtn" action="table.excelExport"/>
+                        <button id="createBtn" action="table.create"/>
+                        <button id="editBtn" action="table.edit"/>
+                        <button id="removeBtn" action="table.remove"/>
+                    </buttonsPanel>
+                </groupTable>
+                <hbox id="lookupActions" spacing="true" visible="false">
+                    <button action="lookupSelectAction"/>
+                    <button action="lookupCancelAction"/>
+                </hbox>
+            </vbox>
+            <vbox id="editBox" height="100%" margin="false,false,false,true" expand="fieldGroupBox" spacing="true">
+                <scrollBox id="fieldGroupBox">
+                    <form id="form" dataContainer="cabinetsDc">
+                        <column width="350px">
+                            <textField id="cabinetNameField" property="cabinetName" caption="msg://cabinetName.caption"
+                                       maxLength="7"/>
+                            <textField id="cabinetAreaField" property="cabinetArea" caption="msg://cabinetArea.caption"
+                                       maxLength="3"/>
+                            <entityComboBox id="cabinetBranchField" property="cabinetBranch" caption="msg://cabinetBranch.caption"
+                                            optionsContainer="branchesesDc"/>
+                        </column>
+                    </form>
+                </scrollBox>
+                <hbox id="actionsPane" spacing="true" visible="false">
+                    <button id="saveBtn" action="save"/>
+                    <button id="cancelBtn" action="cancel"/>
+                </hbox>
+            </vbox>
+        </split>
+    </layout>
+</window>

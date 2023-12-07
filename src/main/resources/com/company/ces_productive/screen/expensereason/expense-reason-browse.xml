@@ -1,0 +1,78 @@
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://expenseReasonBrowse.caption"
+        focusComponent="table">
+    <data>
+        <collection id="expenseReasonsDc"
+                    class="com.company.ces_productive.entity.ExpenseReason">
+            <fetchPlan extends="_base"/>
+            <loader id="expenseReasonsDl">
+                <query>
+                    <![CDATA[select e from CES_ExpenseReason e]]>
+                </query>
+            </loader>
+        </collection>
+        <instance id="expenseReasonDc"
+                  class="com.company.ces_productive.entity.ExpenseReason">
+            <fetchPlan extends="_base"/>
+            <loader/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="save" icon="OK" caption="msg:///actions.Ok" shortcut="CTRL-ENTER"/>
+        <action id="cancel" icon="CANCEL" caption="msg:///actions.Cancel" description="Esc"/>
+    </actions>
+    <dialogMode height="600" width="800"/>
+    <layout>
+        <split id="split" height="100%" orientation="horizontal" reversePosition="true" width="100%">
+            <vbox id="lookupBox" expand="table" height="100%" margin="false,true,false,false" spacing="true">
+                <groupTable id="table"
+                            width="100%"
+                            dataContainer="expenseReasonsDc">
+                    <actions>
+                        <action id="create" type="create"/>
+                        <action id="edit" type="edit"/>
+                        <action id="remove" type="remove"/>
+                        <action id="excelExport" type="excelExport"/>
+                    </actions>
+                    <columns>
+                        <column id="expenseName" caption="msg://expenseName.caption"/>
+                        <column id="expenseDescription" caption="msg://expenseDescription.caption"/>
+                    </columns>
+                    <simplePagination/>
+                    <buttonsPanel id="buttonsPanel"
+                                  alwaysVisible="true">
+                        <button id="tableExcelExportBtn" action="table.excelExport"/>
+                        <button id="createBtn" action="table.create"/>
+                        <button id="editBtn" action="table.edit"/>
+                        <button id="removeBtn" action="table.remove"/>
+                    </buttonsPanel>
+                </groupTable>
+                <hbox id="lookupActions" spacing="true" visible="false">
+                    <button action="lookupSelectAction"/>
+                    <button action="lookupCancelAction"/>
+                </hbox>
+            </vbox>
+            <vbox id="editBox" height="100%" margin="false,false,false,true" expand="fieldGroupBox" spacing="true">
+                <scrollBox id="fieldGroupBox">
+                    <form id="form" dataContainer="expenseReasonDc">
+                        <column width="350px">
+                            <textField id="expenseNameField" property="expenseName"
+                                       caption="msg://expenseNameField.caption"/>
+                            <textArea id="expenseDescriptionField" property="expenseDescription"
+                                      caption="msg://expenseDescriptionField.caption"/>
+                        </column>
+                    </form>
+                </scrollBox>
+                <hbox id="actionsPane" spacing="true" visible="false">
+                    <button id="saveBtn" action="save"/>
+                    <button id="cancelBtn" action="cancel"/>
+                </hbox>
+            </vbox>
+        </split>
+    </layout>
+</window>

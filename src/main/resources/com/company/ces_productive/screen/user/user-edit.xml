@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg:///UserEdit.caption"
+        focusComponent="form">
+    <data>
+        <instance id="userDc"
+                  class="com.company.ces_productive.entity.User">
+            <fetchPlan extends="_base">
+                <property fetchPlan="_base" name="branch"/>
+            </fetchPlan>
+            <loader/>
+        </instance>
+        <collection id="branchesesDc" class="com.company.ces_productive.entity.Branches">
+            <fetchPlan extends="_base"/>
+            <loader id="branchesesDl">
+                <query>
+                    <![CDATA[select e from CES_Branches e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <actions>
+        <action id="windowCommitAndClose"
+                caption="msg:///actions.Ok"
+                icon="EDITOR_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="windowClose"
+                caption="msg:///actions.Close"
+                icon="EDITOR_CANCEL"/>
+    </actions>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <dialogMode
+            width="AUTO" forceDialog="true" height="AUTO"/>
+    <layout spacing="true" expand="editActions">
+        <form id="form" dataContainer="userDc">
+            <column width="350px">
+                <textField id="usernameField" property="username" editable="false"
+                           caption="msg://usernameField.caption"/>
+                <passwordField id="passwordField"
+                               caption="msg://com.company.ces_productive.entity/User.password"
+                               required="true"
+                               visible="false"/>
+                <passwordField id="confirmPasswordField"
+                               caption="msg://confirmPassword"
+                               required="true"
+                               visible="false"/>
+                <textField id="lastNameField" property="lastName" caption="msg://lastNameField.caption"/>
+                <textField id="firstNameField" property="firstName" caption="msg://firstNameField.caption"/>
+                <textField id="emailField" property="email" caption="msg://emailField.caption"/>
+                <comboBox id="timeZoneField" property="timeZoneId" caption="msg://timeZoneField.caption"/>
+                <checkBox id="activeField" property="active" caption="msg://activeField.caption"/>
+                <dateField property="joiningDate" caption="msg://joiningDateField.caption" id="joiningDateField"
+                           datatype="localDate"/>
+                <entityComboBox id="branchField" property="branch" caption="msg://branchField.caption"
+                                optionsContainer="branchesesDc"/>
+                <comboBox id="directionField" property="direction" caption="msg://directionField.caption"/>
+            </column>
+        </form>
+        <hbox id="editActions" spacing="true">
+            <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

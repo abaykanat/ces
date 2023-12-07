@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://coursesDelete.caption"
+        focusComponent="scrollBox">
+    <data>
+        <instance id="coursesDc"
+                  class="com.company.ces_productive.entity.courses.Courses">
+            <fetchPlan extends="_base">
+                <property name="courseCabinet" fetchPlan="_base"/>
+                <property name="courseTeacher" fetchPlan="_base"/>
+                <property name="courseManager" fetchPlan="_base"/>
+                <property name="courseBranch" fetchPlan="_base"/>
+                <property name="courseGroup" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader/>
+        </instance>
+        <collection id="coursesesDc" class="com.company.ces_productive.entity.courses.Courses">
+            <fetchPlan extends="_base"/>
+            <loader id="coursesesDl">
+                <query>
+                    <![CDATA[select c from CES_Courses c]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="usersDc" class="com.company.ces_productive.entity.User">
+            <fetchPlan extends="_base"/>
+            <loader id="usersDl">
+                <query>
+                    <![CDATA[select u from CES_User u]]>
+                    <condition>
+                        <c:jpql>
+                            <c:where>u.branch = :currUserBranch</c:where>
+                        </c:jpql>
+                    </condition>
+                </query>
+            </loader>
+        </collection>
+        <collection id="cabinetsesDc" class="com.company.ces_productive.entity.Cabinets">
+            <fetchPlan extends="_base"/>
+            <loader id="cabinetsesDl">
+                <query>
+                    <![CDATA[select c from CES_Cabinets c]]>
+                    <condition>
+                        <c:jpql>
+                            <c:where>c.cabinetBranch = :currUserBranch</c:where>
+                        </c:jpql>
+                    </condition>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="windowCommitAndClose" caption="msg:///actions.Ok"
+                icon="EDITOR_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="windowClose"
+                caption="msg:///actions.Close"
+                icon="EDITOR_CANCEL"/>
+        <action id="deleteSchedule" caption="msg://deleteSchedule.caption" icon="REMOVE_ACTION"/>
+    </actions>
+    <dialogMode height="AUTO"
+                width="AUTO" positionX="400" positionY="0"/>
+    <layout spacing="true" expand="scrollBox">
+        <scrollBox id="scrollBox" spacing="true" align="TOP_CENTER" width="100%">
+            <groupBox orientation="vertical" spacing="true" caption="msg://groupBox.caption" height="100%"
+                      align="TOP_CENTER">
+                <hbox spacing="true">
+                    <entityPicker id="courseGroupField"
+                                  caption="msg://courseGroupField.caption"
+                                  dataContainer="coursesDc"
+                                  property="courseGroup">
+                        <actions>
+                            <action id="entityLookup" type="entity_lookup"/>
+                            <action id="entityClear" type="entity_clear"/>
+                        </actions>
+                    </entityPicker>
+                    <comboBox id="selectSchedule"
+                              caption="msg://entityComboBox.caption"
+                              nullOptionVisible="false"
+                              required="true" enable="false"/>
+                </hbox>
+            </groupBox>
+            <groupBox orientation="vertical" spacing="true" caption="msg://groupBox2.caption">
+                <gridLayout spacing="true" width="100%" height="AUTO">
+                    <columns count="4"/>
+                    <rows>
+                        <row>
+                            <textField id="courseNameField" caption="msg://courseName.caption" property="courseName"
+                                       dataContainer="coursesDc" enable="false"/>
+                            <entityComboBox id="courseCabinetField" property="courseCabinet"
+                                            caption="msg://courseCabinetField.caption" dataContainer="coursesDc"
+                                            optionsContainer="cabinetsesDc" enable="false"/>
+                            <entityComboBox id="courseTeacherField" property="courseTeacher"
+                                            caption="msg://courseTeacherField.caption" optionsContainer="usersDc"
+                                            dataContainer="coursesDc" enable="false"/>
+                        </row>
+                        <row>
+                            <textField id="courseCountField" property="courseCount"
+                                       caption="msg://courseCountField.caption" enable="false" width="70px" dataContainer="coursesDc"/>
+                            <textField id="courseCostField" property="courseCost"
+                                       caption="msg://courseCostField.caption" enable="false" width="90px" dataContainer="coursesDc"
+                                       visible="false"/>
+                            <entityPicker id="courseManagerField"
+                                          caption="msg://courseManagerField.caption" property="courseManager"
+                                          enable="false" dataContainer="coursesDc">
+                            </entityPicker>
+                            <entityPicker id="courseBranchField" caption="msg://courseBranchField.caption" property="courseBranch"
+                                          enable="false" dataContainer="coursesDc" visible="false">
+                            </entityPicker>
+                        </row>
+                    </rows>
+                </gridLayout>
+                <vbox spacing="true" id="modeRadioBtnGroup" align="TOP_CENTER">
+                    <radioButtonGroup id="courseMode" caption="msg://courseMode.caption"
+                                      optionsEnum="com.company.ces_productive.entity.CourseMode"
+                                      orientation="horizontal"
+                                      contextHelpText="msg://courseMode.contextHelpText"
+                                      align="TOP_CENTER" enable="false"/>
+                </vbox>
+                <vbox spacing="true" align="TOP_CENTER" id="singleDay" visible="false">
+                    <hbox spacing="true" align="TOP_CENTER">
+                        <dateField id="courseStartDate" caption="msg://courseStartDate.caption"
+                                   dateFormat="msg://courseStartDate.dateFormat" datatype="localDate"
+                                   width="AUTO" enable="false"/>
+                        <dateField id="courseEndDate" caption="msg://courseEndDate.caption"
+                                   dateFormat="msg:///courseEndDate.dateFormat" datatype="localDate" enable="false"/>
+                    </hbox>
+                    <hbox spacing="true" align="TOP_CENTER">
+                        <timeField id="singleStartTime"
+                                   datatype="localTime" width="AUTO" enable="false"/>
+                        <timeField id="singleEndTime"
+                                   datatype="localTime" enable="false"/>
+                    </hbox>
+                </vbox>
+                <vbox spacing="true" id="weekDays" width="AUTO" align="TOP_CENTER" visible="false">
+                    <hbox spacing="true">
+                        <vbox spacing="true">
+                            <hbox spacing="true" width="AUTO" expand="monday">
+                                <timeField id="mondayStartTime" datatype="localTime" enable="false"/>
+                                <timeField id="mondayEndTime" datatype="localTime" enable="false"/>
+                                <checkBox id="monday" caption="msg://monday.caption" enable="false"/>
+                            </hbox>
+                            <hbox spacing="true" expand="tuesday">
+                                <timeField id="tuesdayStartTime" datatype="localTime" enable="false"/>
+                                <timeField id="tuesdayEndTime" datatype="localTime" enable="false"/>
+                                <checkBox id="tuesday" caption="msg://tuesday.caption" enable="false"/>
+                            </hbox>
+                        </vbox>
+                        <vbox spacing="true">
+                            <hbox spacing="true" expand="wednesday">
+                                <timeField id="wednesdayStartTime" datatype="localTime" enable="false"/>
+                                <timeField id="wednesdayEndTime" datatype="localTime" enable="false"/>
+                                <checkBox id="wednesday" caption="msg://wednesday.caption" enable="false"/>
+                            </hbox>
+                            <hbox spacing="true" expand="thursday">
+                                <timeField id="thursdayStartTime" datatype="localTime" enable="false"/>
+                                <timeField id="thursdayEndTime" datatype="localTime" enable="false"/>
+                                <checkBox id="thursday" caption="msg://thursday.caption" enable="false"/>
+                            </hbox>
+                            <hbox spacing="true" align="TOP_RIGHT" expand="sunday">
+                                <timeField id="sundayStartTime" datatype="localTime" enable="false"/>
+                                <timeField id="sundayEndTime" datatype="localTime" enable="false"/>
+                                <checkBox id="sunday" caption="msg://sunday.caption" enable="false"/>
+                            </hbox>
+                        </vbox>
+                        <vbox spacing="true">
+                            <hbox spacing="true" expand="friday">
+                                <timeField id="fridayStartTime" datatype="localTime" enable="false"/>
+                                <timeField id="fridayEndTime" datatype="localTime" enable="false"/>
+                                <checkBox id="friday" caption="msg://friday.caption" enable="false"/>
+                            </hbox>
+                            <hbox spacing="true" expand="saturday">
+                                <timeField id="saturdayStartTime" datatype="localTime" enable="false"/>
+                                <timeField id="saturdayEndTime" datatype="localTime" enable="false"/>
+                                <checkBox id="saturday" caption="msg://saturday.caption" enable="false"/>
+                            </hbox>
+                        </vbox>
+                    </hbox>
+                </vbox>
+            </groupBox>
+        </scrollBox>
+        <hbox id="editActions" spacing="true" align="TOP_CENTER">
+            <button id="deleteScheduleBtn" action="deleteSchedule"/>
+            <button id="commitAndCloseBtn" action="windowCommitAndClose" visible="false"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.11.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="CES">
+        <createTable tableName="CES_PASSWORD_RESET_TOKEN">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CES_PASSWORD_RESET_TOKEN"/>
+            </column>
+            <column name="USER_ID_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TOKEN" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EXPIRATION_DATE" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="CES">
+        <createIndex indexName="IDX_CES_PASSWORD_RESET_TOKEN_USER_ID" tableName="CES_PASSWORD_RESET_TOKEN">
+            <column name="USER_ID_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="USER_ID_ID" baseTableName="CES_PASSWORD_RESET_TOKEN"
+                                 constraintName="FK_CES_PASSWORD_RESET_TOKEN_ON_USER_ID" referencedColumnNames="ID"
+                                 referencedTableName="CES_USER"/>
+    </changeSet>
+    <changeSet id="3" author="CES">
+        <createIndex indexName="IDX_CES_USER_UNQ" tableName="CES_USER" unique="true">
+            <column name="EMAIL"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

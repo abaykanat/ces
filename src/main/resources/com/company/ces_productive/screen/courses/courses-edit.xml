@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://coursesEdit.caption"
+        focusComponent="form">
+    <data>
+        <instance id="coursesDc"
+                  class="com.company.ces_productive.entity.courses.Courses">
+            <fetchPlan extends="_base">
+                <property name="courseCabinet" fetchPlan="_base"/>
+                <property name="courseTeacher" fetchPlan="_base"/>
+                <property name="courseManager" fetchPlan="_base"/>
+                <property name="courseBranch" fetchPlan="_base"/>
+                <property name="courseGroup" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader/>
+        </instance>
+        <collection id="cabinetsesDc" class="com.company.ces_productive.entity.Cabinets">
+            <fetchPlan extends="_base"/>
+            <loader id="cabinetsesDl">
+                <query>
+                    <![CDATA[select e from CES_Cabinets e where e.cabinetBranch = :currBranch]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="windowCommitAndClose" caption="msg:///actions.Ok"
+                icon="EDITOR_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="windowClose"
+                caption="msg:///actions.Close"
+                icon="EDITOR_CANCEL"/>
+    </actions>
+    <dialogMode height="AUTO"
+                width="AUTO"
+                modal="true"
+                forceDialog="true"/>
+    <layout spacing="true" expand="scrollBox">
+        <scrollBox id="scrollBox" spacing="true">
+            <form id="form" dataContainer="coursesDc">
+                <column width="350px">
+                    <textField id="courseNameField" property="courseName" enable="false"
+                               caption="msg://courseNameField.caption"/>
+                    <comboBox id="courseStatusField" property="courseStatus" caption="msg://courseStatusField.caption"
+                              enable="false"/>
+                    <entityPicker id="courseGroupField" property="courseGroup"
+                                  caption="msg://courseGroupField1.caption" enable="false">
+                        <actions>
+                            <action id="entityLookup" type="entity_lookup"/>
+                            <action id="entityClear" type="entity_clear"/>
+                        </actions>
+                    </entityPicker>
+                    <textField id="courseCostField" property="courseCost" caption="msg://courseCostField1.caption"
+                               enable="false" visible="false"/>
+                    <textField id="courseCountField" property="courseCount" caption="msg://courseCountField1.caption"
+                               enable="false"/>
+                    <dateField id="courseStartDateField" property="courseStartDate"
+                               caption="msg://courseStartDateField.caption"/>
+                    <dateField id="courseEndDateField" property="courseEndDate"
+                               caption="msg://courseEndDateField.caption"/>
+                    <timeField id="courseStartTimeField" property="courseStartTime"
+                               caption="msg://courseStartTimeField.caption"/>
+                    <timeField id="courseEndTimeField" property="courseEndTime"
+                               caption="msg://courseEndTimeField.caption"/>
+                    <suggestionField caption="msg://courseTeacherField1.caption" dataContainer="coursesDc"
+                                     id="courseTeacherField" property="courseTeacher"
+                                     inputPrompt="msg://courseTeacherField1.inputPrompt"/>
+                    <entityComboBox caption="msg://courseCabinetField1.caption" property="courseCabinet"
+                                    optionsContainer="cabinetsesDc" dataContainer="coursesDc" id="courseCabinetField"/>
+                    <entityPicker id="courseManagerField" property="courseManager"
+                                  caption="msg://courseManagerField1.caption" enable="false">
+                        <actions>
+                            <action id="entityLookup" type="entity_lookup"/>
+                            <action id="entityClear" type="entity_clear"/>
+                        </actions>
+                    </entityPicker>
+                    <entityPicker id="courseBranchField" property="courseBranch"
+                                  caption="msg://courseBranchField1.caption" enable="false">
+                        <actions>
+                            <action id="entityLookup" type="entity_lookup"/>
+                            <action id="entityClear" type="entity_clear"/>
+                        </actions>
+                    </entityPicker>
+                    <comboBox id="typeField" property="type" visible="false" caption="msg://typeField1.caption"
+                              enable="false"/>
+                </column>
+            </form>
+        </scrollBox>
+        <hbox id="editActions" spacing="true">
+            <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://expensesBrowse.caption"
+        focusComponent="expensesesTable">
+    <data readOnly="true">
+        <collection id="expensesesDc"
+                    class="com.company.ces_productive.entity.Expenses">
+            <fetchPlan extends="_base">
+                <property name="expensesReason" fetchPlan="_base"/>
+                <property name="expensesUser" fetchPlan="_base"/>
+                <property name="expensesBranch" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="expensesesDl">
+                <query>
+                    <![CDATA[select e from CES_Expenses e
+                    where e.expensesBranch in :currBranch  ]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="lookupSelectAction"
+                caption="msg:///actions.Select"
+                icon="LOOKUP_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="lookupCancelAction"
+                caption="msg:///actions.Cancel"
+                icon="LOOKUP_CANCEL"/>
+    </actions>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="expensesesTable" spacing="true">
+        <filter id="filter"
+                dataLoader="expensesesDl">
+            <properties include=".*"/>
+        </filter>
+        <groupTable id="expensesesTable"
+                    width="100%"
+                    dataContainer="expensesesDc">
+            <actions>
+                <action id="create" type="create"/>
+                <action id="edit" type="edit"/>
+                <action id="remove" type="remove"/>
+            </actions>
+            <columns>
+                <column id="expensesNumber"/>
+                <column id="expensesAmount" caption="msg://expensesAmount.caption"/>
+                <column id="expensesDesc" caption="msg://expensesDesc.caption"/>
+                <column id="expensesReason" caption="msg://expensesReason.caption"/>
+                <column id="expensesDate" caption="msg://expensesDate.caption"/>
+                <column id="expensesUser" caption="msg://expensesUser.caption"/>
+                <column id="expensesBranch" caption="msg://expensesBranch.caption"/>
+            </columns>
+            <simplePagination/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="createBtn" action="expensesesTable.create"/>
+                <button id="editBtn" action="expensesesTable.edit"/>
+                <button id="removeBtn" action="expensesesTable.remove"/>
+            </buttonsPanel>
+        </groupTable>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

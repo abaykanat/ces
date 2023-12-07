@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://directionBrowse.caption"
+        focusComponent="directionsTable">
+    <data readOnly="true">
+        <collection id="directionsDc"
+                    class="com.company.ces_productive.entity.Direction">
+            <fetchPlan extends="_base">
+                <property name="directionBranch" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="directionsDl">
+                <query>
+                    <![CDATA[select e from CES_Direction e]]>
+                    <condition>
+                        <c:jpql>
+                            <c:where>e.directionBranch = :currUserBranch</c:where>
+                        </c:jpql>
+                    </condition>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="lookupSelectAction"
+                caption="msg:///actions.Select"
+                icon="LOOKUP_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="lookupCancelAction"
+                caption="msg:///actions.Cancel"
+                icon="LOOKUP_CANCEL"/>
+    </actions>
+    <dialogMode height="600"
+                width="800"/>
+    <layout spacing="true" expand="directionsTable">
+        <groupTable id="directionsTable"
+                        width="100%"
+                        dataContainer="directionsDc">
+            <actions>
+                <action id="refresh" type="refresh"/>
+            </actions>
+            <columns>
+                <column id="directionName" caption="msg://directionName.caption"/>
+                <column id="directionType" caption="msg://directionType.caption"/>
+                <column id="directionMinCost" caption="msg://directionMinCost.caption"/>
+                <column id="directionCount" caption="msg://directionCount.caption"/>
+                <column id="directionDuration" caption="msg://directionDuration.caption"/>
+                <column id="directionDesc" caption="msg://directionDesc.caption"/>
+                <column id="directionBranch" caption="msg://directionBranch.caption"/>
+            </columns>
+            <simplePagination/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="refreshBtn" action="directionsTable.refresh"/>
+            </buttonsPanel>
+        </groupTable>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://visitmark.caption">
+    <data>
+        <collection id="coursesDc" class="com.company.ces_productive.entity.courses.Courses">
+            <fetchPlan extends="_base">
+                <property name="courseCabinet" fetchPlan="_base"/>
+                <property name="courseTeacher" fetchPlan="_base"/>
+                <property name="courseManager" fetchPlan="_base"/>
+                <property name="courseBranch" fetchPlan="_base"/>
+                <property name="courseGroup" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="coursesDl">
+                <query>
+                    <![CDATA[select e from CES_Courses e
+                    where e.courseTeacher = :currTeacher
+                    and e.courseStartDate <= :courseStartDate
+                    and e.courseEndDate >= :courseEndDate
+                    and e.courseStatus in ('NEW', 'NOT_DONE')  ]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="visitsDc" class="com.company.ces_productive.entity.Visits">
+            <fetchPlan extends="_base">
+                <property name="visitUser" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="visitsDl">
+                <query>
+                    <![CDATA[select v from CES_Visits v
+                    where v.visitStatus = 'NOT_DEFINED' and v.visitUser = :currTeacher ]]>
+                    <condition>
+                        <c:jpql>
+                            <c:where>v.visitCourse = :currCourse</c:where>
+                        </c:jpql>
+                    </condition>
+                </query>
+            </loader>
+        </collection>
+        <collection id="freezesDc" class="com.company.ces_productive.entity.Freeze">
+            <fetchPlan extends="_base"/>
+            <loader id="freezesDl">
+                <query>
+                    <![CDATA[select e from CES_Freeze e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <actions>
+        <action id="start" icon="EDIT_ACTION" caption="msg:///start.caption"/>
+        <action id="end" caption="msg:///end.caption" icon="EDITOR_SAVE"/>
+    </actions>
+    <layout>
+        <vbox spacing="true">
+            <dataGrid id="coursesTable" height="AUTO" width="100%" dataContainer="coursesDc">
+                <actions>
+                    <action id="refresh" type="refresh"/>
+                </actions>
+                <buttonsPanel alwaysVisible="true">
+                    <button id="coursesTableRefreshBtn" action="coursesTable.refresh" visible="false"/>
+                </buttonsPanel>
+                <columns>
+                    <column id="courseDesc" property="courseName" caption="msg://courseDesc.caption"/>
+                    <column id="courseCabinet" property="courseCabinet"/>
+                    <column property="courseStatus" id="courseStatus" caption="msg://courseStatus.caption"/>
+                    <column id="courseStartDate" property="courseStartDate" caption="msg://courseStartDate.caption"/>
+                    <column id="courseEndDate" property="courseEndDate" caption="msg://courseEndDate.caption"/>
+                    <column id="courseStartTime" property="courseStartTime" caption="msg://courseStartTime.caption"/>
+                    <column id="courseEndTime" property="courseEndTime" caption="msg://courseEndTime.caption"/>
+                    <column id="courseGroup" property="courseGroup" caption="msg://courseGroup.caption"/>
+                    <column property="courseTeacher" id="courseTeacher" caption="msg://courseTeacher.caption"/>
+                </columns>
+            </dataGrid>
+            <buttonsPanel>
+                <button id="visitStart" action="start"/>
+            </buttonsPanel>
+            <table id="visitsTable" height="AUTO" width="100%" dataContainer="visitsDc" editable="true">
+                <actions>
+                    <action id="refresh" type="refresh"/>
+                </actions>
+                <buttonsPanel>
+                    <button id="visitsTableRefreshBtn" action="visitsTable.refresh" visible="false"/>
+                </buttonsPanel>
+                <columns>
+                    <column id="visitStatus" caption="msg://visitStatus.caption" editable="true"/>
+                    <column id="visitStudent" caption="msg://visitStudent.caption"/>
+                    <column id="visitStartDateTime" caption="msg://visitStartDateTime.caption"/>
+                    <column id="visitEndDateTime" caption="msg://visitEndDateTime.caption"/>
+                    <column id="visitCourse" caption="msg://visitCourse.caption"/>
+                    <column id="visitUser" caption="msg://visitUser.caption"/>
+                </columns>
+            </table>
+            <textArea id="courseDesc" width="100%" caption="msg://courseDesc1.caption"
+                      contextHelpTextHtmlEnabled="true" contextHelpText="msg://courseDesc.contextHelpText"/>
+            <buttonsPanel>
+                <button id="visitEnd" action="end"/>
+            </buttonsPanel>
+        </vbox>
+    </layout>
+</window>

@@ -1,0 +1,78 @@
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://managerTasksBrowse.caption"
+        focusComponent="table">
+    <data>
+        <instance id="managerTasksDc"
+                  class="com.company.ces_productive.entity.ManagerTasks">
+            <fetchPlan extends="_base"/>
+            <loader/>
+        </instance>
+        <collection id="managerTasksesDc"
+                    class="com.company.ces_productive.entity.ManagerTasks">
+            <fetchPlan extends="_base"/>
+            <loader id="managerTasksesDl">
+                <query>
+                    <![CDATA[select e from CES_ManagerTasks e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="save" icon="OK" caption="msg:///actions.Ok" shortcut="CTRL-ENTER"/>
+        <action id="cancel" icon="CANCEL" caption="msg:///actions.Cancel" description="Esc"/>
+    </actions>
+    <dialogMode height="600" width="800"/>
+    <layout>
+        <split id="split" height="100%" orientation="horizontal" reversePosition="true" width="100%" pos="40"
+               locked="true">
+            <vbox id="lookupBox" expand="table" height="100%" margin="false,true,false,false" spacing="true">
+                <groupTable id="table"
+                            width="100%"
+                            dataContainer="managerTasksesDc">
+                    <actions>
+                        <action id="create" type="create"/>
+                        <action id="edit" type="edit"/>
+                        <action id="remove" type="remove"/>
+                    </actions>
+                    <columns>
+                        <column id="taskName" caption="msg://taskName.caption"/>
+                        <column id="taskDescription" caption="msg://taskDescription.caption"/>
+                        <column id="taskRole" caption="msg://taskRole.caption"/>
+                    </columns>
+                    <simplePagination/>
+                    <buttonsPanel id="buttonsPanel"
+                                  alwaysVisible="true">
+                        <button id="createBtn" action="table.create"/>
+                        <button id="editBtn" action="table.edit"/>
+                        <button id="removeBtn" action="table.remove"/>
+                    </buttonsPanel>
+                </groupTable>
+                <hbox id="lookupActions" spacing="true" visible="false">
+                    <button action="lookupSelectAction"/>
+                    <button action="lookupCancelAction"/>
+                </hbox>
+            </vbox>
+            <vbox id="editBox" height="100%" margin="false,false,false,true" expand="fieldGroupBox" spacing="true">
+                <scrollBox id="fieldGroupBox">
+                    <form id="form" dataContainer="managerTasksDc">
+                        <column width="350px">
+                            <textField id="taskNameField" property="taskName" caption="msg://taskNameField.caption"/>
+                            <textArea id="taskDescriptionField" property="taskDescription"
+                                      caption="msg://taskDescriptionField.caption"/>
+                            <textField id="taskRoleField" property="taskRole" caption="msg://taskRoleField.caption"/>
+                        </column>
+                    </form>
+                </scrollBox>
+                <hbox id="actionsPane" spacing="true" visible="false">
+                    <button id="saveBtn" action="save"/>
+                    <button id="cancelBtn" action="cancel"/>
+                </hbox>
+            </vbox>
+        </split>
+    </layout>
+</window>

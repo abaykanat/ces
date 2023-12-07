@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://registrationScreen.caption" focusComponent="registrationBox">
+    <data>
+        <collection id="branchesesDc" class="com.company.ces_productive.entity.Branches">
+            <fetchPlan extends="_base"/>
+            <loader id="branchesesDl">
+                <query>
+                    <![CDATA[select e from CES_Branches e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout>
+        <groupBox id="registrationBox" orientation="vertical" spacing="true">
+            <label id="welcomeLbl" value="msg://label.value" align="TOP_CENTER"/>
+            <label id="textLbl" align="TOP_CENTER"/>
+            <entityComboBox id="selectBranch" optionsContainer="branchesesDc" caption="msg://selectBranch.caption"/>
+            <radioButtonGroup id="registrationMode" optionsEnum="com.company.ces_productive.entity.RegistrationMode"/>
+            <button id="registrationStartBtn" caption="msg://registrationStartBtn.caption"/>
+        </groupBox>
+    </layout>
+</window>

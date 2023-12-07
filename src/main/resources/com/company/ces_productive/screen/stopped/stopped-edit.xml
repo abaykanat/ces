@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://stoppedEdit.caption"
+        focusComponent="form">
+    <data>
+        <instance id="stoppedDc"
+                  class="com.company.ces_productive.entity.Stopped">
+            <fetchPlan extends="_base">
+                <property name="stoppedStudent" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="windowCommitAndClose" caption="msg:///actions.Ok"
+                icon="EDITOR_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="windowClose"
+                caption="msg:///actions.Close"
+                icon="EDITOR_CANCEL"/>
+    </actions>
+    <dialogMode height="AUTO"
+                width="AUTO"
+                modal="true"
+                forceDialog="true"/>
+    <layout spacing="true" expand="editActions">
+        <form id="form" dataContainer="stoppedDc">
+            <column width="350px">
+                <textArea property="stoppedReason" id="stoppedReasonField" caption="msg://stoppedReasonField.caption"/>
+                <entityPicker id="stoppedStudentField" property="stoppedStudent" enable="false"
+                              dataContainer="stoppedDc" caption="msg://stoppedStudentField.caption">
+                    <actions>
+                        <action id="entityLookup" type="entity_lookup"/>
+                        <action id="entityClear" type="entity_clear"/>
+                    </actions>
+                </entityPicker>
+                <dateField id="stoppedDateField" property="stoppedDate" dataContainer="stoppedDc"
+                           caption="msg://stoppedDateField.caption"/>
+            </column>
+        </form>
+        <hbox id="editActions" spacing="true">
+            <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

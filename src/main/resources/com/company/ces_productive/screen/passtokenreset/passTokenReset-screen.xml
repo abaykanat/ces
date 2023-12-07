@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://passTokenResetScreen.caption" focusComponent="emailField">
+    <actions>
+        <action id="email" caption="msg://emailAction.caption" icon="OK"/>
+    </actions>
+    <dialogMode forceDialog="true"
+                width="550px"
+                height="300px"/>
+    <layout>
+        <vbox spacing="true" align="TOP_CENTER">
+            <label value="msg://label.value" align="TOP_CENTER"/>
+            <textField id="emailField" align="TOP_CENTER"/>
+        </vbox>
+        <vbox spacing="true" align="TOP_CENTER">
+            <button id="emailBtn" action="email" align="TOP_CENTER"/>
+            <label id="successLabel" value="msg://successLabel.value" visible="false" align="TOP_CENTER"/>
+            <label value="msg://label1.value" visible="false" id="errorLabel" align="TOP_CENTER"/>
+        </vbox>
+    </layout>
+</window>

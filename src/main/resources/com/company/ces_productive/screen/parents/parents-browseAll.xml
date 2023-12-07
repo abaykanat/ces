@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://parentsBrowseAll.caption"
+        focusComponent="parentsesTable">
+    <data readOnly="true">
+        <collection id="parentsesDc"
+                    class="com.company.ces_productive.entity.Parents">
+            <fetchPlan extends="_base">
+                <property name="parentBranch" fetchPlan="_base"/>
+                <property name="parentSecBranch" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="parentsesDl">
+                <query>
+                    <![CDATA[select e from CES_Parents e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="lookupSelectAction"
+                caption="msg:///actions.Select"
+                icon="LOOKUP_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="lookupCancelAction"
+                caption="msg:///actions.Cancel"
+                icon="LOOKUP_CANCEL"/>
+    </actions>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="parentsesTable" spacing="true">
+        <filter id="filter" columnsCount="3" dataLoader="parentsesDl">
+            <properties include=".*"/>
+            <configurations>
+                <configuration id="defaultFilter"
+                               operation="AND"
+                               name="msg://defaultFilter.name"
+                               default="true">
+                    <propertyFilter property="parentLastName" operation="CONTAINS" operationEditable="true"
+                                    caption="msg://propertyFilter.caption"/>
+                    <propertyFilter property="parentIIN" operation="STARTS_WITH" operationEditable="true"
+                                    caption="msg://propertyFilter1.caption"/>
+                    <propertyFilter property="parentMobileNumber" operation="CONTAINS" operationEditable="true"
+                                    caption="msg://propertyFilter2.caption"/>
+                </configuration>
+            </configurations>
+        </filter>
+        <groupTable id="parentsesTable"
+                    width="100%"
+                    dataContainer="parentsesDc" contextMenuEnabled="false">
+            <actions>
+                <action id="view" type="view"/>
+                <action id="edit" type="edit"/>
+                <action id="excelExport" type="excelExport"/>
+                <action id="remove" type="remove"/>
+            </actions>
+            <columns>
+                <column id="parentBranch" caption="msg://parentBranch.caption"/>
+                <column id="parentSecBranch" caption="msg://parentSecBranch1.caption"/>
+                <column id="parentIIN" caption="msg://parentIIN.caption"/>
+                <column id="parentLastName" caption="msg://parentLastName.caption"/>
+                <column id="parentFirstName" caption="msg://parentFirstName.caption"/>
+                <column id="parentMiddleName" caption="msg://parentMiddleName.caption"/>
+                <column id="parentMobileNumber" caption="msg://parentMobileNumber.caption"/>
+                <column id="parentEmail" caption="msg://parentEmail.caption"/>
+            </columns>
+            <simplePagination itemsPerPageVisible="true"/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="parentsesTableExcelExportBtn" action="parentsesTable.excelExport"/>
+                <button id="parentsesTableViewBtn" action="parentsesTable.view"/>
+                <button id="parentsesTableEditBtn" action="parentsesTable.edit"/>
+                <button id="parentsesTableRemoveBtn" action="parentsesTable.remove"/>
+            </buttonsPanel>
+        </groupTable>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

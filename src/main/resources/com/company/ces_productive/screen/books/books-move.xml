@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://booksMove.caption"
+        focusComponent="scrollBox">
+    <data>
+        <instance id="booksDc"
+                  class="com.company.ces_productive.entity.Books">
+            <fetchPlan extends="_base">
+                <property fetchPlan="_base" name="bookAcceptBranch"/>
+                <property fetchPlan="_base" name="bookAcceptUser"/>
+                <property fetchPlan="_base" name="bookSendUser"/>
+                <property name="bookType" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader/>
+        </instance>
+        <collection id="booksesDc" class="com.company.ces_productive.entity.Books">
+            <fetchPlan extends="_base">
+                <property name="bookType" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="booksesDl">
+                <query>
+                    <![CDATA[select e from CES_Books e  ]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="bookTypesDc" class="com.company.ces_productive.entity.BookType">
+            <fetchPlan extends="_base"/>
+            <loader id="bookTypesDl">
+                <query>
+                    <![CDATA[select e from CES_BookType e]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="branchesesDc" class="com.company.ces_productive.entity.Branches">
+            <fetchPlan extends="_base"/>
+            <loader id="branchesesDl">
+                <query>
+                    <![CDATA[select e from CES_Branches e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="windowCommitAndClose" caption="msg:///actions.Ok"
+                icon="EDITOR_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="moveBooks"
+                caption="msg://moveBooks.caption"
+                icon="EDITOR_OK"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="windowClose"
+                caption="msg:///actions.Close"
+                icon="EDITOR_CANCEL"/>
+    </actions>
+    <dialogMode height="AUTO"
+                width="AUTO"
+                modal="true"
+                forceDialog="true"/>
+    <layout spacing="true" expand="scrollBox">
+        <scrollBox id="scrollBox" spacing="true">
+            <gridLayout spacing="true">
+                <columns count="2"/>
+                <rows>
+                    <row>
+                        <entityComboBox id="bookTypeField" property="bookType" caption="msg://bookTypeField.caption"
+                                        optionsContainer="bookTypesDc"/>
+                        <textField id="bookAllCountField"  enable="false"
+                                   caption="msg://bookAllCount.caption" width="70px" datatype="long"/>
+                    </row>
+                    <row>
+                        <entityComboBox id="bookSendBranchField" property="bookBranch"
+                                        caption="msg://bookBranchField.caption" optionsContainer="branchesesDc"/>
+                        <textField id="bookSendCountField" caption="msg://bookSendCount.caption" width="70px"
+                                   datatype="long"/>
+                    </row>
+                    <row>
+                        <entityPicker id="bookSendUserField" property="bookSendUser" enable="false"
+                                      dataContainer="booksDc" caption="msg://bookSendUserField.caption">
+                        </entityPicker>
+                        <dateField id="bookSendDateField" property="bookSendDate" enable="false"
+                                   caption="msg://bookSendDateField.caption" datatype="localDate"/>
+                    </row>
+                </rows>
+            </gridLayout>
+        </scrollBox>
+        <hbox id="editActions" spacing="true">
+            <button id="commitAndCloseBtn" action="windowCommitAndClose" visible="false"/>
+            <button id="moveBookBtn" action="moveBooks"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

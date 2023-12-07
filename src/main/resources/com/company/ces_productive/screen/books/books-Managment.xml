@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://booksManagment.caption"
+        focusComponent="booksesTable">
+    <data readOnly="true">
+        <collection id="booksesDc"
+                    class="com.company.ces_productive.entity.Books">
+            <fetchPlan extends="_base">
+                <property fetchPlan="_base" name="bookType"/>
+                <property fetchPlan="_base" name="bookAcceptBranch"/>
+                <property fetchPlan="_base" name="bookSoldUser"/>
+                <property fetchPlan="_base" name="bookStudent"/>
+                <property fetchPlan="_base" name="bookOrder"/>
+                <property fetchPlan="_base" name="bookAcceptUser"/>
+                <property fetchPlan="_base" name="bookSendUser"/>
+                <property fetchPlan="_base" name="bookSendBranch"/>
+            </fetchPlan>
+            <loader id="booksesDl">
+                <query>
+                    <![CDATA[select b from CES_Books b where b.bookSendBranch in :currBookBranch  ]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="lookupSelectAction"
+                caption="msg:///actions.Select"
+                icon="LOOKUP_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="lookupCancelAction"
+                caption="msg:///actions.Cancel"
+                icon="LOOKUP_CANCEL"/>
+    </actions>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="booksesTable" spacing="true">
+        <filter id="filter" columnsCount="3" dataLoader="booksesDl">
+            <properties include=".*"/>
+            <configurations>
+                <configuration id="defaultFilter"
+                               operation="AND"
+                               name="msg://defaultFilter.name"
+                               default="true">
+                    <propertyFilter property="bookType" operation="EQUAL" operationEditable="true"
+                                    caption="msg://searchName.caption"/>
+                    <propertyFilter property="bookStatus" operation="EQUAL" operationEditable="true"
+                                    caption="msg://textField1.caption"/>
+                    <propertyFilter property="bookAcceptBranch" operation="EQUAL" operationEditable="true"
+                                    caption="msg://propertyFilter.caption"/>
+                </configuration>
+            </configurations>
+        </filter>
+        <groupTable id="booksesTable"
+                    width="100%"
+                    dataContainer="booksesDc">
+            <actions>
+                <action id="createParty" caption="msg://createParty.caption" icon="ARROW_CIRCLE_O_DOWN"/>
+                <action id="moveToBranch" caption="msg://moveToBranch.caption" icon="ARROW_CIRCLE_RIGHT"/>
+                <action id="acceptBranch" caption="msg://acceptBranch.caption" icon="ARROW_CIRCLE_DOWN"/>
+                <action id="create" type="create"/>
+                <action id="edit" type="edit"/>
+                <action id="remove" type="remove"/>
+                <action id="excelExport" type="excelExport"/>
+            </actions>
+            <columns>
+                <group>
+                    <column id="bookType" caption="msg://bookType.caption"/>
+                    <column id="bookAcceptBranch" caption="msg://bookBranch.caption"/>
+                    <column id="bookStatus" caption="msg://bookStatus.caption"/>
+                </group>
+                <column id="bookNumber" caption="msg://bookNumber.caption"/>
+                <column id="bookAcceptUser" caption="msg://bookAcceptUser.caption"/>
+                <column id="bookAcceptDate" caption="msg://bookAcceptDate.caption"/>
+                <column id="bookSendUser" caption="msg://bookSendUser.caption"/>
+                <column id="bookSendBranch" caption="msg://bookSendBranch.caption"/>
+                <column id="bookSendDate" caption="msg://bookSendDate.caption"/>
+                <column id="bookSoldUser" caption="msg://bookSoldUser.caption"/>
+                <column id="bookSoldDate" caption="msg://bookSoldDate.caption"/>
+                <column id="bookStudent" caption="msg://bookStudent.caption"/>
+                <column id="bookOrder" caption="msg://bookOrder.caption"/>
+            </columns>
+            <simplePagination itemsPerPageVisible="true"/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="booksesTableExcelExportBtn" action="booksesTable.excelExport"/>
+                <button id="tableCreatePartyBtn" action="booksesTable.createParty"/>
+                <button id="tableMoveToBranchBtn" action="booksesTable.moveToBranch"/>
+                <button id="tableAcceptBranchBtn" action="booksesTable.acceptBranch"/>
+                <button id="createBtn" action="booksesTable.create" visible="false"/>
+                <button id="editBtn" action="booksesTable.edit"/>
+                <button id="removeBtn" action="booksesTable.remove"/>
+            </buttonsPanel>
+        </groupTable>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

@@ -1,0 +1,52 @@
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://application.caption" focusComponent="workArea">
+    <layout>
+        <cssLayout id="horizontalWrap"
+                   stylename="jmix-drawer-layout">
+            <drawer id="drawer" expandOnHover="true">
+                <cssLayout id="appTitleBox"
+                           stylename="jmix-drawer-header"
+                           width="100%">
+                    <label id="appTitleLabel"
+                           stylename="app-title colored"
+                           value="msg:///appTitleLabel.value"/>
+                    <image id="logoImage"
+                           stylename="app-icon colored"
+                           scaleMode="FILL" height="70%" width="100%">
+                        <resource>
+                            <theme path="branding/CES_icon.jpg"/>
+                            <url url="http://localhost:8080/#main"/>
+                        </resource>
+                    </image>
+                    <link id="mainLink" url="msg://mainLink.url"/>
+                </cssLayout>
+                <sideMenu id="sideMenu"
+                          width="100%"
+                          stylename="jmix-drawer-content jmix-sidemenu-open" showSingleExpandedMenu="true"/>
+                <timeZoneIndicator id="timeZoneIndicator"
+                                   align="MIDDLE_CENTER"/>
+                <cssLayout id="controlBox"
+                           stylename="jmix-drawer-footer"
+                           width="100%">
+                    <button id="collapseDrawerButton"
+                            icon="CHEVRON_LEFT"
+                            stylename="jmix-drawer-collapse-button"
+                            description="msg://sideMenuCollapse" />
+                    <userIndicator id="userIndicator"
+                                   align="MIDDLE_CENTER"/>
+                    <logoutButton id="logoutButton"
+                                  icon="SIGN_OUT"
+                                  description="msg://logoutBtnDescription"/>
+                </cssLayout>
+            </drawer>
+            <workArea id="workArea"
+                      stylename="jmix-workarea"
+                      width="AUTO" height="AUTO">
+                <initialLayout spacing="true" margin="true">
+                    <button id="goLoginScreen" align="MIDDLE_CENTER" caption="msg://goLoginScreen.caption"
+                            icon="FAST_BACKWARD"/>
+                </initialLayout>
+            </workArea>
+        </cssLayout>
+    </layout>
+</window>

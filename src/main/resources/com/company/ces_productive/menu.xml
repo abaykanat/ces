@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<menu-config xmlns="http://jmix.io/schema/ui/menu">
+
+    <menu id="commonSettings" caption="msg://com.company.ces_productive/menu_config.commonSettings"
+          insertAfter="administration">
+        <item screen="CES_User.browse" caption="msg://com.company.ces_productive.screen.user/UserBrowse.caption"
+              icon="USER_CIRCLE_O"/>
+        <item screen="CES_Branches.browse"
+              caption="msg://com.company.ces_productive.screen.branches/branchesBrowse.menu" icon="FORT_AWESOME"/>
+        <item screen="CES_Cabinets.browse"
+              caption="msg://com.company.ces_productive.screen.cabinets/cabinetsBrowse.menu" icon="SLIDESHARE"/>
+        <item screen="CES_DirectionEdit.browse"
+              caption="msg://com.company.ces_productive.screen.direction/directionEditBrowse.menu" icon="ARROWS"/>
+        <item screen="CES_DiscountReason.browse"
+              caption="msg://com.company.ces_productive.screen.discountreason/discountReasonBrowse.menu"
+              icon="HANDSHAKE_O"/>
+        <item screen="CES_ExpenseReason.browse"
+              caption="msg://com.company.ces_productive.screen.expensereason/expenseReasonBrowse.menu" icon="FILE_O"/>
+        <item screen="CES_BookType.browse"
+              caption="msg://com.company.ces_productive.screen.booktype/bookTypeBrowse.menu" icon="BOOK"/>
+        <item screen="CES_ManagerTasks.browse"
+              caption="msg://com.company.ces_productive.screen.managertasks/managerTasksBrowse.menu" icon="TASKS"/>
+        <item screen="CES_Documentation.browse" id="CES_Documentation"
+              caption="msg://com.company.ces_productive/menu_config.Documentation" icon="FILE_PDF_O"/>
+        <item screen="CES_PasswordResetToken.browse" caption="msg:///menu_config.CES_PasswordResetToken.browse"
+              insertAfter="commonSettings"/>
+    </menu>
+    <menu id="managment" caption="msg://com.company.ces_productive/menu_config.booksSettings"
+          insertAfter="commonSettings" expanded="true">
+        <item screen="CES_Books.managment" caption="msg://com.company.ces_productive.screen.books/booksManagment.menu"
+              icon="BOOK"/>
+        <item screen="CES_Expenses.browse"
+              caption="msg://com.company.ces_productive.screen.expenses/expensesBrowse.menu" icon="CART_ARROW_DOWN"/>
+        <item screen="CES_Students.mainInfo"
+              caption="msg://com.company.ces_productive.screen.students/studentsMainInfo.menu" icon="BATTERY_1"/>
+        <item screen="CES_PivotIncomeExpense"
+              caption="msg://com.company.ces_productive.screen.pivotincomeexpense/pivotIncomeExpense.caption"
+              icon="LINE_CHART"/>
+        <item screen="CES_DashboardScreen"
+              caption="msg://com.company.ces_productive.screen.dashboard/dashboardScreen.caption" icon="DASHBOARD"/>
+        <item screen="themeSettingsScreen" caption="msg://io.jmix.ui.app.themesettings/themeSettings.caption"
+              icon="MEH_O"/>
+    </menu>
+    <menu id="application" caption="msg://com.company.ces_productive/menu.application" expanded="true">
+        <item screen="CES_Parents.browse" caption="msg://com.company.ces_productive.screen.parents/parentsBrowse.menu"
+              icon="ADDRESS_CARD"/>
+        <item screen="CES_Parents.browseAll"
+              caption="msg://com.company.ces_productive.screen.parents/parentsBrowseAll.menu" icon="ADDRESS_CARD"/>
+        <item screen="CES_Students.browseManager"
+              caption="msg://com.company.ces_productive.screen.students/studentsBrowseManager.menu"
+              icon="ADDRESS_CARD_O"/>
+        <item screen="CES_Students.browseAll"
+              caption="msg://com.company.ces_productive.screen.students/studentsBrowseAll.menu" icon="ADDRESS_CARD_O"/>
+        <item screen="CES_Groups.browse" caption="msg://com.company.ces_productive.screen.groups/groupsBrowse.menu"
+              icon="GROUP"/>
+        <item screen="CES_Groups.browseTeacher"
+              caption="msg://com.company.ces_productive.screen.groups/groupsBrowseTeacher.menu" icon="GROUP"/>
+        <item screen="CES_Groups.browseAll"
+              caption="msg://com.company.ces_productive.screen.groups/groupsBrowseAll.menu" icon="GROUP"/>
+        <item screen="CES_Courses.browse" caption="msg://com.company.ces_productive.screen.courses/coursesBrowse.menu"
+              icon="CALENDAR_CHECK_O"/>
+        <item screen="CES_Courses.browseAll"
+              caption="msg://com.company.ces_productive.screen.courses/coursesBrowseAll.menu" icon="CALENDAR_CHECK_O"/>
+        <item screen="CES_Courses.browseAdm" caption="msg://com.company.ces_productive.screen.courses/coursesBrowseAdm.menu"
+              icon="CALENDAR_O"/>
+        <item screen="CES_Visitmark" caption="msg://com.company.ces_productive.screen.visitmark/visitmark.menu"
+              icon="CALENDAR_CHECK_O"/>
+        <item screen="CES_Payments.browse" caption="msg://com.company.ces_productive.screen.payments/paymentsBrowse.menu"
+              icon="ARROW_CIRCLE_O_DOWN"/>
+        <item screen="CES_Orders.browse" caption="msg://com.company.ces_productive.screen.orders/ordersBrowse.menu"
+              icon="ARROW_CIRCLE_DOWN"/>
+        <item screen="CES_Visits.browse" caption="msg://com.company.ces_productive.screen.visits/visitsBrowse.menu"
+              icon="LOOKUP_OK"/>
+        <menu id="CES_MainScreenAnonymous" caption="msg://menu_config.MainScreenAnonymous"/>
+        <item screen="CES_RegistrationScreen"
+              caption="msg://com.company.ces_productive.screen.registration/registrationScreen.caption"/>
+        <item screen="CES_PasstokenresetScreen"
+              caption="msg://com.company.ces_productive.screen.passtokenreset/passTokenResetScreen.caption"/>
+        <item screen="CES_PasstokenchangeScreen"
+              caption="msg://com.company.ces_productive.screen.passtokenchange/passTokenChangeScreen.caption"/>
+    </menu>
+</menu-config>

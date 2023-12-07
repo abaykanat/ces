@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://studentsBrowse.caption"
+        focusComponent="studentsesTable">
+    <data readOnly="true">
+        <collection id="studentsesDc"
+                    class="com.company.ces_productive.entity.Students">
+            <fetchPlan extends="_base">
+                <property fetchPlan="_base" name="studParent"/>
+                <property fetchPlan="_base" name="studBranch"/>
+                <property fetchPlan="_base" name="studManager"/>
+                <property fetchPlan="_base" name="studDiscountReason"/>
+            </fetchPlan>
+            <loader id="studentsesDl">
+                <query>
+                    <![CDATA[select s from CES_Students s where s.studBranch = :currUserBranch]]>
+                </query>
+            </loader>
+            <collection id="studGroupsDc" property="studGroups"/>
+            <collection id="studOrdersDc" property="studOrders"/>
+            <collection id="studBooksDc" property="studBooks"/>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="studentsesTable" spacing="true">
+        <filter id="filter" columnsCount="3" dataLoader="studentsesDl">
+            <properties include=".*"/>
+            <configurations>
+                <configuration id="defaultFilter"
+                               operation="AND"
+                               name="msg://defaultFilter.name"
+                               default="true">
+                    <propertyFilter property="studLastName" operation="CONTAINS" operationEditable="true"
+                                    caption="msg://searchName.caption"/>
+                    <propertyFilter property="studFirstName" operation="CONTAINS" operationEditable="true"
+                                    caption="msg://searchName1.caption"/>
+                    <propertyFilter property="studMoblieNumber" operation="CONTAINS" operationEditable="true"
+                                    caption="msg://textField1.caption"/>
+                </configuration>
+            </configurations>
+        </filter>
+        <groupTable id="studentsesTable"
+                    width="100%"
+                    dataContainer="studentsesDc" contextMenuEnabled="false">
+            <actions>
+                <action id="create" type="create"/>
+                <action id="view" type="view"/>
+                <action id="edit" type="edit"/>
+                <action id="payment" caption="msg://payment.caption" icon="MONEY"/>
+                <action id="book" caption="msg://book.caption" icon="BOOK"/>
+                <action id="freeze" caption="msg://freeze.caption" icon="UNLOCK_ALT"/>
+                <action id="stopped" caption="msg://stopped.caption" icon="STOP"/>
+                <action id="runReport" type="runReport" caption="msg://runReport.caption"/>
+                <action id="calcCourseAmount" caption="msg://studentsesTableCalcCourseAmountBtn.caption" icon="CALCULATOR"/>
+            </actions>
+            <columns>
+                <group>
+                    <column id="studStatus" caption="msg://studStatus.caption"/>
+                    <column id="studPeriodDesc" caption="msg://studPeriodDesc.caption"/>
+                </group>
+                <column id="studID" caption="msg://studIIN.caption"/>
+                <column id="studLastName" caption="msg://studLastName.caption"/>
+                <column id="studFirstName" caption="msg://studFirstName.caption"/>
+                <column id="studMiddleName" caption="msg://studMiddleName.caption"/>
+                <column id="studIIN" caption="msg://studIINField1.caption"/>
+                <column id="studMoblieNumber" caption="msg://studMoblieNumber.caption"/>
+                <column id="studActualAmount" caption="msg://studActualAmount.caption"/>
+                <column id="studEmail" caption="msg://studEmail.caption"/>
+                <column id="studParent" caption="msg://studParent.caption"/>
+                <column id="studEngLevel" caption="msg://studEngLevel.caption"/>
+                <column id="studOldId" caption="msg://studOldId.caption"/>
+                <column id="studBeginDate" caption="msg://studBeginDate.caption"/>
+                <column id="studManager" caption="msg://studManager.caption"/>
+                <column id="studBranch" caption="msg://studBranch.caption"/>
+            </columns>
+            <simplePagination itemsPerPageVisible="true"/>
+            <buttonsPanel id="buttonsPanel" alwaysVisible="true">
+                <button id="createBtn" action="studentsesTable.create"/>
+                <button id="studentsesTableViewBtn" action="studentsesTable.view"/>
+                <button id="studentsesTableEditBtn" action="studentsesTable.edit"/>
+                <button id="studentsesTableRunReportBtn" action="studentsesTable.runReport" enable="false"/>
+                <button id="studentsTablePaymentBtn" action="studentsesTable.payment" enable="false"/>
+                <button id="studentsesTableBookBtn" action="studentsesTable.book" enable="false"/>
+                <button id="studentsesTableFreezeBtn" action="studentsesTable.freeze"
+                        description="msg://studentsesTableFreezeBtn.description" enable="false"/>
+                <button id="studentsesTableStoppedBtn" action="studentsesTable.stopped"
+                        description="msg://studentsesTableStoppedBtn.description" enable="false"/>
+                <button id="studentsesTableCalcCourseAmountBtn" action="studentsesTable.calcCourseAmount"
+                        enable="false"/>
+            </buttonsPanel>
+            <buttonsPanel/>
+        </groupTable>
+    </layout>
+</window>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://booksAcceptBranch.caption"
+        focusComponent="scrollBox">
+    <data>
+        <instance id="booksDc" class="com.company.ces_productive.entity.Books">
+            <fetchPlan extends="_base">
+                <property name="bookType" fetchPlan="_base"/>
+                <property name="bookAcceptUser" fetchPlan="_base"/>
+                <property name="bookAcceptBranch" fetchPlan="_base"/>
+                <property name="bookSendUser" fetchPlan="_base"/>
+                <property name="bookSendBranch" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="booksDl"/>
+        </instance>
+        <collection id="booksesDc" class="com.company.ces_productive.entity.Books">
+            <fetchPlan extends="_base">
+                <property name="bookType" fetchPlan="_base"/>
+                <property name="bookAcceptUser" fetchPlan="_base"/>
+                <property name="bookAcceptBranch" fetchPlan="_base"/>
+                <property name="bookSendUser" fetchPlan="_base"/>
+                <property name="bookSendBranch" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="booksesDl">
+                <query>
+                    <![CDATA[select e from CES_Books e
+                    where e.bookStatus = 'IN_TRANSIT' and e.bookSendBranch in :currBookBranch  ]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="bookTypesDc" class="com.company.ces_productive.entity.BookType">
+            <fetchPlan extends="_base"/>
+            <loader id="bookTypesDl">
+                <query>
+                    <![CDATA[select e from CES_BookType e
+                    where e in :currBookType  ]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="branchesesDc" class="com.company.ces_productive.entity.Branches">
+            <fetchPlan extends="_base"/>
+            <loader id="branchesesDl">
+                <query>
+                    <![CDATA[select e from CES_Branches e
+                    where e in :currBookBranch  ]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="acceptBooks"
+                caption="msg://acceptBooks.caption"
+                shortcut="${COMMIT_SHORTCUT}"
+                icon="EDITOR_OK"/>
+        <action id="windowCommitAndClose" caption="msg:///actions.Ok"
+                icon="EDITOR_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="windowClose"
+                caption="msg:///actions.Close"
+                icon="EDITOR_CANCEL"/>
+    </actions>
+    <dialogMode height="AUTO"
+                width="AUTO"
+                modal="true"
+                forceDialog="true"/>
+    <layout spacing="true" expand="scrollBox">
+        <scrollBox id="scrollBox" spacing="true">
+            <gridLayout spacing="true">
+                <columns count="3"/>
+                <rows>
+                    <row>
+                        <entityComboBox id="bookTypeField" property="bookType" caption="msg://bookTypeField.caption"
+                                        optionsContainer="bookTypesDc"/>
+                        <entityComboBox id="bookStatusField" caption="msg://bookStatusField.caption"
+                                        enable="false"/>
+                        <textField id="bookCount" required="true" datatype="long"
+                                   width="70px" maxLength="3" enable="false" caption="msg://bookCount.caption"/>
+                    </row>
+                    <row>
+                        <entityComboBox id="bookSendBranchField" caption="msg://bookSendBranchField.caption"
+                                        optionsContainer="branchesesDc" enable="false"/>
+                        <entityComboBox id="bookSendUserField" enable="false" caption="msg://bookSendUserField.caption"
+                                        dataContainer="booksDc" property="bookSendUser"/>
+                        <dateField id="bookSendDateField" enable="false" caption="msg://bookSendDateField.caption"
+                        />
+                    </row>
+                    <row>
+                        <entityPicker id="bookAcceptBranchField" enable="false"
+                                      caption="msg://bookAcceptBranchField.caption" dataContainer="booksDc"
+                                      property="bookAcceptBranch"/>
+                        <entityPicker id="bookAcceptUserField" enable="false"
+                                      caption="msg://bookAcceptUserField2.caption" dataContainer="booksDc"
+                                      property="bookAcceptUser"/>
+                        <dateField id="bookAcceptDateField" enable="false" caption="msg://bookAcceptDateField.caption"
+                                   dataContainer="booksDc" property="bookAcceptDate"/>
+                    </row>
+                </rows>
+            </gridLayout>
+        </scrollBox>
+        <hbox id="editActions" spacing="true">
+            <button id="acceptBookBtn" action="acceptBooks"/>
+            <button id="commitAndCloseBtn" action="windowCommitAndClose" visible="false"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

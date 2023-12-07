@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://coursesBrowse.caption"
+        focusComponent="calendar">
+    <data>
+        <collection id="coursesCalendarDc" class="com.company.ces_productive.entity.courses.Courses">
+            <fetchPlan extends="_base">
+                <property fetchPlan="_instance_name" name="courseTeacher"/>
+                <property fetchPlan="_instance_name" name="courseGroup"/>
+                <property fetchPlan="_instance_name" name="courseCabinet"/>
+            </fetchPlan>
+            <loader id="coursesCalendarDl">
+                <query>
+                    <![CDATA[select c from CES_Courses c
+                    where c.courseBranch in :currBranch
+                    and c.courseTeacher in :currUser
+                    and c.courseStartDate >= :courseStartDate
+                    and c.courseEndDate <= :courseEndDate]]>
+                    <condition>
+                        <c:jpql>
+                            <c:where>c.type in :type</c:where>
+                        </c:jpql>
+                    </condition>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <actions>
+        <action id="createCourseSchedule" icon="CALENDAR_PLUS_O" caption="msg:///createCourseSchedule.caption"/>
+        <action id="editCourseSchedule" caption="msg://editCourseSchedule.caption" icon="CALENDAR_O"/>
+        <action id="deleteCourseSchedule" caption="msg://deleteCourseSchedule.caption" icon="CALENDAR_MINUS_O"/>
+    </actions>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+        <presentations auto="true"/>
+    </facets>
+    <dialogMode height="600"
+                width="800"/>
+    <layout spacing="true" height="100%" width="100%">
+        <scrollBox orientation="vertical" spacing="true" align="TOP_CENTER" contentHeight="100%"
+                   contentWidth="100%" height="100%">
+            <groupBox orientation="vertical" spacing="true" width="100%" height="100%">
+                <hbox spacing="true" id="calendarFilter" expand="split" width="100%" height="100%">
+                    <split orientation="horizontal"
+                           id="split"
+                           pos="20"
+                           height="100%"
+                           dockable="true"
+                           dockMode="LEFT">
+                        <vbox id="filterBox" spacing="true" align="TOP_CENTER" margin="true" width="95%">
+                            <groupBox stylename="light"
+                                      width="100%"
+                                      caption="msg:///overview">
+                                <datePicker id="calendarNavigator"
+                                            datatype="localDate"
+                                            width="100%"/>
+                            </groupBox>
+                            <groupBox stylename="light"
+                                      width="100%"
+                                      caption="msg:///calendarMode">
+                                <radioButtonGroup
+                                        width="100%"
+                                        orientation="horizontal"
+                                        stylename="button-switcher"
+                                        optionsEnum="com.company.ces_productive.screen.courses.calendar.CalendarMode"
+                                        id="calendarMode"
+                                />
+                            </groupBox>
+                            <groupBox stylename="light"
+                                      width="100%"
+                                      caption="msg:///type">
+                                <checkBoxGroup id="typeMultiFilter"
+                                               stylename="visit-type"
+                                               orientation="vertical"/>
+                            </groupBox>
+                            <groupBox orientation="vertical" spacing="true" caption="msg://groupBox1.caption">
+                                <button id="createCourseSchedule" action="createCourseSchedule"
+                                        caption="msg://createCourseSchedule.caption"/>
+                                <button id="editCourseSchedule" action="editCourseSchedule"/>
+                                <button id="deleteCourseSchedule" action="deleteCourseSchedule"/>
+                            </groupBox>
+                        </vbox>
+                        <vbox id="calendarBox"
+                              spacing="true"
+                              margin="true"
+                              width="100%"
+                              expand="calendar"
+                              height="100%">
+                            <hbox expand="navigator" spacing="true" margin="true">
+                                <buttonsPanel id="navigator" align="MIDDLE_RIGHT" margin="false" spacing="false">
+                                    <button id="navigatorCurrent"
+                                            stylename="borderless-colored"
+                                            icon="HOME"/>
+                                    <button id="navigatorPrevious"
+                                            stylename="borderless-colored"
+                                            icon="CARET_LEFT"/>
+                                    <button id="navigatorNext"
+                                            stylename="borderless-colored"
+                                            icon="CARET_RIGHT"/>
+                                </buttonsPanel>
+                                <label id="calendarTitle"
+                                       stylename="h3"
+                                       align="MIDDLE_CENTER"
+                                       icon="font-icon:CALENDAR"
+                                       width="200px"/>
+                            </hbox>
+                            <calendar id="calendar"
+                                      dataContainer="coursesCalendarDc"
+                                      captionProperty="courseName"
+                                      startDateProperty="courseStartDate"
+                                      endDateProperty="courseEndDate"
+                                      firstVisibleDayOfWeek="2"
+                                      firstVisibleHourOfDay="5"
+                                      lastVisibleHourOfDay="20"
+                                      stylenameProperty="typeStyle"
+                                      navigationButtonsVisible="false"
+                                      width="100%"/>
+                        </vbox>
+                    </split>
+                </hbox>
+            </groupBox>
+        </scrollBox>
+    </layout>
+</window>

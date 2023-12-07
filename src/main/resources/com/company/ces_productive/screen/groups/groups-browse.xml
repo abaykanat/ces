@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://groupsBrowse.caption">
+    <data readOnly="true">
+        <collection id="groupsesDc" class="com.company.ces_productive.entity.Groups">
+            <collection id="groupStudentsDc" property="groupStudents"/>
+            <fetchPlan extends="_base">
+                <property fetchPlan="_base" name="groupStudents"/>
+                <property fetchPlan="_base" name="groupCourse"/>
+                <property fetchPlan="_base" name="groupDirection"/>
+                <property fetchPlan="_base" name="groupTeacher"/>
+                <property fetchPlan="_base" name="groupBranch"/>
+            </fetchPlan>
+            <loader id="groupsesDl">
+                <query>
+                    <![CDATA[select g from CES_Groups g where g.groupBranch = :currUserBranch
+                    and g.groupStatus = :status]]>
+                </query>
+            </loader>
+            <collection id="groupCourseDc" property="groupCourse"/>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="lookupSelectAction"
+                caption="msg:///actions.Select"
+                icon="LOOKUP_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="lookupCancelAction"
+                caption="msg:///actions.Cancel"
+                icon="LOOKUP_CANCEL"/>
+    </actions>
+    <dialogMode height="600"
+                width="800"/>
+    <layout spacing="true">
+        <vbox spacing="true">
+            <groupBox orientation="vertical" spacing="true" caption="msg://groupBox.caption">
+                <groupTable id="groupsesTable"
+                                dataContainer="groupsesDc" width="100%">
+                    <actions>
+                        <action id="create" type="create"/>
+                        <action id="edit" type="edit"/>
+                        <action id="close" caption="msg://close.caption" icon="CLOSE"/>
+                        <action id="refresh" type="refresh"/>
+                    </actions>
+                    <columns>
+                        <group>
+                            <column id="groupDirection" caption="msg://groupDirection.caption"/>
+                        </group>
+                        <column id="groupName" caption="msg://groupName.caption"/>
+                        <column id="groupStatus" caption="msg://groupStatus.caption"/>
+                        <column id="groupTeacher" caption="msg://groupTeacher.caption"/>
+                        <column id="groupCost" caption="msg://groupCost.caption"/>
+                        <column id="groupBranch" caption="msg://groupBranch.caption"/>
+                        <column id="createdBy" caption="msg://createdBy.caption"/>
+                        <column id="createdDate" caption="msg://createdDate.caption"/>
+                    </columns>
+                    <simplePagination itemsPerPageVisible="true"/>
+                    <buttonsPanel id="buttonsPanel"
+                                  alwaysVisible="true">
+                        <button id="createBtn" action="groupsesTable.create"/>
+                        <button id="editBtn" action="groupsesTable.edit"/>
+                        <button id="closeBtn" action="groupsesTable.close" enable="false"/>
+                        <button id="refreshBtn" action="groupsesTable.refresh"/>
+                    </buttonsPanel>
+                </groupTable>
+            </groupBox>
+            <groupBox orientation="horizontal" spacing="true">
+                <groupTable id="studentsesTable" height="100%" width="100%" dataContainer="groupStudentsDc">
+                    <actions>
+                        <action id="refresh" type="refresh"/>
+                        <action id="calcCourseAmount" caption="msg://studentsesTableCalcCourseAmountBtn.caption"
+                                icon="CALCULATOR"/>
+                    </actions>
+                    <buttonsPanel alwaysVisible="true">
+                        <button id="studentsesTableRefreshBtn" action="studentsesTable.refresh"/>
+                        <button id="studentsesTableCalcCourseAmountBtn" action="studentsesTable.calcCourseAmount"
+                                enable="false"/>
+                    </buttonsPanel>
+                    <columns>
+                        <group>
+                            <column id="studPeriodDesc" caption="msg://studPeriodDesc.caption"/>
+                        </group>
+                        <column id="studFirstName" caption="msg://studFirstName.caption"/>
+                        <column id="studLastName" caption="msg://studLastName.caption"/>
+                        <column id="studStatus" caption="msg://studStatus.caption"/>
+                        <column id="studDateOfBirth" caption="msg://studDateOfBirth.caption"/>
+                        <column id="studSex" caption="msg:///studSex.caption"/>
+                        <column id="studEngLevel" caption="msg://studEngLevel.caption"/>
+                        <column id="studBeginDate" caption="msg://studBeginDate.caption"/>
+                        <column id="studActualAmount" caption="msg://studActualAmount.caption"/>
+                    </columns>
+                </groupTable>
+            </groupBox>
+            <groupBox orientation="vertical" spacing="true" caption="msg://groupBox1.caption">
+                <groupTable id="coursesesTable" height="AUTO" width="100%" dataContainer="groupCourseDc">
+                    <actions>
+                        <action id="refresh" type="refresh"/>
+                        <action id="view" type="view"/>
+                    </actions>
+                    <buttonsPanel>
+                        <button id="coursesesTableViewBtn" action="coursesesTable.view"/>
+                    </buttonsPanel>
+                    <columns>
+                        <group>
+                            <column id="courseCabinet" caption="msg://courseCabinet.caption"/>
+                            <column id="courseStatus" caption="msg://courseStatus.caption"/>
+                        </group>
+                        <column id="courseName" caption="msg://courseName.caption"/>
+                        <column id="courseStartDate" caption="msg://courseStartDate.caption"/>
+                        <column id="courseEndDate" caption="msg://courseEndDate.caption"/>
+                        <column id="courseTeacher" caption="msg://courseTeacher.caption"/>
+                        <column id="courseManager" caption="msg://courseManager.caption"/>
+                        <column id="courseCost" caption="msg://courseCost.caption" visible="false"/>
+                        <column id="courseGroup" caption="msg://courseGroup.caption"/>
+                    </columns>
+                </groupTable>
+            </groupBox>
+        </vbox>
+    </layout>
+</window>

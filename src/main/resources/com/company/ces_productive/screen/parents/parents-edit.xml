@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://parentsEdit.caption"
+        focusComponent="scrollBox">
+    <data>
+        <collection id="branchesesDc" class="com.company.ces_productive.entity.Branches">
+            <fetchPlan extends="_base"/>
+            <loader id="branchesesDl">
+                <query>
+                    <![CDATA[select e from CES_Branches e]]>
+                </query>
+            </loader>
+        </collection>
+        <instance id="parentsDc"
+                  class="com.company.ces_productive.entity.Parents">
+            <fetchPlan extends="_base">
+                <property name="parentBranch" fetchPlan="_base"/>
+                <property name="parentSecBranch" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader/>
+        </instance>
+        <collection id="studentsDc" class="com.company.ces_productive.entity.Students">
+            <fetchPlan extends="_base">
+                <property name="studBranch" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="studentsDl">
+                <query>
+                    <![CDATA[select s from CES_Students s where s.studParent = :currParents]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="commitStudAdd"
+                caption="msg://commitStudAdd.caption"
+                icon="EDITOR_OK"/>
+        <action id="windowCommitAndClose" caption="msg:///actions.Ok"
+                icon="EDITOR_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="windowClose"
+                caption="msg:///actions.Close"
+                icon="EDITOR_CANCEL"/>
+    </actions>
+    <dialogMode height="AUTO"
+                width="AUTO" forceDialog="true"/>
+    <layout spacing="true" expand="scrollBox">
+        <scrollBox id="scrollBox" spacing="true" width="100%" scrollBars="vertical">
+            <gridLayout spacing="true" width="AUTO" height="AUTO">
+                <columns count="2"/>
+                <rows>
+                    <row>
+                        <textField id="parentIINField" property="parentIIN" caption="msg://parentIINField.caption"
+                                   maxLength="12" dataContainer="parentsDc"/>
+                        <maskedField id="parentMobileNumberField" property="parentMobileNumber"
+                                     caption="msg://parentMobileNumberField.caption"
+                                     mask="+# (###) ###-##-##" valueMode="masked" dataContainer="parentsDc"/>
+                    </row>
+                    <row>
+                        <textField id="parentLastNameField" property="parentLastName"
+                                   caption="msg://parentLastNameField.caption" dataContainer="parentsDc"/>
+                        <textField id="parentFirstNameField" property="parentFirstName"
+                                   caption="msg://parentFirstNameField.caption" dataContainer="parentsDc"/>
+                    </row>
+                    <row>
+                        <textField id="parentMiddleNameField" property="parentMiddleName"
+                                   caption="msg://parentMiddleNameField.caption" dataContainer="parentsDc"/>
+                        <textField id="parentEmailField" property="parentEmail"
+                                   caption="msg://parentEmailField.caption" dataContainer="parentsDc"/>
+                    </row>
+                    <row>
+                        <textField id="parentBranchField" property="parentBranch" dataContainer="parentsDc"
+                                   caption="msg://parentBranchField.caption"/>
+                        <entityComboBox dataContainer="parentsDc" property="parentSecBranch" id="parentSecBranch"
+                                        caption="msg://parentSecBranch.caption" optionsContainer="branchesesDc"
+                                        contextHelpTextHtmlEnabled="true"
+                                        contextHelpText="msg://parentSecBranch.contextHelpText"/>
+                    </row>
+                    <row>
+                        <textArea id="parentAddressField" property="parentAddress"
+                                  caption="msg://parentAddressField.caption" dataContainer="parentsDc"/>
+                    </row>
+                </rows>
+            </gridLayout>
+            <groupTable id="studentsesTable" height="AUTO" width="100%" dataContainer="studentsDc">
+                <actions>
+                    <action id="create" type="create"/>
+                    <action id="refresh" type="refresh"/>
+                    <action id="add" type="add"/>
+                </actions>
+                <buttonsPanel alwaysVisible="true">
+                    <button id="studentsesTableCreateBtn" action="studentsesTable.create"/>
+                    <button id="studentsesTableAddBtn" action="studentsesTable.add"/>
+                    <button id="studentsesTableRefreshBtn" action="studentsesTable.refresh" visible="false"/>
+                </buttonsPanel>
+                <columns>
+                    <column id="studID" caption="msg://studID.caption"/>
+                    <column id="studStatus" caption="msg://studStatus.caption"/>
+                    <column id="studFirstName" caption="msg://studFirstName.caption"/>
+                    <column id="studLastName" caption="msg://studLastName.caption"/>
+                    <column id="studActualAmount" caption="msg://studActualAmount.caption"/>
+                    <column id="studDiscount" caption="msg://studDiscount.caption"/>
+                    <column id="studBeginDate" caption="msg://studBeginDate.caption"/>
+                    <column id="studBranch" caption="msg://studBranch.caption"/>
+                </columns>
+            </groupTable>
+        </scrollBox>
+        <hbox id="editActions" spacing="true">
+            <button action="commitStudAdd" id="commitStudAddBtn"/>
+            <button id="commitAndCloseBtn" action="windowCommitAndClose" visible="false"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

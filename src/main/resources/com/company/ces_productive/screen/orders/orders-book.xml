@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://ordersBook.caption"
+        focusComponent="form">
+    <data>
+        <instance id="ordersDc" class="com.company.ces_productive.entity.Orders">
+            <fetchPlan extends="_base">
+                <property name="orderStudent" fetchPlan="_base"/>
+                <property name="orderBook" fetchPlan="_base"/>
+                <property name="orderBranch" fetchPlan="_base"/>
+                <property name="orderGroup" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="ordersDl"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="windowCommitAndClose" caption="msg:///actions.Ok"
+                icon="EDITOR_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="windowClose"
+                caption="msg:///actions.Close"
+                icon="EDITOR_CANCEL"/>
+        <action id="bookSell"
+                icon="EDITOR_OK"
+                caption="msg:///actions.Ok"
+                shortcut="${COMMIT_SHORTCUT}"/>
+    </actions>
+    <dialogMode height="AUTO"
+                width="AUTO"
+                modal="true"
+                forceDialog="true"/>
+    <layout spacing="true" expand="scrollBox">
+        <scrollBox id="scrollBox" spacing="true">
+            <form id="form" dataContainer="ordersDc">
+                <column width="350px">
+                    <entityPicker id="orderBookField" caption="msg://orderBookField.caption" property="orderBook"
+                    >
+                    <actions>
+                        <action id="entityLookup" type="entity_lookup"/>
+                        <action id="entityClear" type="entity_clear"/>
+                    </actions>
+                    </entityPicker>
+                    <textField id="orderAmountField" enable="false" property="orderAmount"
+                               caption="msg://orderAmountField1.caption"/>
+                    <comboBox id="payMode" optionsEnum="com.company.ces_productive.entity.PaymentMode"
+                              caption="msg://payMode.caption"/>
+                    <entityPicker id="orderStudentField" enable="false" caption="msg://orderStudentField.caption"
+                                  property="orderStudent">
+                        <actions>
+                            <action id="entityLookup" type="entity_lookup"/>
+                            <action id="entityClear" type="entity_clear"/>
+                        </actions>
+                    </entityPicker>
+                    <comboBox id="orderStatusField" enable="false" property="orderStatus"
+                              caption="msg://orderStatusField.caption"/>
+                    <comboBox id="orderPurposeField" enable="false" property="orderPurpose"
+                              caption="msg://orderPurposeField.caption"/>
+                    <entityPicker id="orderBranchField" enable="false" caption="msg://orderBranchField.caption"
+                                  property="orderBranch">
+                        <actions>
+                            <action id="entityLookup" type="entity_lookup"/>
+                            <action id="entityClear" type="entity_clear"/>
+                        </actions>
+                    </entityPicker>
+                    <textField id="orderNumberField" enable="false" property="orderNumber"
+                               caption="msg://orderNumberField1.caption"/>
+                    <dateField id="orderDateTimeField" enable="false" property="orderDateTime"
+                               caption="msg://orderDateTimeField1.caption"/>
+                </column>
+            </form>
+        </scrollBox>
+        <hbox id="editActions" spacing="true">
+            <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
+            <button id="bookSellBtn" action="bookSell" visible="false"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

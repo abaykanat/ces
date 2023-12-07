@@ -1,0 +1,27 @@
+@import "CESProdTheme-defaults";
+@import "addons";
+@import "CESProdTheme";
+
+.CESProdTheme {
+  @include addons;
+  @include CESProdTheme;
+}
+
+.Visits-visitStatus {
+    font-weight: bold;
+}
+
+.attended {
+    background-color: green;
+    color: green;
+}
+
+.absent {
+    background-color: red;
+    color: red;
+}
+
+.not_defined {
+    background-color: yellow;
+    color: yellow;
+}

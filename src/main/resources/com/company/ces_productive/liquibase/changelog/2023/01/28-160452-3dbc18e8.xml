@@ -1,0 +1,673 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.11.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="CES">
+        <createTable tableName="CES_BOOKS">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CES_BOOKS"/>
+            </column>
+            <column name="BOOK_NUMBER" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BOOK_TYPE_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BOOK_STATUS" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BOOK_BRANCH_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BOOK_SOLD_USER_ID" type="UUID"/>
+            <column name="BOOK_STUDENT_ID" type="UUID"/>
+            <column name="BOOK_PAYMENTS_ID" type="UUID"/>
+            <column name="BOOK_ORDER_ID" type="UUID"/>
+            <column name="BOOK_ACCEPT_USER_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+            <column name="DELETED_BY" type="VARCHAR(255)"/>
+            <column name="DELETED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="CES">
+        <createTable tableName="CES_BOOK_TYPE">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CES_BOOK_TYPE"/>
+            </column>
+            <column name="BOOK_TYPE_NAME" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BOOK_TYPE_DESC" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BOOK_TYPE_COST" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BOOK_TYPE_DIRECT_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="3" author="CES">
+        <createTable tableName="CES_BRANCHES">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CES_BRANCHES"/>
+            </column>
+            <column name="BRANCH_NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BRANCH_CODE" type="VARCHAR(5)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BRANCH_CITY" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BRANCH_STREET" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BRANCH_TEL_NUMBER" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BRANCH_BEGIN_DATE" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BRANCH_STATUS" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="4" author="CES">
+        <createTable tableName="CES_CABINETS">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CES_CABINETS"/>
+            </column>
+            <column name="CABINET_NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CABINET_AREA" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CABINET_BRANCH_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="5" author="CES">
+        <createTable tableName="CES_COURSES">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CES_COURSES"/>
+            </column>
+            <column name="COURSE_NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COURSE_GROUP_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COURSE_COST" type="DECIMAL"/>
+            <column name="COURSE_COUNT" type="DECIMAL(19, 2)"/>
+            <column name="COURSE_START_DATE" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COURSE_END_DATE" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COURSE_START_TIME" type="TIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COURSE_END_TIME" type="TIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COURSE_CABINET_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COURSE_TEACHER_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="6" author="CES">
+        <createTable tableName="CES_DIRECTION">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CES_DIRECTION"/>
+            </column>
+            <column name="DIRECTION_NAME" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DIRECTION_DESC" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DIRECTION_MIN_COST" type="INT"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="7" author="CES">
+        <createTable tableName="CES_GROUPS">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CES_GROUPS"/>
+            </column>
+            <column name="GROUP_NAME" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="GROUP_STATUS" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="GROUP_COST" type="DECIMAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="GROUP_TYPE_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="GROUP_TEACHER_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="GROUP_BRANCH_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="8" author="CES">
+        <createTable tableName="CES_GROUPS_STUDENTS_LINK">
+            <column name="GROUPS_ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CES_GROUPS_STUDENTS_LINK"/>
+            </column>
+            <column name="STUDENTS_ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CES_GROUPS_STUDENTS_LINK"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="9" author="CES">
+        <createTable tableName="CES_ORDERS">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CES_ORDERS"/>
+            </column>
+            <column name="ORDER_NUMBER" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ORDER_DATE_TIME" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ORDER_AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ORDER_PERIOD_END" type="DATE"/>
+            <column name="ORDER_STUDENT_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ORDER_BRANCH_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ORDER_STATUS" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ORDER_PURPOSE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+            <column name="DELETED_BY" type="VARCHAR(255)"/>
+            <column name="DELETED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="10" author="CES">
+        <createTable tableName="CES_PARENTS">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CES_PARENTS"/>
+            </column>
+            <column name="PARENT_FIRST_NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PARENT_LAST_NAME" type="VARCHAR(255)"/>
+            <column name="PARENT_MIDDLE_NAME" type="VARCHAR(255)"/>
+            <column name="PARENT_MOBILE_NUMBER" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PARENT_EMAIL" type="VARCHAR(255)"/>
+            <column name="PARENT_ADDRESS" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="11" author="CES">
+        <createTable tableName="CES_PAYMENTS">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CES_PAYMENTS"/>
+            </column>
+            <column name="PAY_NUMBER" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PAY_DATE_TIME" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PAY_AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PAY_PURPOSE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PAY_MODE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PAY_STUDENT_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PAY_ORDER_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PAY_BRANCH_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PAY_USER_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+            <column name="DELETED_BY" type="VARCHAR(255)"/>
+            <column name="DELETED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="12" author="CES">
+        <createTable tableName="CES_STUDENTS">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CES_STUDENTS"/>
+            </column>
+            <column name="STUD_IIN" type="VARCHAR(12)"/>
+            <column name="STUD_FIRST_NAME" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STUD_LAST_NAME" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STUD_MIDDLE_NAME" type="VARCHAR(100)"/>
+            <column name="STUD_STATUS" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STUD_MOBLIE_NUMBER" type="VARCHAR(25)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STUD_EMAIL" type="VARCHAR(255)"/>
+            <column name="STUD_DATE_OF_BIRTH" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STUD_SEX" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STUD_PARENT_ID" type="UUID"/>
+            <column name="STUD_ENG_LEVEL" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STUD_BEGIN_DATE" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STUD_ACTUAL_AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="STUD_BRANCH_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STUD_MANAGER_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="13" author="CES">
+        <createTable tableName="CES_VISITS">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CES_VISITS"/>
+            </column>
+            <column name="VISIT_STATUS" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VISIT_START_DATE_TIME" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VISIT_END_DATE_TIME" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VISIT_AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VISIT_STUDENT_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VISIT_COURSE_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VISIT_USER_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="14" author="CES">
+        <addColumn tableName="CES_USER">
+            <column name="BRANCH_ID" type="UUID"/>
+            <column name="DIRECTION_ID" type="UUID"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="15" author="CES">
+        <addColumn tableName="CES_USER">
+            <column name="JOINING_DATE" type="DATE"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="16" author="CES">
+        <createIndex indexName="IDX_CESBOOKTYPE_BOOKTYPEDIRECT" tableName="CES_BOOK_TYPE">
+            <column name="BOOK_TYPE_DIRECT_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="BOOK_TYPE_DIRECT_ID" baseTableName="CES_BOOK_TYPE"
+                                 constraintName="FK_CESBOOKTYPE_ON_BOOKTYPEDIRE" referencedColumnNames="ID"
+                                 referencedTableName="CES_DIRECTION"/>
+    </changeSet>
+    <changeSet id="17" author="CES">
+        <createIndex indexName="IDX_CESCABINETS_CABINETBRANCH" tableName="CES_CABINETS">
+            <column name="CABINET_BRANCH_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="CABINET_BRANCH_ID" baseTableName="CES_CABINETS"
+                                 constraintName="FK_CESCABINETS_ON_CABINETBRANCH" referencedColumnNames="ID"
+                                 referencedTableName="CES_BRANCHES"/>
+    </changeSet>
+    <changeSet id="18" author="CES">
+        <createIndex indexName="IDX_CES_BOOKS_BOOK_ACCEPT_USER" tableName="CES_BOOKS">
+            <column name="BOOK_ACCEPT_USER_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="BOOK_ACCEPT_USER_ID" baseTableName="CES_BOOKS"
+                                 constraintName="FK_CESBOOKS_ON_BOOKACCEPTUSER" referencedColumnNames="ID"
+                                 referencedTableName="CES_USER"/>
+    </changeSet>
+    <changeSet id="19" author="CES">
+        <createIndex indexName="IDX_CES_BOOKS_BOOK_BRANCH" tableName="CES_BOOKS">
+            <column name="BOOK_BRANCH_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="BOOK_BRANCH_ID" baseTableName="CES_BOOKS"
+                                 constraintName="FK_CES_BOOKS_ON_BOOK_BRANCH" referencedColumnNames="ID"
+                                 referencedTableName="CES_BRANCHES"/>
+    </changeSet>
+    <changeSet id="20" author="CES">
+        <createIndex indexName="IDX_CES_BOOKS_BOOK_ORDER" tableName="CES_BOOKS">
+            <column name="BOOK_ORDER_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="BOOK_ORDER_ID" baseTableName="CES_BOOKS"
+                                 constraintName="FK_CES_BOOKS_ON_BOOK_ORDER" referencedColumnNames="ID"
+                                 referencedTableName="CES_ORDERS"/>
+    </changeSet>
+    <changeSet id="21" author="CES">
+        <createIndex indexName="IDX_CES_BOOKS_BOOK_PAYMENTS" tableName="CES_BOOKS">
+            <column name="BOOK_PAYMENTS_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="BOOK_PAYMENTS_ID" baseTableName="CES_BOOKS"
+                                 constraintName="FK_CES_BOOKS_ON_BOOK_PAYMENTS" referencedColumnNames="ID"
+                                 referencedTableName="CES_PAYMENTS"/>
+    </changeSet>
+    <changeSet id="22" author="CES">
+        <createIndex indexName="IDX_CES_BOOKS_BOOK_SOLD_USER" tableName="CES_BOOKS">
+            <column name="BOOK_SOLD_USER_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="BOOK_SOLD_USER_ID" baseTableName="CES_BOOKS"
+                                 constraintName="FK_CES_BOOKS_ON_BOOK_SOLD_USER" referencedColumnNames="ID"
+                                 referencedTableName="CES_USER"/>
+    </changeSet>
+    <changeSet id="23" author="CES">
+        <createIndex indexName="IDX_CES_BOOKS_BOOK_STUDENT" tableName="CES_BOOKS">
+            <column name="BOOK_STUDENT_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="BOOK_STUDENT_ID" baseTableName="CES_BOOKS"
+                                 constraintName="FK_CES_BOOKS_ON_BOOK_STUDENT" referencedColumnNames="ID"
+                                 referencedTableName="CES_STUDENTS"/>
+    </changeSet>
+    <changeSet id="24" author="CES">
+        <createIndex indexName="IDX_CES_BOOKS_BOOK_TYPE" tableName="CES_BOOKS">
+            <column name="BOOK_TYPE_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="BOOK_TYPE_ID" baseTableName="CES_BOOKS"
+                                 constraintName="FK_CES_BOOKS_ON_BOOK_TYPE" referencedColumnNames="ID"
+                                 referencedTableName="CES_BOOK_TYPE"/>
+    </changeSet>
+    <changeSet id="25" author="CES">
+        <createIndex indexName="IDX_CES_COURSES_COURSE_CABINET" tableName="CES_COURSES">
+            <column name="COURSE_CABINET_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="COURSE_CABINET_ID" baseTableName="CES_COURSES"
+                                 constraintName="FK_CESCOURSES_ON_COURSECABINET" referencedColumnNames="ID"
+                                 referencedTableName="CES_CABINETS"/>
+    </changeSet>
+    <changeSet id="26" author="CES">
+        <createIndex indexName="IDX_CES_COURSES_COURSE_GROUP" tableName="CES_COURSES">
+            <column name="COURSE_GROUP_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="COURSE_GROUP_ID" baseTableName="CES_COURSES"
+                                 constraintName="FK_CES_COURSES_ON_COURSE_GROUP" referencedColumnNames="ID"
+                                 referencedTableName="CES_GROUPS"/>
+    </changeSet>
+    <changeSet id="27" author="CES">
+        <createIndex indexName="IDX_CES_COURSES_COURSE_TEACHER" tableName="CES_COURSES">
+            <column name="COURSE_TEACHER_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="COURSE_TEACHER_ID" baseTableName="CES_COURSES"
+                                 constraintName="FK_CESCOURSES_ON_COURSETEACHER" referencedColumnNames="ID"
+                                 referencedTableName="CES_USER"/>
+    </changeSet>
+    <changeSet id="28" author="CES">
+        <createIndex indexName="IDX_CES_GROUPS_GROUP_BRANCH" tableName="CES_GROUPS">
+            <column name="GROUP_BRANCH_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="GROUP_BRANCH_ID" baseTableName="CES_GROUPS"
+                                 constraintName="FK_CES_GROUPS_ON_GROUP_BRANCH" referencedColumnNames="ID"
+                                 referencedTableName="CES_BRANCHES"/>
+    </changeSet>
+    <changeSet id="29" author="CES">
+        <createIndex indexName="IDX_CES_GROUPS_GROUP_TEACHER" tableName="CES_GROUPS">
+            <column name="GROUP_TEACHER_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="GROUP_TEACHER_ID" baseTableName="CES_GROUPS"
+                                 constraintName="FK_CES_GROUPS_ON_GROUP_TEACHER" referencedColumnNames="ID"
+                                 referencedTableName="CES_USER"/>
+    </changeSet>
+    <changeSet id="30" author="CES">
+        <createIndex indexName="IDX_CES_ORDERS_ORDER_BRANCH" tableName="CES_ORDERS">
+            <column name="ORDER_BRANCH_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="ORDER_BRANCH_ID" baseTableName="CES_ORDERS"
+                                 constraintName="FK_CES_ORDERS_ON_ORDER_BRANCH" referencedColumnNames="ID"
+                                 referencedTableName="CES_BRANCHES"/>
+    </changeSet>
+    <changeSet id="31" author="CES">
+        <createIndex indexName="IDX_CES_ORDERS_ORDER_STUDENT" tableName="CES_ORDERS">
+            <column name="ORDER_STUDENT_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="ORDER_STUDENT_ID" baseTableName="CES_ORDERS"
+                                 constraintName="FK_CES_ORDERS_ON_ORDER_STUDENT" referencedColumnNames="ID"
+                                 referencedTableName="CES_STUDENTS"/>
+    </changeSet>
+    <changeSet id="32" author="CES">
+        <createIndex indexName="IDX_CES_PAYMENTS_PAY_BRANCH" tableName="CES_PAYMENTS">
+            <column name="PAY_BRANCH_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="PAY_BRANCH_ID" baseTableName="CES_PAYMENTS"
+                                 constraintName="FK_CES_PAYMENTS_ON_PAY_BRANCH" referencedColumnNames="ID"
+                                 referencedTableName="CES_BRANCHES"/>
+    </changeSet>
+    <changeSet id="33" author="CES">
+        <createIndex indexName="IDX_CES_PAYMENTS_PAY_ORDER" tableName="CES_PAYMENTS">
+            <column name="PAY_ORDER_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="PAY_ORDER_ID" baseTableName="CES_PAYMENTS"
+                                 constraintName="FK_CES_PAYMENTS_ON_PAY_ORDER" referencedColumnNames="ID"
+                                 referencedTableName="CES_ORDERS"/>
+    </changeSet>
+    <changeSet id="34" author="CES">
+        <createIndex indexName="IDX_CES_PAYMENTS_PAY_STUDENT" tableName="CES_PAYMENTS">
+            <column name="PAY_STUDENT_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="PAY_STUDENT_ID" baseTableName="CES_PAYMENTS"
+                                 constraintName="FK_CES_PAYMENTS_ON_PAY_STUDENT" referencedColumnNames="ID"
+                                 referencedTableName="CES_STUDENTS"/>
+    </changeSet>
+    <changeSet id="35" author="CES">
+        <createIndex indexName="IDX_CES_PAYMENTS_PAY_USER" tableName="CES_PAYMENTS">
+            <column name="PAY_USER_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="PAY_USER_ID" baseTableName="CES_PAYMENTS"
+                                 constraintName="FK_CES_PAYMENTS_ON_PAY_USER" referencedColumnNames="ID"
+                                 referencedTableName="CES_USER"/>
+    </changeSet>
+    <changeSet id="36" author="CES">
+        <createIndex indexName="IDX_CES_STUDENTS_STUD_BRANCH" tableName="CES_STUDENTS">
+            <column name="STUD_BRANCH_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="STUD_BRANCH_ID" baseTableName="CES_STUDENTS"
+                                 constraintName="FK_CES_STUDENTS_ON_STUD_BRANCH" referencedColumnNames="ID"
+                                 referencedTableName="CES_BRANCHES"/>
+    </changeSet>
+    <changeSet id="37" author="CES">
+        <createIndex indexName="IDX_CES_STUDENTS_STUD_MANAGER" tableName="CES_STUDENTS">
+            <column name="STUD_MANAGER_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="STUD_MANAGER_ID" baseTableName="CES_STUDENTS"
+                                 constraintName="FK_CESSTUDENTS_ON_STUDMANAGER" referencedColumnNames="ID"
+                                 referencedTableName="CES_USER"/>
+    </changeSet>
+    <changeSet id="38" author="CES">
+        <createIndex indexName="IDX_CES_STUDENTS_STUD_PARENT" tableName="CES_STUDENTS">
+            <column name="STUD_PARENT_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="STUD_PARENT_ID" baseTableName="CES_STUDENTS"
+                                 constraintName="FK_CES_STUDENTS_ON_STUD_PARENT" referencedColumnNames="ID"
+                                 referencedTableName="CES_PARENTS"/>
+    </changeSet>
+    <changeSet id="39" author="CES">
+        <createIndex indexName="IDX_CES_USER_BRANCH" tableName="CES_USER">
+            <column name="BRANCH_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="BRANCH_ID" baseTableName="CES_USER"
+                                 constraintName="FK_CES_USER_ON_BRANCH" referencedColumnNames="ID"
+                                 referencedTableName="CES_BRANCHES"/>
+    </changeSet>
+    <changeSet id="40" author="CES">
+        <createIndex indexName="IDX_CES_USER_DIRECTION" tableName="CES_USER">
+            <column name="DIRECTION_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="DIRECTION_ID" baseTableName="CES_USER"
+                                 constraintName="FK_CES_USER_ON_DIRECTION" referencedColumnNames="ID"
+                                 referencedTableName="CES_DIRECTION"/>
+    </changeSet>
+    <changeSet id="41" author="CES">
+        <createIndex indexName="IDX_CES_VISITS_VISIT_COURSE" tableName="CES_VISITS">
+            <column name="VISIT_COURSE_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="VISIT_COURSE_ID" baseTableName="CES_VISITS"
+                                 constraintName="FK_CES_VISITS_ON_VISIT_COURSE" referencedColumnNames="ID"
+                                 referencedTableName="CES_COURSES"/>
+    </changeSet>
+    <changeSet id="42" author="CES">
+        <createIndex indexName="IDX_CES_VISITS_VISIT_STUDENT" tableName="CES_VISITS">
+            <column name="VISIT_STUDENT_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="VISIT_STUDENT_ID" baseTableName="CES_VISITS"
+                                 constraintName="FK_CES_VISITS_ON_VISIT_STUDENT" referencedColumnNames="ID"
+                                 referencedTableName="CES_STUDENTS"/>
+    </changeSet>
+    <changeSet id="43" author="CES">
+        <createIndex indexName="IDX_CES_VISITS_VISIT_USER" tableName="CES_VISITS">
+            <column name="VISIT_USER_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="VISIT_USER_ID" baseTableName="CES_VISITS"
+                                 constraintName="FK_CES_VISITS_ON_VISIT_USER" referencedColumnNames="ID"
+                                 referencedTableName="CES_USER"/>
+    </changeSet>
+    <changeSet id="44" author="CES">
+        <addForeignKeyConstraint baseColumnNames="GROUPS_ID" baseTableName="CES_GROUPS_STUDENTS_LINK"
+                                 constraintName="FK_CESGROSTU_ON_GROUPS" referencedColumnNames="ID"
+                                 referencedTableName="CES_GROUPS"/>
+    </changeSet>
+    <changeSet id="45" author="CES">
+        <addForeignKeyConstraint baseColumnNames="STUDENTS_ID" baseTableName="CES_GROUPS_STUDENTS_LINK"
+                                 constraintName="FK_CESGROSTU_ON_STUDENTS" referencedColumnNames="ID"
+                                 referencedTableName="CES_STUDENTS"/>
+    </changeSet>
+    <changeSet id="46" author="CES">
+        <addForeignKeyConstraint baseColumnNames="GROUP_TYPE_ID" baseTableName="CES_GROUPS"
+                                 constraintName="FK_CES_GROUPS_ON_GROUP_TYPE" referencedColumnNames="ID"
+                                 referencedTableName="CES_DIRECTION"/>
+    </changeSet>
+</databaseChangeLog>

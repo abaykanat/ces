@@ -1,0 +1,171 @@
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://application.caption">
+    <data>
+        <collection id="coursesCalendarDc" class="com.company.ces_productive.entity.courses.Courses">
+            <fetchPlan extends="_base">
+                <property name="courseGroup" fetchPlan="_base"/>
+                <property name="courseCabinet" fetchPlan="_base"/>
+                <property name="courseTeacher" fetchPlan="_instance_name"/>
+            </fetchPlan>
+            <loader id="coursesCalendarDl">
+                <query>
+                    <![CDATA[select c from CES_Courses c
+                    where c.courseBranch in :currBranch
+                    and c.courseTeacher in :currUser
+                    and c.courseStartDate >= :courseStartDate
+                    and c.courseEndDate <= :courseEndDate]]>
+                    <condition>
+                        <c:jpql>
+                            <c:where>c.type in :type</c:where>
+                        </c:jpql>
+                    </condition>
+                </query>
+            </loader>
+        </collection>
+        <collection id="managerTasksesDc" class="com.company.ces_productive.entity.ManagerTasks">
+            <fetchPlan extends="_base"/>
+            <loader id="managerTasksesDl">
+                <query>
+                    <![CDATA[select e from CES_ManagerTasks e
+                    where e.taskRole = :currRole  ]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="documentationsDc" class="com.company.ces_productive.entity.Documentation">
+            <fetchPlan extends="_base"/>
+            <loader id="documentationsDl">
+                <query>
+                    <![CDATA[select e from CES_Documentation e
+                    where e.docRole = :currRole ]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout>
+        <cssLayout id="horizontalWrap"
+                   stylename="jmix-drawer-layout">
+            <drawer id="drawer" expandOnHover="true">
+                <cssLayout id="appTitleBox"
+                           stylename="jmix-drawer-header"
+                           width="100%">
+                    <label id="appTitleLabel"
+                           stylename="app-title colored"
+                           value="msg:///appTitleLabel.value"/>
+                    <image id="logoImage"
+                           stylename="app-icon colored"
+                           scaleMode="FILL" height="70%" width="100%">
+                        <resource>
+                            <theme path="branding/CES_icon_ms.jpg"/>
+                            <url url="http://localhost:8080/#main"/>
+                        </resource>
+                    </image>
+                    <link id="mainLink" url="msg://mainLink.url"/>
+                </cssLayout>
+                <sideMenu id="sideMenu"
+                          width="100%"
+                          stylename="jmix-drawer-content jmix-sidemenu-open" showSingleExpandedMenu="true"/>
+                <timeZoneIndicator id="timeZoneIndicator"
+                                   align="MIDDLE_CENTER"/>
+                <cssLayout id="controlBox"
+                           stylename="jmix-drawer-footer"
+                           width="100%">
+                    <button id="collapseDrawerButton"
+                            icon="CHEVRON_LEFT"
+                            stylename="jmix-drawer-collapse-button"
+                            description="msg://sideMenuCollapse" />
+                    <userIndicator id="userIndicator"
+                                   align="MIDDLE_CENTER"/>
+                    <logoutButton id="logoutButton"
+                                  icon="SIGN_OUT"
+                                  description="msg://logoutBtnDescription"/>
+                </cssLayout>
+            </drawer>
+            <workArea id="workArea"
+                      stylename="jmix-workarea"
+                      width="AUTO" height="AUTO">
+                <initialLayout spacing="true" margin="true">
+                <split orientation="vertical" locked="true" pos="65">
+                    <groupBox orientation="horizontal" spacing="true" id="clndrBox" caption="msg://clndrBox.caption"
+                              width="100%" height="100%">
+                        <split orientation="horizontal" height="100%" width="100%" pos="18" locked="true">
+                            <vbox spacing="true" align="MIDDLE_LEFT">
+                                <radioButtonGroup
+                                        width="100%"
+                                        orientation="horizontal"
+                                        stylename="button-switcher"
+                                        optionsEnum="com.company.ces_productive.screen.courses.calendar.CalendarMode"
+                                        id="calendarMode"
+                                        visible="false"/>
+                                <datePicker id="calendarNavigator"
+                                            datatype="localDate"
+                                            width="100%"/>
+                                <checkBoxGroup id="typeMultiFilter"
+                                               stylename="visit-type"
+                                               orientation="vertical"/>
+                            </vbox>
+                            <vbox spacing="true" expand="calendar" width="100%" height="100%">
+                                <buttonsPanel id="navigator" margin="false" spacing="false" height="100%" width="100%">
+                                    <button id="navigatorCurrent"
+                                            stylename="borderless-colored"
+                                            icon="HOME"/>
+                                    <button id="navigatorPrevious"
+                                            stylename="borderless-colored"
+                                            icon="CARET_LEFT"/>
+                                    <button id="navigatorNext"
+                                            stylename="borderless-colored"
+                                            icon="CARET_RIGHT"/>
+                                    <label id="calendarTitle"
+                                           stylename="h3"
+                                           align="MIDDLE_CENTER"
+                                           icon="font-icon:CALENDAR"
+                                           width="200px"/>
+                                </buttonsPanel>
+                                <calendar id="calendar"
+                                          dataContainer="coursesCalendarDc"
+                                          captionProperty="courseName"
+                                          startDateProperty="courseStartDate"
+                                          endDateProperty="courseEndDate"
+                                          firstVisibleDayOfWeek="2"
+                                          firstVisibleHourOfDay="8"
+                                          lastVisibleHourOfDay="19"
+                                          stylenameProperty="typeStyle"
+                                          navigationButtonsVisible="false" width="100%" height="100%"/>
+                            </vbox>
+                        </split>
+                    </groupBox>
+                    <hbox spacing="true" width="100%" height="100%">
+                        <groupBox orientation="vertical" spacing="true">
+                            <split orientation="horizontal" pos="70" locked="true" width="100%" height="100%">
+                                <groupBox orientation="vertical" spacing="true" id="taskBox"
+                                          caption="msg://tblBox.caption" height="AUTO" width="100%">
+                                    <table id="managerTasksesTable" dataContainer="managerTasksesDc" width="AUTO"
+                                           height="AUTO">
+                                        <columns>
+                                            <column id="completed" caption="msg://completed.caption"/>
+                                            <column id="taskName" caption="msg://taskName.caption"/>
+                                            <column id="taskDescription" caption="msg://taskDescription.caption"
+                                                    maxTextLength="90"/>
+                                        </columns>
+                                    </table>
+                                </groupBox>
+                                <groupBox orientation="vertical" spacing="true" id="docBox"
+                                          caption="msg://btnBox.caption" height="AUTO" width="AUTO">
+                                    <table id="documentationsTable" height="100%" width="100%"
+                                           dataContainer="documentationsDc" columnHeaderVisible="false">
+                                        <columns>
+                                            <column id="docUserManual" link="true"
+                                                    linkScreenId="CES_Documentation.edit"
+                                                    caption="msg://docUserManual.caption"/>
+                                        </columns>
+                                    </table>
+                                </groupBox>
+                            </split>
+                        </groupBox>
+                    </hbox>
+                </split>
+                </initialLayout>
+            </workArea>
+        </cssLayout>
+    </layout>
+</window>

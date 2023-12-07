@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.11.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="CES">
+        <dropForeignKeyConstraint baseTableName="bpm_user_group_role" constraintName="fk_bpm_ugr_on_user_group"/>
+    </changeSet>
+    <changeSet id="2" author="CES">
+        <dropForeignKeyConstraint baseTableName="bpm_user_group_user" constraintName="fk_bpm_ugu_on_user_group"/>
+    </changeSet>
+    <changeSet id="3" author="CES">
+        <dropTable cascadeConstraints="true" tableName="bpm_content_storage"/>
+    </changeSet>
+    <changeSet id="4" author="CES">
+        <dropTable cascadeConstraints="true" tableName="bpm_user_group"/>
+    </changeSet>
+    <changeSet id="5" author="CES">
+        <dropTable cascadeConstraints="true" tableName="bpm_user_group_role"/>
+    </changeSet>
+    <changeSet id="6" author="CES">
+        <dropTable cascadeConstraints="true" tableName="bpm_user_group_user"/>
+    </changeSet>
+</databaseChangeLog>

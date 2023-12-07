@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://documentationEdit.caption"
+        focusComponent="form">
+    <data>
+        <instance id="documentationDc"
+                  class="com.company.ces_productive.entity.Documentation">
+            <fetchPlan extends="_base"/>
+            <loader/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="windowCommitAndClose" caption="msg:///actions.Ok"
+                icon="EDITOR_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="windowClose"
+                caption="msg:///actions.Close"
+                icon="EDITOR_CANCEL"/>
+    </actions>
+    <dialogMode height="AUTO"
+                modal="true"
+                forceDialog="true" width="AUTO"/>
+    <layout spacing="true" expand="editActions">
+        <form id="form" dataContainer="documentationDc" width="100%">
+            <column width="450px">
+                <fileStorageUpload id="docUserManualField" property="docUserManual"
+                                   caption="msg://docUserManualField.caption"/>
+            </column>
+        </form>
+        <hbox id="editActions" spacing="true" visible="false">
+            <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

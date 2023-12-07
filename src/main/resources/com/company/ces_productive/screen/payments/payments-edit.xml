@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://paymentsEdit.caption"
+        focusComponent="form">
+    <data>
+        <instance id="paymentsDc"
+                  class="com.company.ces_productive.entity.Payments">
+            <fetchPlan extends="_base">
+                <property fetchPlan="_base" name="payStudent"/>
+                <property fetchPlan="_base" name="payOrder"/>
+                <property fetchPlan="_base" name="payUser"/>
+                <property fetchPlan="_base" name="payBranch"/>
+            </fetchPlan>
+            <loader/>
+        </instance>
+        <collection id="ordersesDc" class="com.company.ces_productive.entity.Orders">
+            <fetchPlan extends="_base"/>
+            <loader id="ordersesDl">
+                <query>
+                    <![CDATA[select e from CES_Orders e
+                    where e.orderStudent = :currStudent
+                    and e.orderStatus <> :currStatus  ]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="windowCommitAndClose" caption="msg:///actions.Ok"
+                icon="EDITOR_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="windowClose"
+                caption="msg:///actions.Close"
+                icon="EDITOR_CANCEL"/>
+    </actions>
+    <dialogMode height="AUTO"
+                width="AUTO"
+                modal="true"
+                forceDialog="true"/>
+    <layout spacing="true" expand="scrollBox">
+        <scrollBox id="scrollBox" spacing="true">
+            <hbox spacing="true">
+                <textField id="payNumberField" property="payNumber" caption="msg://payNumberField.caption"
+                           enable="false" dataContainer="paymentsDc"/>
+                <dateField id="payDateTimeField" property="payDateTime" caption="msg://payDateTimeField.caption"
+                           enable="false" dataContainer="paymentsDc"/>
+            </hbox>
+            <form id="form" dataContainer="paymentsDc">
+                <column width="350px">
+                    <comboBox id="payPurposeField" property="payPurpose" caption="msg://payPurposeField.caption"
+                              enable="false"/>
+                    <comboBox id="payModeField" property="payMode" caption="msg://payModeField.caption"/>
+                    <entityComboBox caption="msg://payOrderField.caption" id="payOrderField"
+                                    optionsContainer="ordersesDc" dataContainer="paymentsDc" property="payOrder"/>
+                    <textField id="realAmountField" caption="msg://realPayAmountField.caption"
+                               maxLength="6" property="payAmount" dataContainer="paymentsDc"/>
+                    <entityPicker id="payStudentField" property="payStudent" caption="msg://payStudentField.caption"
+                                  enable="false">
+                    </entityPicker>
+                    <entityPicker id="payUserField" property="payUser" caption="msg://payUserField.caption"
+                    >
+                    </entityPicker>
+                    <entityPicker id="payBranchField" property="payBranch" caption="msg://payBranchField.caption"
+                    >
+                    </entityPicker>
+                </column>
+            </form>
+        </scrollBox>
+        <hbox id="editActions" spacing="true">
+            <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

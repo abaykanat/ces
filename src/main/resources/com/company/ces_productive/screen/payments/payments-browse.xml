@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://paymentsBrowse.caption"
+        focusComponent="paymentsesTable">
+    <data readOnly="true">
+        <collection id="paymentsesDc"
+                    class="com.company.ces_productive.entity.Payments">
+            <fetchPlan extends="_base">
+                <property name="payStudent" fetchPlan="_base"/>
+                <property name="payOrder" fetchPlan="_base"/>
+                <property name="payUser" fetchPlan="_base"/>
+                <property name="payBranch" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="paymentsesDl">
+                <query>
+                    <![CDATA[select e from CES_Payments e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="lookupSelectAction"
+                caption="msg:///actions.Select"
+                icon="LOOKUP_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="lookupCancelAction"
+                caption="msg:///actions.Cancel"
+                icon="LOOKUP_CANCEL"/>
+    </actions>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="paymentsesTable" spacing="true">
+        <filter id="filter" columnsCount="3" dataLoader="paymentsesDl">
+            <properties include=".*"/>
+            <configurations>
+                <configuration id="defaultFilter"
+                               operation="AND"
+                               name="msg://defaultFilter.name"
+                               default="true">
+                    <propertyFilter property="payStudent" operation="EQUAL" operationEditable="true"
+                                    caption="msg://textField1.caption"/>
+                    <propertyFilter property="payNumber" operation="CONTAINS" operationEditable="true"
+                                    caption="msg://searchName.caption"/>
+                    <propertyFilter property="payDateTime" operation="EQUAL" operationEditable="true"
+                                    caption="msg://propertyFilter.caption"/>
+                </configuration>
+            </configurations>
+        </filter>
+        <groupTable id="paymentsesTable"
+                    width="100%"
+                    dataContainer="paymentsesDc">
+            <actions>
+                <action id="create" type="create"/>
+                <action id="edit" type="edit"/>
+                <action id="remove" type="remove"/>
+                <action id="refresh" type="refresh"/>
+            </actions>
+            <columns>
+                <group>
+                    <column id="payBranch" caption="msg://payBranch.caption"/>
+                    <column id="payStudent" caption="msg://payStudent.caption"/>
+                </group>
+                <column id="payNumber" caption="msg://payNumber.caption"/>
+                <column id="payDateTime" caption="msg://payDateTime.caption"/>
+                <column id="payAmount" caption="msg://payAmount.caption"/>
+                <column id="payPurpose" caption="msg://payPurpose.caption"/>
+                <column id="payMode" caption="msg://payMode.caption"/>
+                <column id="payOrder" caption="msg://payOrder.caption"/>
+                <column id="payUser" caption="msg://payUser.caption"/>
+            </columns>
+            <simplePagination itemsPerPageVisible="true"/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="createBtn" action="paymentsesTable.create"/>
+                <button id="editBtn" action="paymentsesTable.edit"/>
+                <button id="removeBtn" action="paymentsesTable.remove"/>
+                <button id="paymentsesTableRefreshBtn" action="paymentsesTable.refresh"/>
+            </buttonsPanel>
+        </groupTable>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

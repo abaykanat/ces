@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://passTokenChangeScreen.caption">
+    <actions>
+        <action id="changePassAction"
+                caption="msg://changePassAction.caption"
+                icon="OK"/>
+        <action id="getUrlAction"/>
+    </actions>
+    <dialogMode width="600"
+                height="300"
+                forceDialog="true"/>
+    <layout spacing="true">
+        <vbox spacing="true" align="TOP_CENTER">
+            <button id="getUrlBtn" caption="msg://getUrlBtn.caption" align="TOP_CENTER" action="getUrlAction"/>
+            <textField id="newPassField" caption="msg://newPassField.caption" align="TOP_CENTER" visible="false"/>
+            <textField id="newPassReturnField" caption="msg://newPassReturnField.caption" align="TOP_CENTER" visible="false"/>
+            <button id="changePassBtn" action="changePassAction" align="TOP_CENTER" visible="false"/>
+            <label id="errorLabel" visible="false" align="TOP_CENTER"/>
+            <label id="successLabel" visible="false" align="TOP_CENTER"/>
+        </vbox>
+    </layout>
+</window>

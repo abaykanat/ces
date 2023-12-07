@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://groupsEdit.caption"
+        focusComponent="scrollBox">
+    <data>
+        <instance id="groupsDc"
+                  class="com.company.ces_productive.entity.Groups">
+            <fetchPlan extends="_base">
+                <property name="groupStudents" fetchPlan="_base"/>
+                <property name="groupCourse" fetchPlan="_base"/>
+                <property name="groupDirection" fetchPlan="_base"/>
+                <property name="groupTeacher" fetchPlan="_base"/>
+                <property name="groupBranch" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader/>
+            <collection id="groupStudentsDc" property="groupStudents"/>
+            <collection id="groupCourseDc" property="groupCourse"/>
+        </instance>
+        <collection id="usersDc" class="com.company.ces_productive.entity.User">
+            <fetchPlan extends="_base"/>
+            <loader id="usersDl">
+                <query>
+                    <![CDATA[select u from CES_User u]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="windowCommitAndClose" caption="msg:///actions.Ok"
+                icon="EDITOR_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="windowClose"
+                caption="msg:///actions.Close"
+                icon="EDITOR_CANCEL"/>
+        <action id="acceptGroup" caption="msg://acceptGroup.caption"/>
+    </actions>
+    <dialogMode height="AUTO"
+                width="AUTO"
+                modal="true"
+                forceDialog="true"/>
+    <layout spacing="true" expand="scrollBox">
+        <scrollBox id="scrollBox" spacing="true">
+            <gridLayout spacing="true" align="TOP_CENTER">
+                <columns count="3"/>
+                <rows>
+                    <row>
+                        <textField id="groupNameField" property="groupName" dataContainer="groupsDc"
+                                   caption="msg://groupNameField.caption"/>
+                        <entityPicker id="groupDirectionField" property="groupDirection" dataContainer="groupsDc"
+                                      caption="msg://groupDirectionField.caption">
+                            <actions>
+                                <action id="entityLookup" type="entity_lookup"/>
+                            </actions>
+                        </entityPicker>
+                        <suggestionField id="groupTeacherField"
+                                         dataContainer="groupsDc"
+                                         property="groupTeacher"
+                                         caption="msg://groupTeacherField1.caption"
+                                         inputPrompt="msg://groupTeacherField.inputPrompt"/>
+                    </row>
+                    <row>
+                        <textField id="groupCountField" width="70px" enable="false"
+                                   caption="msg://groupCountField.caption" dataContainer="groupsDc"
+                                   property="groupCount" visible="false"/>
+                        <textField id="groupCostField" property="groupCost" dataContainer="groupsDc"
+                                   caption="msg://groupCostField.caption" width="70px" enable="false"/>
+                        <entityPicker id="groupBranchField" property="groupBranch" dataContainer="groupsDc"
+                                      caption="msg://groupBranchField.caption" enable="false">
+                        </entityPicker>
+                    </row>
+                </rows>
+            </gridLayout>
+            <groupBox id="groupStudentsBox" caption="msg://com.company.ces_productive.entity/Groups.groupStudents">
+                <groupTable id="groupStudentsTable" dataContainer="groupStudentsDc" width="AUTO" height="AUTO"
+                       contextMenuEnabled="false" aggregatable="true" aggregationStyle="BOTTOM" multiselect="true">
+                    <actions>
+                        <action id="add" type="add"/>
+                        <action id="exclude" type="exclude"/>
+                        <action id="transferStudents" caption="msg://transferStudents1.caption"
+                                icon="font-icon:ARROW_CIRCLE_LEFT"/>
+                    </actions>
+                    <columns>
+                        <column id="studID" caption="msg://studID.caption">
+                            <aggregation type="COUNT" valueDescription="msg://aggregation.valueDescription"/>
+                        </column>
+                        <group>
+                            <column id="studPeriodDesc" caption="msg://studPeriodDesc.caption"/>
+                        </group>
+                        <column id="studStatus" caption="msg://studStatus.caption"/>
+                        <column id="studFirstName" caption="msg://studFirstName.caption"/>
+                        <column id="studLastName" caption="msg://studLastName.caption"/>
+                        <column id="studEngLevel" caption="msg://studEngLevel.caption"/>
+                        <column id="studParent" caption="msg://studParent.caption"/>
+                        <column id="studActualAmount" caption="msg://studActualAmount.caption"/>
+                    </columns>
+                    <buttonsPanel>
+                        <button action="groupStudentsTable.add"/>
+                        <button action="groupStudentsTable.exclude"/>
+                        <button id="groupStudentsTableTransferStudentsBtn" action="groupStudentsTable.transferStudents"
+                                enable="false"/>
+                    </buttonsPanel>
+                </groupTable>
+            </groupBox>
+        </scrollBox>
+        <hbox id="editActions" spacing="true">
+            <button id="acceptGroupBtn" action="acceptGroup" visible="false"/>
+            <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fragment xmlns="http://jmix.io/schema/ui/fragment">
+    <data>
+        <instance id="coursesDc" class="com.company.ces_productive.entity.courses.Courses">
+            <fetchPlan extends="_base">
+                <property name="courseGroup" fetchPlan="_base"/>
+                <property name="courseTeacher" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="coursesDl"/>
+        </instance>
+        <keyValueCollection id="courseCounts">
+            <loader>
+                <query>
+                    <![CDATA[select COUNT(c.id), c.courseTeacher
+                    from CES_Courses c
+                    group by c.courseTeacher ]]>
+                </query>
+            </loader>
+        </keyValueCollection>
+    </data>
+    <layout>
+        <table id="table" height="100%" width="100%" dataContainer="courseCounts">
+            <columns>
+                <column id="counts"/>
+                <column id="teachers"/>
+            </columns>
+        </table>
+    </layout>
+</fragment>

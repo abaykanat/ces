@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://paymentParamEdit.caption"
+        focusComponent="form">
+    <data>
+        <instance id="paymentParamDc"
+                  class="com.company.ces_productive.entity.PaymentParam">
+            <fetchPlan extends="_base">
+                <property fetchPlan="_base" name="payParamStudent"/>
+                <property fetchPlan="_base" name="payParamGroups"/>
+                <property fetchPlan="_base" name="payParamDiscountReason"/>
+            </fetchPlan>
+            <loader/>
+        </instance>
+        <collection id="discountReasonsDc" class="com.company.ces_productive.entity.DiscountReason">
+            <fetchPlan extends="_base"/>
+            <loader id="discountReasonsDl">
+                <query>
+                    <![CDATA[select e from CES_DiscountReason e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="newParamSave"
+                caption="msg://newParamSave.caption"
+                icon="EDITOR_OK"/>
+        <action id="windowClose"
+                caption="msg:///actions.Close"
+                icon="EDITOR_CANCEL"/>
+    </actions>
+    <dialogMode height="AUTO"
+                width="AUTO"
+                modal="true"
+                forceDialog="true"/>
+    <layout spacing="true" expand="editActions">
+        <form id="form" dataContainer="paymentParamDc">
+            <column width="350px">
+                <entityPicker id="payParamStudentField" property="payParamStudent"
+                              caption="msg://payParamStudentField.caption" enable="false">
+                </entityPicker>
+                <entityPicker id="payParamGroupsField" property="payParamGroups"
+                              caption="msg://payParamGroupsField.caption" enable="false">
+                </entityPicker>
+                <dateField id="payParamPayDayField" property="payParamPayDay"
+                           caption="msg://payParamPayDayField.caption"/>
+                <entityComboBox id="payParamDiscountReasonField" property="payParamDiscountReason"
+                                caption="msg://payParamDiscountReasonField.caption" dataContainer="paymentParamDc"
+                                optionsContainer="discountReasonsDc">
+                </entityComboBox>
+                <textField id="payParamDiscontAmountField" property="payParamDiscontAmount"
+                           caption="msg://payParamDiscontAmountField.caption"/>
+            </column>
+        </form>
+        <hbox id="editActions" spacing="true">
+            <button id="newParamSave" action="newParamSave"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

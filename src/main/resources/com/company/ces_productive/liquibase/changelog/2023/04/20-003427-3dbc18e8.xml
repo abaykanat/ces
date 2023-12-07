@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.11.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="CES">
+        <createTable tableName="CES_EXPENSES">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CES_EXPENSES"/>
+            </column>
+            <column name="EXPENSE_AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EXPENSES_NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EXPENSE_REASON_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EXPENSE_DATE" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EXPENSES_USER_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EXPENSES_BRANCH_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="CES">
+        <createTable tableName="CES_EXPENSE_REASON">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CES_EXPENSE_REASON"/>
+            </column>
+            <column name="EXPENSE_NAME" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EXPENSE_DESCRIPTION" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="3" author="CES">
+        <createIndex indexName="IDX_CES_EXPENSES_EXPENSES_BRANCH" tableName="CES_EXPENSES">
+            <column name="EXPENSES_BRANCH_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="EXPENSES_BRANCH_ID" baseTableName="CES_EXPENSES"
+                                 constraintName="FK_CES_EXPENSES_ON_EXPENSES_BRANCH" referencedColumnNames="ID"
+                                 referencedTableName="CES_BRANCHES"/>
+    </changeSet>
+    <changeSet id="4" author="CES">
+        <createIndex indexName="IDX_CES_EXPENSES_EXPENSES_USER" tableName="CES_EXPENSES">
+            <column name="EXPENSES_USER_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="EXPENSES_USER_ID" baseTableName="CES_EXPENSES"
+                                 constraintName="FK_CES_EXPENSES_ON_EXPENSES_USER" referencedColumnNames="ID"
+                                 referencedTableName="CES_USER"/>
+    </changeSet>
+    <changeSet id="5" author="CES">
+        <createIndex indexName="IDX_CES_EXPENSES_EXPENSE_REASON" tableName="CES_EXPENSES">
+            <column name="EXPENSE_REASON_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="EXPENSE_REASON_ID" baseTableName="CES_EXPENSES"
+                                 constraintName="FK_CES_EXPENSES_ON_EXPENSE_REASON" referencedColumnNames="ID"
+                                 referencedTableName="CES_EXPENSE_REASON"/>
+    </changeSet>
+    <changeSet id="6" author="CES">
+        <dropColumn columnName="created_by" tableName="ces_manager_tasks"/>
+
+        <dropColumn columnName="created_date" tableName="ces_manager_tasks"/>
+
+        <dropColumn columnName="deleted_by" tableName="ces_manager_tasks"/>
+
+        <dropColumn columnName="deleted_date" tableName="ces_manager_tasks"/>
+
+        <dropColumn columnName="last_modified_by" tableName="ces_manager_tasks"/>
+
+        <dropColumn columnName="last_modified_date" tableName="ces_manager_tasks"/>
+    </changeSet>
+</databaseChangeLog>

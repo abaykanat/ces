@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://studentsBrowse.caption"
+        focusComponent="studentsesTable">
+    <data readOnly="true">
+        <collection id="studentsesDc"
+                    class="com.company.ces_productive.entity.Students">
+            <fetchPlan extends="_base">
+                <property name="studParent" fetchPlan="_base"/>
+                <property name="studDiscountReason" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="studentsesDl">
+                <query>
+                    <![CDATA[select s from CES_Students s where s.studBranch in :currUserBranch]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="lookupSelectAction"
+                caption="msg:///actions.Select"
+                icon="LOOKUP_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="lookupCancelAction"
+                caption="msg:///actions.Cancel"
+                icon="LOOKUP_CANCEL"/>
+    </actions>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="studentsesTable" spacing="true">
+        <filter id="filter" columnsCount="3" dataLoader="studentsesDl">
+            <properties include=".*"/>
+            <configurations>
+                <configuration id="defaultFilter"
+                               operation="AND"
+                               name="msg://defaultFilter.name"
+                               default="true">
+                    <propertyFilter property="studLastName" operation="CONTAINS" operationEditable="true"
+                                    caption="msg://searchName.caption" height="100%"/>
+                    <propertyFilter property="studFirstName" operation="CONTAINS" operationEditable="true"
+                                    caption="msg://searchName1.caption"/>
+                    <propertyFilter property="studMoblieNumber" operation="CONTAINS" operationEditable="true"
+                                    caption="msg://textField1.caption"/>
+                </configuration>
+            </configurations>
+        </filter>
+        <groupTable id="studentsesTable"
+                    width="100%"
+                    dataContainer="studentsesDc" contextMenuEnabled="false">
+            <actions>
+            </actions>
+            <columns>
+                <group>
+                    <column id="studStatus" caption="msg://studStatus.caption"/>
+                </group>
+                <column id="studIIN" caption="msg://studIIN.caption"/>
+                <column id="studFirstName" caption="msg://studFirstName.caption"/>
+                <column id="studLastName" caption="msg://studLastName.caption"/>
+                <column id="studMiddleName" caption="msg://studMiddleName.caption"/>
+                <column id="studMoblieNumber" caption="msg://studMoblieNumber.caption"/>
+                <column id="studEngLevel" caption="msg://studEngLevel.caption"/>
+                <column id="studBeginDate" caption="msg://studBeginDate.caption"/>
+                <column id="studActualAmount" caption="msg://studActualAmount.caption"/>
+
+            </columns>
+            <simplePagination itemsPerPageVisible="true"/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+            </buttonsPanel>
+        </groupTable>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

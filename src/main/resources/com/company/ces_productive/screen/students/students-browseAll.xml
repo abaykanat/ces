@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://studentsBrowseAll.caption"
+        focusComponent="studentsesTable">
+    <data readOnly="true">
+        <collection id="studentsesDc"
+                    class="com.company.ces_productive.entity.Students">
+            <fetchPlan extends="_base">
+                <property name="studParent" fetchPlan="_base"/>
+                <property name="studDiscountReason" fetchPlan="_base"/>
+                <property name="studBranch" fetchPlan="_base"/>
+                <property name="studManager" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="studentsesDl">
+                <query>
+                    <![CDATA[select e from CES_Students e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="lookupSelectAction"
+                caption="msg:///actions.Select"
+                icon="LOOKUP_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="lookupCancelAction"
+                caption="msg:///actions.Cancel"
+                icon="LOOKUP_CANCEL"/>
+    </actions>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="studentsesTable" spacing="true">
+        <filter id="filter" columnsCount="3" dataLoader="studentsesDl">
+            <properties include=".*"/>
+            <configurations>
+                <configuration id="defaultFilter"
+                               operation="AND"
+                               name="msg://defaultFilter.name"
+                               default="true">
+                    <propertyFilter property="studLastName" operation="CONTAINS" operationEditable="true"
+                                    caption="msg://searchName.caption"/>
+                    <propertyFilter property="studFirstName" operation="CONTAINS" operationEditable="true"
+                                    caption="msg://searchName1.caption"/>
+                    <propertyFilter property="studMoblieNumber" operation="CONTAINS" operationEditable="true"
+                                    caption="msg://textField1.caption"/>
+                </configuration>
+            </configurations>
+        </filter>
+        <groupTable id="studentsesTable"
+                    width="100%"
+                    dataContainer="studentsesDc" contextMenuEnabled="false">
+            <actions>
+                <action id="view" type="view"/>
+                <action id="edit" type="edit"/>
+                <action id="remove" type="remove"/>
+                <action id="excelExport" type="excelExport"/>
+                <action id="changeBranch" caption="msg:///changeBranch.caption" icon="UNIVERSITY"/>
+                <action id="changeBalance" caption="msg://changeBalance.caption" icon="DOLLAR"/>
+                <action id="calcCourseAmount" caption="msg://calcCourseAmount.caption" icon="CALCULATOR"/>
+            </actions>
+            <columns>
+                <group>
+                    <column id="studBranch" caption="msg://studBranch.caption"/>
+                    <column id="studStatus" caption="msg://studStatus.caption"/>
+                    <column id="studPeriodDesc" caption="msg://studPeriodDesc.caption"/>
+                </group>
+                <column id="studID" caption="msg://studIIN.caption"/>
+                <column id="studIIN" caption="msg://studIINField1.caption"/>
+                <column id="studLastName" caption="msg://studLastName.caption"/>
+                <column id="studFirstName" caption="msg://studFirstName.caption"/>
+                <column id="studMiddleName" caption="msg://studMiddleName.caption"/>
+                <column id="studMoblieNumber" caption="msg://studMoblieNumber.caption"/>
+                <column id="studActualAmount" caption="msg://studActualAmount.caption"/>
+                <column id="studEmail" caption="msg://studEmail.caption"/>
+                <column id="studParent" caption="msg://studParent.caption"/>
+                <column id="studEngLevel" caption="msg://studEngLevel.caption"/>
+                <column id="studBeginDate" caption="msg://studBeginDate.caption"/>
+                <column id="studManager" caption="msg://studManager.caption"/>
+                <column id="studOldId" caption="msg://studOldId.caption"/>
+            </columns>
+            <simplePagination itemsPerPageVisible="true"/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="studentsesTableExcelExportBtn" action="studentsesTable.excelExport"/>
+                <button id="studentsesTableViewBtn" action="studentsesTable.view"/>
+                <button id="studentsesTableEditBtn" action="studentsesTable.edit"/>
+                <button id="studentsesTableRemoveBtn" action="studentsesTable.remove"/>
+                <button id="studentsesTableChangeBranchBtn" action="studentsesTable.changeBranch" enable="false"/>
+                <button id="studentsesTableChangeBalanceBtn" action="studentsesTable.changeBalance" enable="false"/>
+                <button id="studentsesTableCalcCourseAmountBtn" action="studentsesTable.calcCourseAmount"
+                        enable="false"/>
+            </buttonsPanel>
+        </groupTable>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

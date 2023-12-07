@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://studentsMainInfo.caption"
+        focusComponent="studentsesTable">
+    <data readOnly="true">
+        <collection id="studentsesDc" class="com.company.ces_productive.entity.Students">
+            <fetchPlan extends="_base">
+                <property fetchPlan="_base" name="studParent"/>
+                <property fetchPlan="_base" name="studGroups"/>
+                <property fetchPlan="_base" name="studOrders"/>
+                <property fetchPlan="_base" name="studBooks"/>
+                <property fetchPlan="_base" name="studBranch"/>
+                <property fetchPlan="_base" name="studManager"/>
+                <property fetchPlan="_base" name="studDiscountReason"/>
+                <property name="studPayParam">
+                    <property name="payParamPayDay"/>
+                </property>
+            </fetchPlan>
+            <loader id="studentsesDl">
+                <query>
+                    <![CDATA[SELECT s
+                    FROM CES_Students s
+                    LEFT JOIN s.studPayParam p
+                    WHERE s.studBranch IN :currBranch
+                    AND s.studStatus <> 'NEW'
+                    ORDER BY p.payParamPayDay ASC]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="lookupSelectAction"
+                caption="msg:///actions.Select"
+                icon="LOOKUP_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="lookupCancelAction"
+                caption="msg:///actions.Cancel"
+                icon="LOOKUP_CANCEL"/>
+    </actions>
+    <dialogMode height="600"
+                width="800"/>
+    <layout spacing="true">
+        <groupTable id="studentsesTable" height="100%" width="100%" dataContainer="studentsesDc"
+                    contextMenuEnabled="false">
+            <actions>
+                <action id="create" type="create"/>
+                <action id="view" type="view"/>
+                <action id="payment" caption="msg://payment.caption" icon="MONEY"/>
+                <action id="book" caption="msg://book.caption" icon="BOOK"/>
+            </actions>
+            <buttonsPanel alwaysVisible="true">
+                <button id="studentsesTableCreateBtn" action="studentsesTable.create" visible="false"/>
+                <button id="studentsesTableViewBtn" action="studentsesTable.view"/>
+                <button id="studentsesTablePaymentBtn" action="studentsesTable.payment" visible="false"/>
+                <button id="studentsesTableBookBtn" action="studentsesTable.book" visible="false"/>
+            </buttonsPanel>
+            <columns>
+                <group>
+                    <column id="studStatus" caption="msg://studStatus1.caption"/>
+                </group>
+                <column id="studFirstName" caption="msg://studFirstName.caption"/>
+                <column id="studLastName" caption="msg://studLastName.caption"/>
+                <column id="studActualAmount" caption="msg://studActualAmount.caption"/>
+                <column id="studDiscount" caption="msg://studDiscount.caption"/>
+                <column id="studMoblieNumber" caption="msg://studMoblieNumber.caption"/>
+                <column id="studBeginDate" caption="msg://studBeginDate.caption"/>
+                <column id="studParent" caption="msg://studParent1.caption"/>
+                <column id="studBranch" caption="msg://studBranch1.caption"/>
+            </columns>
+        </groupTable>
+    </layout>
+</window>

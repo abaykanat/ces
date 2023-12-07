@@ -1,0 +1,120 @@
+package com.company.ces_productive.app;
+
+import com.company.ces_productive.entity.*;
+import com.company.ces_productive.entity.courses.Courses;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+
+public class GetCourseRealAmount {
+    public static class CalculationResult {
+        private BigDecimal amount;
+        private String reason;
+        public CalculationResult(BigDecimal amount, String reason) {
+            this.amount = amount;
+            this.reason = reason;
+        }
+        public BigDecimal getAmount() {
+            return amount;
+        }
+        public String getReason() {
+            return reason;
+        }
+    }
+    public static class CalculationAmount {
+        private BigDecimal calcAmount;
+        private String calcReason;
+        public CalculationAmount(BigDecimal calcAmount, String calcReason) {
+            this.calcAmount = calcAmount;
+            this.calcReason = calcReason;
+        }
+        public BigDecimal getCalcAmount() {
+            return calcAmount;
+        }
+        public String getCalcReason() {
+            return calcReason;
+        }
+    }
+    public static CalculationResult getCourseRealAmount(Students student, Groups group, String courseName) {
+        List<Courses> courses = group.getGroupCourse().stream()
+                .filter(course -> courseName.equals(course.getCourseName()) && course.getCourseStatus().equals(CourseStatus.NEW))
+                .toList();
+        List<Orders> paidOrders = new ArrayList<>();
+        for (Orders orders : student.getStudOrders()) {
+            if (orders.getOrderGroup() != null) {
+                if (orders.getOrderGroup().equals(group)
+                        && orders.getOrderStatus() == OrderStatus.PAID
+                        && !orders.getOrderNumber().contains("ORDDIF")
+                        && orders.getOrderPeriodEnd().isAfter(LocalDate.now().plusMonths(1))) {
+                    paidOrders.add(orders);
+                }
+            }
+        }
+        int orderCount = paidOrders.size();
+        List<PaymentParam> paymentParams = student.getStudPayParam();
+        if (!paymentParams.isEmpty()) {
+            for (PaymentParam paymentParam : paymentParams) {
+                LocalDate payDayDate = paymentParam.getPayParamPayDay();
+                LocalDate oneMonthAgo = LocalDate.now().minusMonths(1).minusDays(7);
+                if (payDayDate.isAfter(oneMonthAgo)) {
+                    if (paymentParam.getPayParamGroups().getId().equals(group.getId())) {
+                        BigDecimal amount = calculateRealAmount(orderCount, group, courses, payDayDate).getCalcAmount();
+                        String reason = calculateRealAmount(orderCount, group, courses, payDayDate).getCalcReason();
+                        if (amount.compareTo(BigDecimal.ZERO) > 0) {
+                            return new CalculationResult(amount, "Корректно");
+                        } else {
+                            return new CalculationResult(BigDecimal.ZERO, reason);
+                        }
+                    }
+                } else {
+                    return new CalculationResult(BigDecimal.ZERO, "Дата платежа установлена неправильно");
+                }
+            }
+            return new CalculationResult(BigDecimal.ZERO, "По параметру платежа отсутствует группа");
+        } else {
+            return new CalculationResult(BigDecimal.ZERO, "Параметр платежа отсутствует");
+        }
+    }
+
+    private static CalculationAmount calculateRealAmount(int orderCount, Groups group, List<Courses> courses, LocalDate baseDate) {
+        LocalDate payDate = baseDate.minusMonths(orderCount);
+        LocalDate newDate = payDate.plusMonths(1);
+        BigDecimal directionAmount = group.getGroupDirection().getDirectionMinCost();
+        Optional<Courses> minDateCourses = courses.stream()
+                .min(Comparator.comparing(Courses::getCourseStartDate));
+        if (minDateCourses.isPresent()) {
+            Courses minDateCourse = minDateCourses.get();
+            LocalDate minDate = minDateCourse.getCourseStartDate().toLocalDate();
+            if (payDate.equals(minDate) || payDate.isAfter(minDate)) {
+                List<Courses> filteredCourses = courses.stream()
+                        .filter(course -> (course.getCourseStartDate().isEqual(payDate.atStartOfDay()) || course.getCourseStartDate().isAfter(payDate.atStartOfDay()))
+                                && course.getCourseStartDate().isBefore(newDate.atStartOfDay()))
+                        .toList();
+                int courseCount = filteredCourses.size();
+                if (courseCount == 0) {
+                    return new CalculationAmount(BigDecimal.ZERO, "Не найдены занятия для расчета стоимости");
+                }
+                BigDecimal calcAmount = directionAmount.divide(BigDecimal.valueOf(courseCount), RoundingMode.UP);
+                return new CalculationAmount(calcAmount, "Успешно");
+            } else if (payDate.isBefore(minDate)) {
+                List<Courses> filteredCourses = courses.stream()
+                        .filter(course -> (course.getCourseStartDate().isEqual(LocalDate.now().atStartOfDay()) || course.getCourseStartDate().isAfter(LocalDate.now().atStartOfDay()))
+                                && course.getCourseStartDate().isBefore(LocalDate.now().atStartOfDay().plusMonths(1)))
+                        .toList();
+                int courseCount = filteredCourses.size();
+                if (courseCount == 0) {
+                    return new CalculationAmount(BigDecimal.ZERO, "Не найдены занятия для расчета стоимости");
+                }
+                BigDecimal calcAmount = directionAmount.divide(BigDecimal.valueOf(courseCount), RoundingMode.UP);
+                return new CalculationAmount(calcAmount, "Успешно");
+            }
+        } else {
+            return new CalculationAmount(BigDecimal.ZERO, "Не найдено актуальное расписание по группе");
+        }
+        return new CalculationAmount(BigDecimal.ZERO, "Другая ошибка расчета");
+    }
+}

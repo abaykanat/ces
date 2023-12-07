@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.11.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="CES">
+        <createTable tableName="CES_PAYMENT_PARAM">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CES_PAYMENT_PARAM"/>
+            </column>
+            <column name="PAY_PARAM_STUDENT_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PAY_PARAM_GROUPS_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PAY_PARAM_DISCOUNT_ID" type="UUID"/>
+            <column name="PAY_PARAM_PAY_DAY" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="CES">
+        <createIndex indexName="IDX_CES_PAYMENT_PARAM_PAY_PARAM_DISCOUNT" tableName="CES_PAYMENT_PARAM">
+            <column name="PAY_PARAM_DISCOUNT_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="PAY_PARAM_DISCOUNT_ID" baseTableName="CES_PAYMENT_PARAM"
+                                 constraintName="FK_CES_PAYMENT_PARAM_ON_PAY_PARAM_DISCOUNT" referencedColumnNames="ID"
+                                 referencedTableName="CES_DISCOUNT_REASON"/>
+    </changeSet>
+    <changeSet id="3" author="CES">
+        <createIndex indexName="IDX_CES_PAYMENT_PARAM_PAY_PARAM_GROUPS" tableName="CES_PAYMENT_PARAM">
+            <column name="PAY_PARAM_GROUPS_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="PAY_PARAM_GROUPS_ID" baseTableName="CES_PAYMENT_PARAM"
+                                 constraintName="FK_CES_PAYMENT_PARAM_ON_PAY_PARAM_GROUPS" referencedColumnNames="ID"
+                                 referencedTableName="CES_GROUPS"/>
+    </changeSet>
+    <changeSet id="4" author="CES">
+        <createIndex indexName="IDX_CES_PAYMENT_PARAM_PAY_PARAM_STUDENT" tableName="CES_PAYMENT_PARAM">
+            <column name="PAY_PARAM_STUDENT_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="PAY_PARAM_STUDENT_ID" baseTableName="CES_PAYMENT_PARAM"
+                                 constraintName="FK_CES_PAYMENT_PARAM_ON_PAY_PARAM_STUDENT" referencedColumnNames="ID"
+                                 referencedTableName="CES_STUDENTS"/>
+    </changeSet>
+</databaseChangeLog>

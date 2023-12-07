@@ -1,0 +1,124 @@
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:c="http://jmix.io/schema/ui/jpql-condition"
+        caption="msg://directionEditBrowse.caption"
+        focusComponent="table">
+    <data>
+        <collection id="branchesesDc" class="com.company.ces_productive.entity.Branches">
+            <fetchPlan extends="_base"/>
+            <loader id="branchesesDl">
+                <query>
+                    <![CDATA[select e from CES_Branches e
+                    where e.branchStatus = 'OPEN'  ]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="directionsDc"
+                    class="com.company.ces_productive.entity.Direction">
+            <fetchPlan extends="_base">
+                <property name="directionBranch" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="directionsDl">
+                <query>
+                    <![CDATA[select e from CES_Direction e]]>
+                </query>
+            </loader>
+        </collection>
+        <instance id="directionDc"
+                  class="com.company.ces_productive.entity.Direction">
+            <fetchPlan extends="_base">
+                <property name="directionBranch" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="save" icon="OK" caption="msg:///actions.Ok" shortcut="CTRL-ENTER"/>
+        <action id="cancel" icon="CANCEL" caption="msg:///actions.Cancel" description="Esc"/>
+    </actions>
+    <dialogMode height="600" width="800"/>
+    <layout>
+        <split id="split" height="100%" orientation="horizontal" reversePosition="true" width="100%"
+               pos="35" locked="true">
+            <vbox id="lookupBox" expand="table" height="100%" margin="false,true,false,false" spacing="true">
+                <filter id="filter" columnsCount="3" dataLoader="directionsDl">
+                    <properties include=".*"/>
+                    <configurations>
+                        <configuration id="defaultFilter"
+                                       operation="AND"
+                                       name="msg://defaultFilter.name"
+                                       default="true">
+                            <propertyFilter property="directionType" operation="EQUAL" operationEditable="true"
+                                            caption="msg://searchName.caption"/>
+                            <propertyFilter property="directionBranch" operation="EQUAL" operationEditable="true"
+                                            caption="msg://propertyFilter.caption"/>
+                        </configuration>
+                    </configurations>
+                </filter>
+                <groupTable id="table"
+                            width="100%"
+                            dataContainer="directionsDc">
+                    <actions>
+                        <action id="create" type="create"/>
+                        <action id="edit" type="edit"/>
+                        <action id="remove" type="remove"/>
+                        <action id="excelExport" type="excelExport"/>
+                    </actions>
+                    <columns>
+                        <group>
+                            <column id="directionBranch" caption="msg://directionBranch.caption"/>
+                        </group>
+                        <column id="directionName" caption="msg://directionName.caption"/>
+                        <column id="directionType" caption="msg://directionType.caption"/>
+                        <column id="directionDesc" caption="msg://directionDesc.caption"/>
+                        <column id="directionMinCost" caption="msg://directionMinCost.caption"/>
+                        <column id="directionDuration" caption="msg://directionDuration.caption"/>
+                        <column id="directionCount" caption="msg://directionCount1.caption"/>
+                    </columns>
+                    <simplePagination itemsPerPageVisible="true"/>
+                    <buttonsPanel id="buttonsPanel"
+                                  alwaysVisible="true">
+                        <button id="tableExcelExportBtn" action="table.excelExport"/>
+                        <button id="createBtn" action="table.create"/>
+                        <button id="editBtn" action="table.edit"/>
+                        <button id="removeBtn" action="table.remove"/>
+                    </buttonsPanel>
+                </groupTable>
+                <hbox id="lookupActions" spacing="true" visible="false">
+                    <button action="lookupSelectAction"/>
+                    <button action="lookupCancelAction"/>
+                </hbox>
+            </vbox>
+            <vbox id="editBox" height="100%" margin="false,false,false,true" expand="fieldGroupBox" spacing="true">
+                <scrollBox id="fieldGroupBox">
+                    <form id="form" dataContainer="directionDc">
+                        <column width="350px">
+                            <entityComboBox id="directionBranchField" property="directionBranch"
+                                            caption="msg://directionBranchField.caption"
+                                            optionsContainer="branchesesDc"/>
+                            <textField id="directionNameField" property="directionName"
+                                       caption="msg://directionNameField.caption"/>
+                            <comboBox id="directionTypeField" property="directionType"
+                                      caption="msg://directionTypeField.caption"/>
+                            <textArea id="directionDescField" property="directionDesc"
+                                      caption="msg://directionDescField.caption"/>
+                            <textField id="directionMinCostField" property="directionMinCost"
+                                       caption="msg://directionMinCostField.caption" maxLength="6"/>
+                            <textField id="directionCountField" property="directionCount"
+                                       caption="msg://directionCountField.caption"/>
+                            <textField id="directionDurationField" property="directionDuration"
+                                       caption="msg://directionDurationField.caption" maxLength="2"/>
+                        </column>
+                    </form>
+                </scrollBox>
+                <hbox id="actionsPane" spacing="true" visible="false">
+                    <button id="saveBtn" action="save"/>
+                    <button id="cancelBtn" action="cancel"/>
+                </hbox>
+            </vbox>
+        </split>
+    </layout>
+</window>

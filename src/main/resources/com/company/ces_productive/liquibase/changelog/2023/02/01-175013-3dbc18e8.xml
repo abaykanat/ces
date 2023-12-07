@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.11.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="CES">
+        <createTable tableName="CES_STOPPED">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_CES_STOPPED"/>
+            </column>
+            <column name="STOPPED_REASON" type="VARCHAR(255)"/>
+            <column name="STOPPED_STUDENT_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STOPPED_DATE" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="CES">
+        <createIndex indexName="IDX_CESSTOPPED_STOPPEDSTUDENT" tableName="CES_STOPPED">
+            <column name="STOPPED_STUDENT_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="STOPPED_STUDENT_ID" baseTableName="CES_STOPPED"
+                                 constraintName="FK_CESSTOPPED_ON_STOPPEDSTUDEN" referencedColumnNames="ID"
+                                 referencedTableName="CES_STUDENTS"/>
+    </changeSet>
+</databaseChangeLog>

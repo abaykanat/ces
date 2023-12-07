@@ -1,0 +1,632 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        xmlns:pivot="http://jmix.io/schema/ui/pivot-table"
+        xmlns:chart="http://jmix.io/schema/ui/charts"
+        caption="msg://pivotIncomeExpense.caption">
+    <data readOnly="true">
+        <collection id="paymentsDc" class="com.company.ces_productive.entity.Payments">
+            <fetchPlan extends="_local">
+                <property fetchPlan="_base" name="payOrder"/>
+                <property fetchPlan="_base" name="payUser"/>
+                <property fetchPlan="_base" name="payBranch"/>
+                <property fetchPlan="_base" name="payStudent"/>
+            </fetchPlan>
+            <loader id="paymentsDl">
+                <query>
+                    <![CDATA[select e from CES_Payments e
+                    where e.payBranch in :currBranch
+                    and e.payDateTime between :startDate and :endDate]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="expensesDc" class="com.company.ces_productive.entity.Expenses">
+            <fetchPlan extends="_base">
+                <property name="expensesReason" fetchPlan="_base"/>
+                <property name="expensesUser" fetchPlan="_base"/>
+                <property name="expensesBranch" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="expensesDl">
+                <query>
+                    <![CDATA[select e from CES_Expenses e
+                    where e.expensesBranch in :currBranch
+                    and e.expensesDate between :startDate and :endDate]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="studentsesDc" class="com.company.ces_productive.entity.Students">
+            <fetchPlan extends="_local">
+                <property fetchPlan="_base" name="studParent"/>
+                <property fetchPlan="_base" name="studDiscountReason"/>
+                <property fetchPlan="_base" name="studBranch"/>
+                <property fetchPlan="_base" name="studManager"/>
+            </fetchPlan>
+            <loader id="studentsesDl">
+                <query>
+                    <![CDATA[select e from CES_Students e
+                    where e.studBranch in :currBranch
+                    and e.studBeginDate between :startDate and :endDate
+                    order by e.studBeginDate desc]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="booksDc" class="com.company.ces_productive.entity.Books">
+            <fetchPlan extends="_base">
+                <property name="bookType" fetchPlan="_base"/>
+                <property name="bookAcceptUser" fetchPlan="_base"/>
+                <property name="bookAcceptBranch" fetchPlan="_base"/>
+                <property name="bookSoldUser" fetchPlan="_base"/>
+                <property name="bookOrder" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="booksDl">
+                <query>
+                    <![CDATA[select e from CES_Books e
+                    where e.bookAcceptBranch in :currBranch
+                    and e.bookAcceptDate between :startDate and :endDate]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="coursesesDc" class="com.company.ces_productive.entity.courses.Courses">
+            <fetchPlan extends="_base"/>
+            <loader id="coursesesDl">
+                <query>
+                    <![CDATA[select e from CES_Courses e
+                    where e.courseBranch in :currBranch
+                    and e.courseStartDate between :startDate and :endDate
+                    ]]>
+                </query>
+            </loader>
+        </collection>
+        <keyValueCollection id="balanceDc">
+                <loader id="balanceDl">
+                    <query>
+                        <![CDATA[select SUM(p.payAmount)-(select SUM(e.expensesAmount) from CES_Expenses e
+                        where e.expensesBranch = p.payBranch and e.expensesBranch in :currBranch)
+                        as balanceSum, p.payBranch
+                        from CES_Payments p
+                        where p.payBranch in :currBranch
+                        group by p.payBranch]]>
+                    </query>
+                </loader>
+            <properties>
+                <property name="balanceSum" datatype="decimal"/>
+                <property name="payBranch" class="com.company.ces_productive.entity.Branches"/>
+            </properties>
+        </keyValueCollection>
+        <keyValueCollection id="payChartsDc">
+            <loader id="payChartsDl">
+                <query>
+                    <![CDATA[select p.payDateTime, SUM(p.payAmount)
+                    from CES_Payments p
+                    where p.payBranch in :currBranch
+                    and p.payDateTime between :startDate and :endDate
+                    group by p.payDateTime
+                    order by p.payDateTime asc]]>
+                </query>
+            </loader>
+            <properties>
+                <property name="payDateTime" class="com.company.ces_productive.entity.Payments"/>
+                <property name="SUM" datatype="decimal"/>
+            </properties>
+        </keyValueCollection>
+        <keyValueCollection id="expChartsDc">
+            <loader id="expChartDl">
+                <query>
+                    <![CDATA[select e.expensesDate, SUM(e.expensesAmount)
+                    from CES_Expenses e
+                    where e.expensesBranch in :currBranch
+                    and e.expensesDate between :startDate and :endDate
+                    group by e.expensesDate
+                    order by e.expensesDate asc]]>
+                </query>
+            </loader>
+            <properties>
+                <property name="expensesDate" class="com.company.ces_productive.entity.Expenses"/>
+                <property name="SUM" datatype="decimal"/>
+            </properties>
+        </keyValueCollection>
+        <keyValueCollection id="studChartsDc">
+            <loader id="studChartsDl">
+                <query>
+                    <![CDATA[select d.directionType, s.studBeginDate, s.studStatus, COUNT(s.studFirstName)
+                    from CES_Students s
+                    join s.studGroups g
+                    join g.groupDirection d
+                    where s.studBranch in :currBranch
+                    and s.studBeginDate between :startDate and :endDate
+                    group by d.directionType, s.studBeginDate, s.studStatus
+                    order by s.studBeginDate asc]]>
+                </query>
+            </loader>
+            <properties>
+                <property name="directionType" class="com.company.ces_productive.entity.courses.CourseType"/>
+                <property name="studBeginDate" class="com.company.ces_productive.entity.Students"/>
+                <property name="studStatus" class="com.company.ces_productive.entity.Students"/>
+                <property name="COUNT" datatype="long"/>
+            </properties>
+        </keyValueCollection>
+        <keyValueCollection id="bookChartsDc">
+            <loader id="bookChartDl">
+                <query>
+                    <![CDATA[select b.bookAcceptDate, b.bookStatus, COUNT(b.bookNumber)
+                    from CES_Books b
+                    where b.bookAcceptBranch in :currBranch
+                    and b.bookAcceptDate between :startDate and :endDate
+                    group by b.bookAcceptDate, b.bookStatus
+                    order by b.bookAcceptDate asc]]>
+                </query>
+            </loader>
+            <properties>
+                <property name="bookAcceptDate" class="com.company.ces_productive.entity.Books"/>
+                <property name="bookStatus" class="com.company.ces_productive.entity.Books"/>
+                <property name="COUNT" datatype="long"/>
+            </properties>
+        </keyValueCollection>
+        <collection id="branchesesDc" class="com.company.ces_productive.entity.Branches">
+            <fetchPlan extends="_base"/>
+            <loader id="branchesesDl">
+                <query>
+                    <![CDATA[select e from CES_Branches e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="showBtnAction" caption="msg://showDataBtn.caption" icon="VIEW_ACTION"/>
+        <action id="refreshBalance" caption="msg://refreshBalance.caption" icon="REFRESH"/>
+        <action id="exportBtnBal" caption="Excel" icon="EXCEL_ACTION"/>
+        <action id="exportBtnPay" caption="Excel" icon="EXCEL_ACTION"/>
+        <action id="exportBtnExp" caption="Excel" icon="EXCEL_ACTION"/>
+        <action id="exportBtnStud" caption="Excel" icon="EXCEL_ACTION"/>
+        <action id="exportBtnBook" caption="Excel" icon="EXCEL_ACTION"/>
+        <action id="exportBtnTabel" caption="Excel" icon="EXCEL_ACTION"/>
+    </actions>
+    <layout>
+        <vbox spacing="true">
+            <groupBox orientation="vertical" spacing="true" caption="msg://groupBox1.caption">
+                <vbox spacing="true">
+                    <hbox spacing="true">
+                        <button id="exportBalPivotBtn" action="exportBtnBal"/>
+                        <button id="refreshBalPivotBtn" action="refreshBalance"/>
+                    </hbox>
+                    <pivot:pivotTable id="balanceTable"
+                                      dataContainer="balanceDc"
+                                      height="100%"
+                                      width="100%"
+                                      showColTotals="false"
+                                      showRowTotals="true">
+                        <pivot:properties>
+                            <pivot:property name="balanceSum" localizedName="msg://property4.localizedName"/>
+                            <pivot:property name="payBranch" localizedName="msg://property6.localizedName"/>
+                        </pivot:properties>
+                        <pivot:aggregation mode="SUM">
+                            <pivot:property name="balanceSum"/>
+                        </pivot:aggregation>
+                        <pivot:columns>
+                            <pivot:column value="payBranch"/>
+                        </pivot:columns>
+                    </pivot:pivotTable>
+                </vbox>
+            </groupBox>
+            <groupBox orientation="horizontal" spacing="true" caption="msg://groupBox.caption" width="AUTO">
+                <comboBox id="periodSelect" caption="msg://periodSelect.caption"/>
+                <dateField id="startDate" caption="msg://startDate.caption" datatype="localDate"
+                           dateFormat="yyyy-MM-dd"/>
+                <dateField id="endDate" caption="msg://endDate.caption" datatype="localDate"
+                           dateFormat="yyyy-MM-dd"/>
+                <entityComboBox id="branchSelect" caption="msg://branchSelect.caption"
+                                optionsContainer="branchesesDc"/>
+                <button id="showDataBtn" action="showBtnAction" align="BOTTOM_CENTER"/>
+            </groupBox>
+            <tabSheet id="reportsTabs">
+                <tab caption="msg://paymentsTab.caption" id="paymentsTab" spacing="true" icon="ARROW_DOWN">
+                    <groupBox orientation="horizontal" spacing="true" expand="serialPayment">
+                        <chart:serialChart id="serialPayment"
+                                           startDuration="1"
+                                           dataContainer="payChartsDc"
+                                           angle="30"
+                                           depth3D="50"
+                                           categoryField="payDateTime">
+                            <chart:valueAxes>
+                                <chart:axis gridAlpha="0.05"
+                                            position="LEFT"
+                                            stackType="BOX_3D"
+                                            title="Тенге"/>
+                            </chart:valueAxes>
+                            <chart:graphs>
+                                <chart:graph alphaField="alpha"
+                                             balloonText="&lt;span style='font-size:12px;'&gt;[[title]] за [[category]]:&lt;br&gt;&lt;span style='font-size:20px;'&gt;[[value]]&lt;/span&gt; [[additional]]&lt;/span&gt;"
+                                             dashLengthField="dashLengthColumn"
+                                             type="COLUMN"
+                                             fillAlphas="0.9"
+                                             lineAlpha="0.2"
+                                             valueField="SUM"/>
+                            </chart:graphs>
+                            <chart:chartCursor cursorAlpha="0"/>
+                            <chart:legend equalWidths="false"
+                                          position="TOP"
+                                          valueAlign="LEFT"
+                                          valueWidth="100"
+                                          periodValueText="total: [[value.payDateTime]]"/>
+                            <chart:categoryAxis gridPosition="START">
+                            </chart:categoryAxis>
+                            <chart:export/>
+                        </chart:serialChart>
+                    </groupBox>
+                    <groupBox orientation="horizontal" spacing="true">
+                        <vbox spacing="true">
+                            <button id="exportPayPivotBtn" action="exportBtnPay"/>
+                            <pivot:pivotTable id="incomesTable"
+                                              dataContainer="paymentsDc"
+                                              height="100%"
+                                              width="100%"
+                                              showColTotals="true"
+                                              showRowTotals="true">
+                                <pivot:properties>
+                                    <pivot:property name="payAmount" localizedName="msg://property4.localizedName"/>
+                                    <pivot:property name="payNumber" localizedName="msg://property5.localizedName"/>
+                                    <pivot:property name="payBranch" localizedName="msg://property6.localizedName"/>
+                                    <pivot:property name="payDateTime" localizedName="msg://property7.localizedName"/>
+                                    <pivot:property name="payPurpose" localizedName="msg://property8.localizedName"/>
+                                    <pivot:property name="payMode" localizedName="msg://property9.localizedName"/>
+                                </pivot:properties>
+                                <pivot:aggregation mode="SUM">
+                                    <pivot:property name="payAmount"/>
+                                    <pivot:property name="payNumber"/>
+                                    <pivot:property name="payDateTime"/>
+                                </pivot:aggregation>
+                                <pivot:columns>
+                                    <pivot:column value="payDateTime"/>
+                                    <pivot:column value="payPurpose"/>
+                                </pivot:columns>
+                                <pivot:rows>
+                                    <pivot:row value="payBranch"/>
+                                    <pivot:row value="payMode"/>
+                                </pivot:rows>
+                            </pivot:pivotTable>
+                        </vbox>
+                    </groupBox>
+                    <groupBox orientation="horizontal" spacing="true">
+                        <groupTable id="paymentsesTable" height="100%" width="100%" dataContainer="paymentsDc">
+                            <actions>
+                                <action id="excelExport" type="excelExport"/>
+                            </actions>
+                            <buttonsPanel alwaysVisible="true">
+                                <button id="paymentsesTableExcelExportBtn" action="paymentsesTable.excelExport"/>
+                            </buttonsPanel>
+                            <columns>
+                                <group>
+                                    <column id="payDateTime" caption="msg://payDateTime.caption"/>
+                                </group>
+                                <column id="payNumber" caption="msg://payNumber.caption"/>
+                                <column id="payAmount" caption="msg://payAmount.caption"/>
+                                <column id="payPurpose" caption="msg://payPurpose.caption"/>
+                                <column id="payMode" caption="msg://payMode.caption"/>
+                                <column id="payOrder" caption="msg://payOrder.caption"/>
+                                <column id="payStudent" caption="msg://payStudent.caption"/>
+                                <column id="payUser" caption="msg://payUser.caption"/>
+                                <column id="payBranch" caption="msg://payBranch.caption"/>
+                            </columns>
+                        </groupTable>
+                    </groupBox>
+                </tab>
+                <tab caption="msg://expensesTab.caption" id="expensesTab" spacing="true" icon="ARROW_UP">
+                    <groupBox orientation="horizontal" spacing="true">
+                        <chart:serialChart id="serialExpense"
+                                           startDuration="1"
+                                           dataContainer="expChartsDc"
+                                           angle="30"
+                                           depth3D="50"
+                                           categoryField="expensesDate">
+                            <chart:valueAxes>
+                                <chart:axis gridAlpha="0.05"
+                                            position="LEFT"
+                                            stackType="BOX_3D"
+                                            title="Тенге"/>
+                            </chart:valueAxes>
+                            <chart:graphs>
+                                <chart:graph alphaField="alpha"
+                                             balloonText="&lt;span style='font-size:12px;'&gt;[[title]] за [[category]]:&lt;br&gt;&lt;span style='font-size:20px;'&gt;[[value]]&lt;/span&gt; [[additional]]&lt;/span&gt;"
+                                             dashLengthField="dashLengthColumn"
+                                             type="COLUMN"
+                                             fillAlphas="0.9"
+                                             lineAlpha="0.2"
+                                             valueField="SUM"/>
+                            </chart:graphs>
+                            <chart:chartCursor cursorAlpha="0"/>
+                            <chart:legend equalWidths="false"
+                                          position="TOP"
+                                          valueAlign="LEFT"
+                                          valueWidth="100"
+                                          periodValueText="total: [[value.expensesDate]]"/>
+                            <chart:categoryAxis gridPosition="START">
+                            </chart:categoryAxis>
+                            <chart:export/>
+                        </chart:serialChart>
+                    </groupBox>
+                    <groupBox orientation="horizontal" spacing="true">
+                        <vbox spacing="true">
+                            <button id="exportExpPivotBtn" action="exportBtnExp"/>
+                            <pivot:pivotTable id="expenseTable" dataContainer="expensesDc">
+                                <pivot:properties>
+                                    <pivot:property name="expensesDate" localizedName="msg://property10.localizedName"/>
+                                    <pivot:property name="expensesReason"
+                                                    localizedName="msg://property11.localizedName"/>
+                                    <pivot:property name="expensesAmount"
+                                                    localizedName="msg://property12.localizedName"/>
+                                    <pivot:property name="expensesBranch"
+                                                    localizedName="msg://property13.localizedName"/>
+                                </pivot:properties>
+                                <pivot:aggregation mode="SUM">
+                                    <pivot:property name="expensesAmount"/>
+                                    <pivot:property name="expensesDate"/>
+                                </pivot:aggregation>
+                                <pivot:columns>
+                                    <pivot:column value="expensesDate"/>
+                                </pivot:columns>
+                                <pivot:rows>
+                                    <pivot:row value="expensesBranch"/>
+                                    <pivot:row value="expensesReason"/>
+                                </pivot:rows>
+                            </pivot:pivotTable>
+                        </vbox>
+                    </groupBox>
+                    <groupBox orientation="horizontal" spacing="true">
+                        <groupTable id="expensesesTable" height="100%" width="100%" dataContainer="expensesDc">
+                            <actions>
+                                <action id="excelExport" type="excelExport"/>
+                            </actions>
+                            <buttonsPanel alwaysVisible="true">
+                                <button id="expensesesTableExcelExportBtn" action="expensesesTable.excelExport"/>
+                            </buttonsPanel>
+                            <columns>
+                                <group>
+                                    <column id="expensesDate" caption="msg://expensesDate.caption"/>
+                                </group>
+                                <column id="expensesNumber" caption="msg://expensesNumber.caption"/>
+                                <column id="expensesAmount" caption="msg://expensesAmount.caption"/>
+                                <column id="expensesReason" caption="msg://expensesReason.caption"/>
+                                <column id="expensesDesc" caption="msg://expensesDesc.caption"/>
+                                <column id="expensesUser" caption="msg://expensesUser.caption"/>
+                                <column id="expensesBranch" caption="msg://expensesBranch.caption"/>
+                            </columns>
+                        </groupTable>
+                    </groupBox>
+                </tab>
+                <tab caption="msg://studentsTab.caption" id="studentsTab" spacing="true" icon="ADDRESS_CARD">
+                    <groupBox orientation="horizontal" spacing="true">
+                        <chart:serialChart id="serialStudent"
+                                           additionalFields="studBeginDate"
+                                           categoryField="studStatus"
+                                           startDuration="1"
+                                           dataContainer="studChartsDc"
+                                           angle="30"
+                                           depth3D="50">
+                            <chart:valueAxes>
+                                <chart:axis gridAlpha="0.05"
+                                            position="LEFT"
+                                            stackType="BOX_3D"
+                                            title="Количество"/>
+                            </chart:valueAxes>
+                            <chart:graphs>
+                                <chart:graph alphaField="alpha"
+                                             balloonText="&lt;span style='font-size:12px;'&gt;[[title]] [[category]]:&lt;br&gt;&lt;span style='font-size:20px;'&gt;[[value]]&lt;/span&gt; [[additional]]&lt;/span&gt;"
+                                             dashLengthField="dashLengthColumn"
+                                             type="COLUMN"
+                                             fillAlphas="0.9"
+                                             lineAlpha="0.2"
+                                             valueField="directionType"
+                                             title="По направлениям:"/>
+                                <chart:graph alphaField="alpha"
+                                             balloonText="&lt;span style='font-size:12px;'&gt;[[title]] [[category]]:&lt;br&gt;&lt;span style='font-size:20px;'&gt;[[value]]&lt;/span&gt; [[additional]]&lt;/span&gt;"
+                                             dashLengthField="dashLengthColumn"
+                                             type="COLUMN"
+                                             fillAlphas="0.9"
+                                             lineAlpha="0.2"
+                                             valueField="COUNT"
+                                             title="Студенты в статусе:"/>
+                            </chart:graphs>
+                            <chart:chartCursor cursorAlpha="0"/>
+                            <chart:legend equalWidths="false"
+                                          position="TOP"
+                                          valueAlign="LEFT"
+                                          valueWidth="100"
+                                          periodValueText="[[title.studStatus]]"/>
+                            <chart:categoryAxis gridPosition="START">
+                            </chart:categoryAxis>
+                            <chart:export/>
+                        </chart:serialChart>
+                    </groupBox>
+                    <groupBox orientation="horizontal" spacing="true">
+                        <vbox spacing="true">
+                            <button id="exportStudPivotBtn" caption="Excel" icon="EXCEL_ACTION" action="exportBtnStud"/>
+                            <pivot:pivotTable id="studentsTable"
+                                              dataContainer="studentsesDc"
+                                              height="100%"
+                                              width="100%"
+                                              showColTotals="true"
+                                              showRowTotals="true">
+                                <pivot:properties>
+                                    <pivot:property name="studStatus" localizedName="msg://property.localizedName"/>
+                                    <pivot:property name="studBeginDate" localizedName="msg://property1.localizedName"/>
+                                    <pivot:property name="studBranch" localizedName="msg://property2.localizedName"/>
+                                    <pivot:property name="studManager" localizedName="msg://property3.localizedName"/>
+                                </pivot:properties>
+                                <pivot:columns>
+                                    <pivot:column value="studBeginDate"/>
+                                </pivot:columns>
+                                <pivot:rows>
+                                    <pivot:row value="studStatus"/>
+                                    <pivot:row value="studBranch"/>
+                                </pivot:rows>
+                            </pivot:pivotTable>
+                        </vbox>
+                    </groupBox>
+                    <groupBox orientation="horizontal" spacing="true">
+                        <groupTable id="studentsesTable" height="100%" width="100%" dataContainer="studentsesDc">
+                            <actions>
+                                <action id="excelExport" type="excelExport"/>
+                            </actions>
+                            <buttonsPanel alwaysVisible="true">
+                                <button id="studentsesTableExcelExportBtn" action="studentsesTable.excelExport"/>
+                            </buttonsPanel>
+                            <columns>
+                                <group>
+                                    <column id="studStatus" caption="msg://studStatus.caption"/>
+                                </group>
+                                <column id="studLastName" caption="msg://studLastName.caption"/>
+                                <column id="studFirstName" caption="msg://studFirstName.caption"/>
+                                <column id="studMiddleName" caption="msg://studMiddleName.caption"/>
+                                <column id="studMoblieNumber" caption="msg://studMoblieNumber.caption"/>
+                                <column id="studEmail" caption="msg://studEmail.caption"/>
+                                <column id="studDateOfBirth" caption="msg://studDateOfBirth.caption"/>
+                                <column id="studSex" caption="msg://studSex.caption"/>
+                                <column id="studParent" caption="msg://studParent.caption"/>
+                                <column id="studEngLevel" caption="msg://studEngLevel.caption"/>
+                                <column id="studBeginDate" caption="msg://studBeginDate.caption"/>
+                                <column id="studActualAmount" caption="msg://studActualAmount.caption"/>
+                                <column id="studBranch" caption="msg://studBranch.caption"/>
+                                <column id="studManager" caption="msg://studManager.caption"/>
+                            </columns>
+                        </groupTable>
+                    </groupBox>
+                </tab>
+                <tab caption="msg://booksTab.caption" id="booksTab" spacing="true" icon="BOOK">
+                    <groupBox orientation="horizontal" spacing="true">
+                        <chart:serialChart id="serialBook"
+                                           additionalFields="studBeginDate"
+                                           startDuration="1"
+                                           dataContainer="bookChartsDc"
+                                           angle="30"
+                                           depth3D="50"
+                                           categoryField="bookStatus">
+                            <chart:valueAxes>
+                                <chart:axis gridAlpha="0.05"
+                                            position="LEFT"
+                                            stackType="BOX_3D"
+                                            title="Количество"/>
+                            </chart:valueAxes>
+                            <chart:graphs>
+                                <chart:graph alphaField="alpha"
+                                             balloonText="&lt;span style='font-size:12px;'&gt;[[title]] [[category]]:&lt;br&gt;&lt;span style='font-size:20px;'&gt;[[value]]&lt;/span&gt; [[additional]]&lt;/span&gt;"
+                                             dashLengthField="dashLengthColumn"
+                                             type="COLUMN"
+                                             fillAlphas="0.9"
+                                             lineAlpha="0.2"
+                                             valueField="COUNT"
+                                             title="Книги в статусе:"/>
+                            </chart:graphs>
+                            <chart:chartCursor cursorAlpha="0"/>
+                            <chart:legend equalWidths="false"
+                                          position="TOP"
+                                          valueAlign="LEFT"
+                                          valueWidth="100"
+                                          periodValueText="[[title.bookStatus]]"/>
+                            <chart:categoryAxis gridPosition="START">
+                            </chart:categoryAxis>
+                            <chart:export/>
+                        </chart:serialChart>
+                    </groupBox>
+                    <groupBox orientation="horizontal" spacing="true">
+                        <vbox spacing="true">
+                            <button action="exportBtnBook" id="exportBookPivotBtn"/>
+                            <pivot:pivotTable id="booksTable" dataContainer="booksDc">
+                                <pivot:properties>
+                                    <pivot:property name="bookType" localizedName="msg://property14.localizedName"/>
+                                    <pivot:property name="bookStatus" localizedName="msg://property15.localizedName"/>
+                                    <pivot:property name="bookAcceptBranch"
+                                                    localizedName="msg://property16.localizedName"/>
+                                    <pivot:property name="bookAcceptDate"
+                                                    localizedName="msg://property17.localizedName"/>
+                                </pivot:properties>
+                                <pivot:columns>
+                                    <pivot:column value="bookAcceptDate"/>
+                                    <pivot:column value="bookStatus"/>
+                                </pivot:columns>
+                                <pivot:rows>
+                                    <pivot:row value="bookAcceptBranch"/>
+                                    <pivot:row value="bookType"/>
+                                </pivot:rows>
+                            </pivot:pivotTable>
+                        </vbox>
+                    </groupBox>
+                    <groupBox orientation="horizontal" spacing="true">
+                        <groupTable id="booksesTable" height="100%" width="100%" dataContainer="booksDc">
+                            <actions>
+                                <action id="excelExport" type="excelExport"/>
+                            </actions>
+                            <buttonsPanel alwaysVisible="true">
+                                <button id="booksesTableExcelExportBtn" action="booksesTable.excelExport"/>
+                            </buttonsPanel>
+                            <columns>
+                                <group>
+                                    <column id="bookStatus" caption="msg://bookStatus.caption"/>
+                                </group>
+                                <column id="bookNumber" caption="msg://bookNumber.caption"/>
+                                <column id="bookType" caption="msg://bookType.caption"/>
+                                <column id="bookAcceptUser" caption="msg://bookAcceptUser.caption"/>
+                                <column id="bookAcceptBranch" caption="msg://bookAcceptBranch.caption"/>
+                                <column id="bookAcceptDate" caption="msg://bookAcceptDate.caption"/>
+                                <column id="bookSendDate" caption="msg://bookSendDate.caption"/>
+                                <column id="bookSoldUser" caption="msg://bookSoldUser.caption"/>
+                                <column id="bookSoldDate" caption="msg://bookSoldDate.caption"/>
+                            </columns>
+                        </groupTable>
+                    </groupBox>
+                </tab>
+                <tab id="tabelTab" caption="msg://tabel.caption" icon="font-icon:CALENDAR_CHECK_O">
+                    <groupBox orientation="horizontal" spacing="true" caption="msg://groupBox2.caption">
+                        <vbox spacing="true">
+                            <button id="exportTabelPivotBtn" action="exportBtnTabel"/>
+                            <pivot:pivotTable height="100%" width="100%" id="teacherTblTable" dataContainer="coursesesDc">
+                                <pivot:properties>
+                                    <pivot:property name="courseName"/>
+                                    <pivot:property name="courseTeacher" localizedName="msg://property23.localizedName"/>
+                                    <pivot:property name="courseStartDate" localizedName="msg://property24.localizedName"/>
+                                    <pivot:property name="courseStatus" localizedName="msg://property25.localizedName"/>
+                                    <pivot:property name="courseGroup" localizedName="msg://property26.localizedName"/>
+                                    <pivot:property name="courseBranch" localizedName="msg://property27.localizedName"/>
+                                </pivot:properties>
+                                <pivot:aggregation mode="COUNT">
+                                    <pivot:property name="courseStartDate"/>
+                                </pivot:aggregation>
+                                <pivot:columns>
+                                    <pivot:column value="courseBranch"/>
+                                    <pivot:column value="courseStartDate"/>
+                                </pivot:columns>
+                                <pivot:rows>
+                                    <pivot:row value="courseTeacher"/>
+                                    <pivot:row value="courseGroup"/>
+                                    <pivot:row value="courseStatus"/>
+                                </pivot:rows>
+                            </pivot:pivotTable>
+                        </vbox>
+                    </groupBox>
+                    <groupBox orientation="horizontal" spacing="true">
+                        <groupTable id="coursesesTable" height="100%" width="100%" dataContainer="coursesesDc">
+                            <actions>
+                                <action id="excelExport" type="excelExport"/>
+                            </actions>
+                            <buttonsPanel alwaysVisible="true">
+                                <button id="coursesesTableExcelExportBtn" action="coursesesTable.excelExport"/>
+                            </buttonsPanel>
+                            <columns>
+                                <column id="courseName" caption="msg://courseName.caption"/>
+                                <column id="courseStatus" caption="msg://courseStatus.caption"/>
+                                <column id="courseCost" caption="msg://courseCost.caption"/>
+                                <column id="courseCount" caption="msg://courseCount.caption"/>
+                                <column id="courseStartDate" caption="msg://courseStartDate.caption"/>
+                                <column id="courseEndDate" caption="msg://courseEndDate.caption"/>
+                                <column id="courseStartTime" caption="msg://courseStartTime.caption"/>
+                                <column id="courseEndTime" caption="msg://courseEndTime.caption"/>
+                                <column id="type"/>
+                            </columns>
+                        </groupTable>
+                    </groupBox>
+                </tab>
+            </tabSheet>
+        </vbox>
+    </layout>
+</window>

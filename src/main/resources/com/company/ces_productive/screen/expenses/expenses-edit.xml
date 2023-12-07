@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://expensesEdit.caption"
+        focusComponent="form">
+    <data>
+        <collection id="expenseReasonsDc" class="com.company.ces_productive.entity.ExpenseReason">
+            <fetchPlan extends="_base"/>
+            <loader id="expenseReasonsDl">
+                <query>
+                    <![CDATA[select e from CES_ExpenseReason e]]>
+                </query>
+            </loader>
+        </collection>
+        <instance id="expensesDc"
+                  class="com.company.ces_productive.entity.Expenses">
+            <fetchPlan extends="_base">
+                <property name="expensesReason" fetchPlan="_base"/>
+                <property name="expensesUser" fetchPlan="_base"/>
+                <property name="expensesBranch" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="windowCommitAndClose" caption="msg:///actions.Ok"
+                icon="EDITOR_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="windowClose"
+                caption="msg:///actions.Close"
+                icon="EDITOR_CANCEL"/>
+    </actions>
+    <dialogMode height="AUTO"
+                width="AUTO"
+                modal="true"
+                forceDialog="true"/>
+    <layout spacing="true" expand="editActions">
+        <form id="form" dataContainer="expensesDc">
+            <column width="350px">
+                <textField id="expNumberField" property="expensesNumber" enable="false"/>
+                <textField id="expensesAmountField" property="expensesAmount" maxLength="7"
+                           caption="msg://expensesAmount.caption"/>
+                <textArea id="expensesDescField" property="expensesDesc" caption="msg://expensesDesc.caption"/>
+                <entityComboBox id="expensesReasonField" property="expensesReason" optionsContainer="expenseReasonsDc"
+                                caption="msg://expensesReason.caption"/>
+                <dateField id="expensesDateField" property="expensesDate" enable="false"
+                           caption="msg://expensesDate.caption"/>
+                <entityPicker id="expensesUserField" property="expensesUser" enable="false"
+                              caption="msg://expensesUser.caption"/>
+                <entityPicker id="expensesBranchField" property="expensesBranch" enable="false"
+                              caption="msg://expensesBranch.caption"/>
+            </column>
+        </form>
+        <hbox id="editActions" spacing="true">
+            <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

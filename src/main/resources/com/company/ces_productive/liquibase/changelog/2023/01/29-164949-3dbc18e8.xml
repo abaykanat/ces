@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.11.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="CES">
+        <addColumn tableName="CES_COURSES">
+            <column name="COURSE_BRANCH_ID" type="UUID"/>
+        </addColumn>
+
+        <addNotNullConstraint columnName="COURSE_BRANCH_ID" tableName="CES_COURSES"/>
+    </changeSet>
+    <changeSet id="2" author="CES">
+        <addColumn tableName="CES_COURSES">
+            <column name="COURSE_MANAGER_ID" type="UUID"/>
+        </addColumn>
+
+        <addNotNullConstraint columnName="COURSE_MANAGER_ID" tableName="CES_COURSES"/>
+    </changeSet>
+    <changeSet id="3" author="CES">
+        <addColumn tableName="CES_ORDERS">
+            <column name="ORDER_BOOK_ID" type="UUID"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="4" author="CES">
+        <createIndex indexName="IDX_CES_COURSES_COURSE_BRANCH" tableName="CES_COURSES">
+            <column name="COURSE_BRANCH_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="COURSE_BRANCH_ID" baseTableName="CES_COURSES"
+                                 constraintName="FK_CESCOURSES_ON_COURSEBRANCH" referencedColumnNames="ID"
+                                 referencedTableName="CES_BRANCHES"/>
+    </changeSet>
+    <changeSet id="5" author="CES">
+        <createIndex indexName="IDX_CES_COURSES_COURSE_MANAGER" tableName="CES_COURSES">
+            <column name="COURSE_MANAGER_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="COURSE_MANAGER_ID" baseTableName="CES_COURSES"
+                                 constraintName="FK_CESCOURSES_ON_COURSEMANAGER" referencedColumnNames="ID"
+                                 referencedTableName="CES_USER"/>
+    </changeSet>
+    <changeSet id="6" author="CES">
+        <createIndex indexName="IDX_CES_ORDERS_ORDER_BOOK" tableName="CES_ORDERS">
+            <column name="ORDER_BOOK_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="ORDER_BOOK_ID" baseTableName="CES_ORDERS"
+                                 constraintName="FK_CES_ORDERS_ON_ORDER_BOOK" referencedColumnNames="ID"
+                                 referencedTableName="CES_BOOKS"/>
+    </changeSet>
+</databaseChangeLog>

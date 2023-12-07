@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://parentsBrowse.caption"
+        focusComponent="parentsesTable">
+    <data readOnly="true">
+        <collection id="parentsesDc"
+                    class="com.company.ces_productive.entity.Parents">
+            <fetchPlan extends="_base">
+                <property fetchPlan="_base" name="parentBranch"/>
+                <property fetchPlan="_base" name="parentSecBranch"/>
+            </fetchPlan>
+            <loader id="parentsesDl">
+                <query>
+                    <![CDATA[SELECT e FROM CES_Parents e
+                    WHERE e.parentBranch = :currBranch
+                    OR e IN (SELECT e1 FROM CES_Parents e1
+                            WHERE e1.parentSecBranch = :currSecBranch)]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="lookupSelectAction"
+                caption="msg:///actions.Select"
+                icon="LOOKUP_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="lookupCancelAction"
+                caption="msg:///actions.Cancel"
+                icon="LOOKUP_CANCEL"/>
+    </actions>
+    <dialogMode
+            width="800" height="600"/>
+    <layout expand="parentsesTable" spacing="true">
+        <filter id="filter" columnsCount="3" dataLoader="parentsesDl">
+            <properties include=".*"/>
+            <configurations>
+                <configuration id="defaultFilter"
+                               operation="AND"
+                               name="msg://defaultFilter.name"
+                               default="true">
+                    <propertyFilter property="parentLastName" operation="CONTAINS" operationEditable="true"
+                                    caption="msg://propertyFilter.caption"/>
+                    <propertyFilter property="parentIIN" operation="STARTS_WITH" operationEditable="true"
+                                    caption="msg://propertyFilter1.caption"/>
+                    <propertyFilter property="parentMobileNumber" operation="CONTAINS" operationEditable="true"
+                                    caption="msg://propertyFilter2.caption"/>
+                </configuration>
+            </configurations>
+        </filter>
+        <groupTable id="parentsesTable"
+                    width="100%"
+                    dataContainer="parentsesDc" contextMenuEnabled="false">
+            <actions>
+                <action id="create" type="create"/>
+                <action id="showEntityInfo" type="showEntityInfo" caption="msg://showEntityInfo.caption" icon="EYE"/>
+                <action id="view" type="view"/>
+                <action id="edit" type="edit"/>
+                <action id="remove" type="remove"/>
+            </actions>
+            <columns>
+                <column id="parentIIN" caption="msg://parentIIN.caption"/>
+                <column id="parentLastName" caption="msg://parentLastName.caption"/>
+                <column id="parentFirstName" caption="msg://parentFirstName.caption"/>
+                <column id="parentMiddleName" caption="msg://parentMiddleName.caption"/>
+                <column id="parentMobileNumber" caption="msg://parentMobileNumber.caption"/>
+                <column id="parentEmail" caption="msg://parentEmail.caption"/>
+                <column id="parentSecBranch" caption="msg://parentSecBranch2.caption"/>
+            </columns>
+            <simplePagination itemsPerPageVisible="true"/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="createBtn" action="parentsesTable.create"/>
+                <button id="parentsesTableShowEntityInfoBtn" action="parentsesTable.showEntityInfo"/>
+                <button id="parentsesTableViewBtn" action="parentsesTable.view"/>
+                <button id="editBtn" action="parentsesTable.edit"/>
+                <button id="removeBtn" action="parentsesTable.remove"/>
+            </buttonsPanel>
+        </groupTable>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

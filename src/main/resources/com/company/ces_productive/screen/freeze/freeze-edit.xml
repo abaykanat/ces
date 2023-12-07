@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://freezeEdit.caption"
+        focusComponent="form">
+    <data>
+        <instance id="freezeDc"
+                  class="com.company.ces_productive.entity.Freeze">
+            <fetchPlan extends="_base"/>
+            <loader/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <actions>
+        <action id="windowCommitAndClose" caption="msg:///actions.Ok"
+                icon="EDITOR_OK"
+                primary="true"
+                shortcut="${COMMIT_SHORTCUT}"/>
+        <action id="windowClose"
+                caption="msg:///actions.Close"
+                icon="EDITOR_CANCEL"/>
+    </actions>
+    <dialogMode
+            width="AUTO" height="AUTO"/>
+    <layout spacing="true" expand="editActions">
+        <form id="form" dataContainer="freezeDc">
+            <column width="350px">
+                <textArea caption="msg://freezeReasonField.caption" property="freezeReason" id="freezeReasonField"
+                          dataContainer="freezeDc"/>
+                <entityPicker property="freezeStudent" id="freezeStudentField" enable="false" dataContainer="freezeDc"
+                              caption="msg://freezeStudentField.caption"/>
+                <dateField id="freezeStartDateField" property="freezeStartDate" dataContainer="freezeDc"
+                           caption="msg://freezeStartDateField.caption"/>
+                <dateField id="freezeEndDateField" property="freezeEndDate" dataContainer="freezeDc"
+                           caption="msg://freezeEndDateField.caption"/>
+            </column>
+        </form>
+        <hbox id="editActions" spacing="true">
+            <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>
