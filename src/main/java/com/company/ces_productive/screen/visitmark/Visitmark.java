@@ -155,13 +155,22 @@ public class Visitmark extends Screen {
                 BigDecimal visitAmount = GetCourseRealAmount.getCourseRealAmount(student, group, course.getCourseName()).getAmount();
                 String visitReason = GetCourseRealAmount.getCourseRealAmount(student, group, course.getCourseName()).getReason();
                 if (visitAmount.equals(BigDecimal.ZERO)) {
-                    notifications.create(Notifications.NotificationType.ERROR)
-                            .withCaption("Calculation error")
-                            .withDescription("The payment date for student " + student.getStudLastName() + " " + student.getStudFirstName()
-                                    +" in the group has not been updated. Contact the branch manager for update" + "Reason:" + visitReason)
-                            .show();
-                    proceed = false;
-                    break;
+                    List<PaymentParam> paymentParams = student.getStudPayParam();
+                    for (PaymentParam paymentParam : paymentParams) {
+                        Groups payGroup = paymentParam.getPayParamGroups();
+                        if (payGroup.equals(group)) {
+                            BigDecimal payDiscountAmount = paymentParam.getPayParamDiscontAmount();
+                            if (!(payDiscountAmount.compareTo(BigDecimal.valueOf(100)) == 0)) {
+                                notifications.create(Notifications.NotificationType.ERROR)
+                                        .withCaption("Calculation error")
+                                        .withDescription("The payment date for student " + student.getStudLastName() + " " + student.getStudFirstName()
+                                                +" in the group has not been updated. Contact the branch manager for update" + "Reason:" + visitReason)
+                                        .show();
+                                proceed = false;
+                                break;
+                            }
+                        }
+                    }
                 }
             }
             if (!proceed) {
