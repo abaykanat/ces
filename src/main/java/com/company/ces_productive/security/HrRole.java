@@ -23,8 +23,8 @@ import javax.annotation.Nonnull;
 @ResourceRole(name = "HrRole", code = "hr")
 public interface HrRole {
 
-    @MenuPolicy(menuIds = {"userSessions.browse", "CES_User.browse"})
-    @ScreenPolicy(screenIds = {"userSessions.browse", "CES_User.browse", "sec_ResourceRoleModel.browse", "CES_User.edit", "sec_ResourceRoleModel.lookup", "sec_ResourceRoleModel.edit", "sec_RoleAssignmentFragment", "sec_RoleAssignmentScreen", "ChangePasswordDialog", "ResetPasswordDialog", "CES_Documentation.edit"})
+    @MenuPolicy(menuIds = {"userSessions.browse", "CES_User.browse", "buscal_BusinessCalendarModel.browse"})
+    @ScreenPolicy(screenIds = {"userSessions.browse", "CES_User.browse", "sec_ResourceRoleModel.browse", "CES_User.edit", "sec_ResourceRoleModel.lookup", "sec_ResourceRoleModel.edit", "sec_RoleAssignmentFragment", "sec_RoleAssignmentScreen", "ChangePasswordDialog", "ResetPasswordDialog", "CES_Documentation.edit", "buscal_BusinessCalendarModel.browse"})
     void screens();
 
     @EntityAttributePolicy(entityClass = ResourceRoleEntity.class, attributes = "*", action = EntityAttributePolicyAction.MODIFY)
