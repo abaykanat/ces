@@ -18,3 +18,5 @@ out/
 .vscode/
 .jmix
 .gradle
+booknumber.ser
+docnumber.ser
