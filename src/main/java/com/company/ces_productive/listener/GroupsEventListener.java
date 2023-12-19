@@ -36,7 +36,6 @@ public class GroupsEventListener {
         if (!executeCode) {
             return;
         }
-
         Id<Groups> groupId = event.getEntityId();
         Groups newGroup = dataManager.load(groupId).one();
         List<Students> studLists = newGroup.getGroupStudents();
@@ -69,8 +68,9 @@ public class GroupsEventListener {
             if (discount != null) {
                 if (discount.compareTo(BigDecimal.ZERO) != 0) {
                     processDiscountedOrder(student, newGroup, branch, ordNum, discount, cost, period);
-                } else
-                {
+                } else if (discount.compareTo(BigDecimal.ZERO) == 0) {
+                    processRegularOrder(student, newGroup, branch, ordNum, cost, paramPeriod);
+                } else {
                     processRegularOrder(student, newGroup, branch, ordNum, cost, paramPeriod);
                 }
             } else {

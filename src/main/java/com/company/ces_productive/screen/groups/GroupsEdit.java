@@ -203,10 +203,8 @@ public class GroupsEdit extends StandardEditor<Groups> {
                                             }
                                         }
                                     }
-
                                 }
                             }
-
                             List<Students> currGroupStuds = currGroup.getGroupStudents();
                             currGroupStuds.size();
                             currGroupStuds.removeAll(selectStudents);
@@ -221,6 +219,5 @@ public class GroupsEdit extends StandardEditor<Groups> {
                 })
                 .show();
         closeWithDiscard();
-
     }
 }
