@@ -67,7 +67,6 @@
                 <column id="studEngLevel" caption="msg://studEngLevel.caption"/>
                 <column id="studBeginDate" caption="msg://studBeginDate.caption"/>
                 <column id="studActualAmount" caption="msg://studActualAmount.caption"/>
-
             </columns>
             <simplePagination itemsPerPageVisible="true"/>
             <buttonsPanel id="buttonsPanel"

@@ -22,7 +22,6 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @UiController("CES_Courses.createSch")
 @UiDescriptor("courses-createSch.xml")
@@ -136,9 +135,10 @@ public class CoursesCreateSch extends StandardEditor<Courses> {
     public BusinessCalendar getBusinessCalendarByCurrentYear() {
         Collection<BusinessCalendar> allCalendars = businessCalendarRepository.getAllBusinessCalendars();
         int currentYear = Year.now().getValue();
+        int nextYear = Year.now().getValue() + 1;
         for (BusinessCalendar calendar : allCalendars) {
             String calendarCode = calendar.getCode();
-            if (calendarCode.contains(String.valueOf(currentYear))) {
+            if (calendarCode.contains(String.valueOf(currentYear)) || calendarCode.contains(String.valueOf(nextYear)) ) {
                 return calendar;
             }
         }

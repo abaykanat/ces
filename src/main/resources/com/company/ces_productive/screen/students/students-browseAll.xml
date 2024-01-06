@@ -46,7 +46,7 @@
                                     caption="msg://searchName.caption"/>
                     <propertyFilter property="studFirstName" operation="CONTAINS" operationEditable="true"
                                     caption="msg://searchName1.caption"/>
-                    <propertyFilter property="studMoblieNumber" operation="CONTAINS" operationEditable="true"
+                    <propertyFilter property="studBranch" operation="EQUAL" operationEditable="true"
                                     caption="msg://textField1.caption"/>
                 </configuration>
             </configurations>

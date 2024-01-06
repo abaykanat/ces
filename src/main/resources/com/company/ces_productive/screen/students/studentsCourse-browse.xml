@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://jmix.io/schema/ui/window"
+        caption="msg://studentsCourseBrowse.caption">
+    <data readOnly="true">
+        <collection id="groupCourseStudDc" class="com.company.ces_productive.entity.Groups">
+            <fetchPlan extends="_base">
+                <property fetchPlan="_base" name="groupStudents"/>
+                <property fetchPlan="_base" name="groupCourse"/>
+                <property fetchPlan="_base" name="groupDirection"/>
+                <property fetchPlan="_base" name="groupTeacher"/>
+            </fetchPlan>
+            <loader id="groupCourseStudDl">
+                <query>
+                    <![CDATA[select g from CES_Groups g join g.groupCourse c
+                    where g.groupBranch = :currUserBranch and g.groupStatus = :status
+                    and FUNCTION('DATE', c.courseStartDate) = FUNCTION('DATE', :currDate)]]>
+                </query>
+            </loader>
+            <collection id="studentsDc" property="groupStudents">
+            </collection>
+            <collection id="studCourseDc" property="groupCourse">
+            </collection>
+        </collection>
+        <collection id="coursesDc" class="com.company.ces_productive.entity.courses.Courses">
+            <fetchPlan extends="_base">
+                <property name="courseCabinet" fetchPlan="_base"/>
+                <property name="courseTeacher" fetchPlan="_base"/>
+                <property name="courseGroup" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="coursesDl">
+                <query>
+                    <![CDATA[select c from CES_Courses c
+                    where c.courseBranch = :currUserBranch
+                    and FUNCTION('DATE', c.courseStartDate) = FUNCTION('DATE', :currDate)]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <screenSettings id="settingsFacet" auto="true"/>
+    </facets>
+    <dialogMode height="600"
+                width="800"/>
+    <layout spacing="true">
+        <vbox spacing="true">
+            <hbox spacing="true" align="TOP_CENTER">
+                <label value="msg://label.value" align="MIDDLE_LEFT"/>
+                <dateField datatype="localDate" dateFormat="yyyy-MM-dd" id="selectedDate"/>
+                <button id="selectDateBtn" caption="msg://selectDateBtn.caption" icon="font-icon:EYE"/>
+            </hbox>
+            <tabSheet height="AUTO">
+                <tab caption="msg://tab_11.caption" id="tab_1" spacing="true">
+                    <groupTable id="coursesesTable" height="100%" width="100%" dataContainer="coursesDc">
+                        <actions>
+                            <action id="refresh" type="refresh"/>
+                        </actions>
+                        <buttonsPanel alwaysVisible="true">
+                            <button id="coursesesTableRefreshBtn" action="coursesesTable.refresh"/>
+                        </buttonsPanel>
+                        <columns>
+                            <column id="courseStatus" caption="msg://courseStatus.caption"/>
+                            <column id="courseName" caption="msg://courseName.caption"/>
+                            <column id="type"/>
+                            <column id="courseStartTime"/>
+                            <column id="courseEndTime"/>
+                            <column id="courseTeacher"/>
+                            <column id="courseCabinet"/>
+                            <column id="courseGroup"/>
+                        </columns>
+                    </groupTable>
+                </tab>
+                <tab caption="msg://tab_21.caption" id="tab_2" spacing="true">
+                    <hbox spacing="true" width="100%">
+                        <groupTable id="groupsTable" dataContainer="groupCourseStudDc" height="100%">
+                            <columns>
+                                <group>
+                                    <column id="groupDirection" caption="msg://groupDirection1.caption"/>
+                                </group>
+                                <column id="groupName" caption="msg://groupName1.caption"/>
+                                <column id="groupTeacher" caption="msg://groupTeacher1.caption"/>
+                            </columns>
+                            <simplePagination itemsPerPageVisible="true"/>
+                        </groupTable>
+                        <groupTable id="coursesTable" height="100%" dataContainer="studCourseDc">
+                            <columns>
+                                <group>
+                                    <column id="courseStartDate" caption="msg://courseStartDate.caption"/>
+                                </group>
+                                <column id="courseStatus" caption="msg://courseStatus.caption"/>
+                                <column id="courseCabinet" caption="msg://courseCabinet.caption"/>
+                                <column id="courseTeacher" caption="msg://courseTeacher.caption"/>
+                            </columns>
+                            <simplePagination itemsPerPageVisible="true"/>
+                        </groupTable>
+                        <groupTable id="studentsTable" height="100%" dataContainer="studentsDc">
+                            <columns>
+                                <column id="studLastName" caption="msg://studLastName1.caption"/>
+                                <column id="studFirstName" caption="msg://studFirstName1.caption"/>
+                                <column id="studMiddleName" caption="msg://studMiddleName1.caption"/>
+                                <column id="studActualAmount" caption="msg://studActualAmount1.caption"/>
+                            </columns>
+                            <simplePagination itemsPerPageVisible="true"/>
+                        </groupTable>
+                    </hbox>
+                </tab>
+            </tabSheet>
+        </vbox>
+    </layout>
+</window>

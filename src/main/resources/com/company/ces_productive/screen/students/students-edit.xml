@@ -4,7 +4,6 @@
         focusComponent="scrollBox">
     <data>
         <instance id="studentsDc" class="com.company.ces_productive.entity.Students">
-            <collection id="studOrdersDc" property="studOrders"/>
             <fetchPlan extends="_base">
                 <property fetchPlan="_base" name="studParent"/>
                 <property fetchPlan="_base" name="studGroups"/>
@@ -15,13 +14,11 @@
                 <property fetchPlan="_base" name="studDiscountReason"/>
             </fetchPlan>
             <loader/>
+            <collection id="studOrdersDc" property="studOrders"/>
             <collection id="studPaymentsDc" property="studPayments"/>
-            <collection id="studVisitsDc" property="studVisits">
-            </collection>
-            <collection id="studGroupsDc" property="studGroups">
-            </collection>
-            <collection id="studBooksDc" property="studBooks">
-            </collection>
+            <collection id="studVisitsDc" property="studVisits"/>
+            <collection id="studGroupsDc" property="studGroups"/>
+            <collection id="studBooksDc" property="studBooks"/>
         </instance>
         <collection id="freezesDc" class="com.company.ces_productive.entity.Freeze">
             <fetchPlan extends="_base">

@@ -3,7 +3,6 @@
         caption="msg://groupsBrowse.caption">
     <data readOnly="true">
         <collection id="groupsesDc" class="com.company.ces_productive.entity.Groups">
-            <collection id="groupStudentsDc" property="groupStudents"/>
             <fetchPlan extends="_base">
                 <property fetchPlan="_base" name="groupStudents"/>
                 <property fetchPlan="_base" name="groupCourse"/>
@@ -18,6 +17,7 @@
                 </query>
             </loader>
             <collection id="groupCourseDc" property="groupCourse"/>
+            <collection id="groupStudentsDc" property="groupStudents"/>
         </collection>
     </data>
     <facets>

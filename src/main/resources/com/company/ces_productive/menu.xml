@@ -58,14 +58,18 @@
         <item screen="CES_Groups.browseAll"
               caption="msg://com.company.ces_productive.screen.groups/groupsBrowseAll.menu" icon="GROUP"/>
         <item screen="CES_Courses.browse" caption="msg://com.company.ces_productive.screen.courses/coursesBrowse.menu"
-              icon="CALENDAR_CHECK_O"/>
+              icon="CALENDAR"/>
         <item screen="CES_Courses.browseAll"
-              caption="msg://com.company.ces_productive.screen.courses/coursesBrowseAll.menu" icon="CALENDAR_CHECK_O"/>
-        <item screen="CES_Courses.browseAdm" caption="msg://com.company.ces_productive.screen.courses/coursesBrowseAdm.menu"
-              icon="CALENDAR_O"/>
+              caption="msg://com.company.ces_productive.screen.courses/coursesBrowseAll.menu" icon="CALENDAR"/>
+        <item screen="CES_StudentsCourse.browse"
+              caption="msg://com.company.ces_productive.screen.students/studentsCourseBrowse.menu"
+              icon="CALENDAR_CHECK_O"/>
+        <item screen="CES_Courses.browseAdm"
+              caption="msg://com.company.ces_productive.screen.courses/coursesBrowseAdm.menu" icon="CALENDAR_O"/>
         <item screen="CES_Visitmark" caption="msg://com.company.ces_productive.screen.visitmark/visitmark.menu"
               icon="CALENDAR_CHECK_O"/>
-        <item screen="CES_Payments.browse" caption="msg://com.company.ces_productive.screen.payments/paymentsBrowse.menu"
+        <item screen="CES_Payments.browse"
+              caption="msg://com.company.ces_productive.screen.payments/paymentsBrowse.menu"
               icon="ARROW_CIRCLE_O_DOWN"/>
         <item screen="CES_Orders.browse" caption="msg://com.company.ces_productive.screen.orders/ordersBrowse.menu"
               icon="ARROW_CIRCLE_DOWN"/>
