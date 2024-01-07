@@ -36,6 +36,9 @@ public class PaymentParam {
     @NotNull
     private LocalDate payParamPayDay;
 
+    @Column(name = "PAY_PARAM_METHOD")
+    private Boolean payParamMethod;
+
     @JoinColumn(name = "PAY_PARAM_DISCOUNT_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private DiscountReason payParamDiscountReason;
@@ -46,6 +49,14 @@ public class PaymentParam {
     @Column(name = "VERSION", nullable = false)
     @Version
     private Integer version;
+
+    public Boolean getPayParamMethod() {
+        return payParamMethod;
+    }
+
+    public void setPayParamMethod(Boolean payParamMethod) {
+        this.payParamMethod = payParamMethod;
+    }
 
     public void setPayParamDiscountReason(DiscountReason payParamDiscountReason) {
         this.payParamDiscountReason = payParamDiscountReason;

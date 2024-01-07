@@ -58,6 +58,7 @@
             <columns>
                 <group>
                     <column id="studStatus" caption="msg://studStatus.caption"/>
+                    <column id="studPeriodDesc" caption="msg://studPeriodDesc.caption"/>
                 </group>
                 <column id="studIIN" caption="msg://studIIN.caption"/>
                 <column id="studFirstName" caption="msg://studFirstName.caption"/>

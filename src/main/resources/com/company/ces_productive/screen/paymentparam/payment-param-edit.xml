@@ -52,6 +52,8 @@
                                 caption="msg://payParamDiscountReasonField.caption" dataContainer="paymentParamDc"
                                 optionsContainer="discountReasonsDc">
                 </entityComboBox>
+                <checkBox id="payParamMethodField" property="payParamMethod"
+                          caption="msg://payParamMethodField.caption"/>
                 <textField id="payParamDiscontAmountField" property="payParamDiscontAmount"
                            caption="msg://payParamDiscontAmountField.caption"/>
             </column>

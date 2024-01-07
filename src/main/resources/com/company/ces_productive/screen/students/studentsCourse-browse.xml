@@ -59,7 +59,9 @@
                             <button id="coursesesTableRefreshBtn" action="coursesesTable.refresh"/>
                         </buttonsPanel>
                         <columns>
-                            <column id="courseStatus" caption="msg://courseStatus.caption"/>
+                            <group>
+                                <column id="courseStatus" caption="msg://courseStatus.caption"/>
+                            </group>
                             <column id="courseName" caption="msg://courseName.caption"/>
                             <column id="type"/>
                             <column id="courseStartTime"/>

@@ -185,6 +185,7 @@
                                     <column id="payParamPayDay" caption="msg://payParamPayDay.caption"/>
                                     <column id="payParamGroups" caption="msg://payParamGroups.caption"/>
                                     <column id="payParamDiscountReason" caption="msg://payParamDiscountReason.caption"/>
+                                    <column id="payParamMethod" caption="msg://payParamMethod.caption"/>
                                     <column id="payParamDiscontAmount" caption="msg://payParamDiscontAmount.caption"/>
                                 </columns>
                             </table>

@@ -13,13 +13,18 @@ import java.util.Optional;
 public class GetCourseRealAmount {
     public static class CalculationResult {
         private BigDecimal amount;
+        private int count;
         private String reason;
-        public CalculationResult(BigDecimal amount, String reason) {
+        public CalculationResult(BigDecimal amount, int count, String reason) {
             this.amount = amount;
+            this.count = count;
             this.reason = reason;
         }
         public BigDecimal getAmount() {
             return amount;
+        }
+        public int getCount() {
+            return count;
         }
         public String getReason() {
             return reason;
@@ -27,13 +32,18 @@ public class GetCourseRealAmount {
     }
     public static class CalculationAmount {
         private BigDecimal calcAmount;
+        private int calcCount;
         private String calcReason;
-        public CalculationAmount(BigDecimal calcAmount, String calcReason) {
+        public CalculationAmount(BigDecimal calcAmount, int calcCount, String calcReason) {
             this.calcAmount = calcAmount;
+            this.calcCount = calcCount;
             this.calcReason = calcReason;
         }
         public BigDecimal getCalcAmount() {
             return calcAmount;
+        }
+        public int getCalcCount() {
+            return calcCount;
         }
         public String getCalcReason() {
             return calcReason;
@@ -63,20 +73,21 @@ public class GetCourseRealAmount {
                 if (payDayDate.isAfter(oneMonthAgo)) {
                     if (paymentParam.getPayParamGroups().getId().equals(group.getId())) {
                         BigDecimal amount = calculateRealAmount(orderCount, group, courses, payDayDate).getCalcAmount();
+                        int count = calculateRealAmount(orderCount, group, courses, payDayDate).getCalcCount();
                         String reason = calculateRealAmount(orderCount, group, courses, payDayDate).getCalcReason();
                         if (amount.compareTo(BigDecimal.ZERO) > 0) {
-                            return new CalculationResult(amount, "Корректно");
+                            return new CalculationResult(amount, count, "Корректно");
                         } else {
-                            return new CalculationResult(BigDecimal.ZERO, reason);
+                            return new CalculationResult(BigDecimal.ZERO, 0, reason);
                         }
                     }
                 } else {
-                    return new CalculationResult(BigDecimal.ZERO, "Дата платежа установлена неправильно");
+                    return new CalculationResult(BigDecimal.ZERO, 0, "Дата платежа установлена неправильно");
                 }
             }
-            return new CalculationResult(BigDecimal.ZERO, "По параметру платежа отсутствует группа");
+            return new CalculationResult(BigDecimal.ZERO, 0,"По параметру платежа отсутствует группа");
         } else {
-            return new CalculationResult(BigDecimal.ZERO, "Параметр платежа отсутствует");
+            return new CalculationResult(BigDecimal.ZERO, 0,"Параметр платежа отсутствует");
         }
     }
 
@@ -96,10 +107,10 @@ public class GetCourseRealAmount {
                         .toList();
                 int courseCount = filteredCourses.size();
                 if (courseCount == 0) {
-                    return new CalculationAmount(BigDecimal.ZERO, "Не найдены занятия для расчета стоимости");
+                    return new CalculationAmount(BigDecimal.ZERO, 0,"Не найдены занятия для расчета стоимости");
                 }
                 BigDecimal calcAmount = directionAmount.divide(BigDecimal.valueOf(courseCount), RoundingMode.UP);
-                return new CalculationAmount(calcAmount, "Успешно");
+                return new CalculationAmount(calcAmount, courseCount,"Успешно");
             } else if (payDate.isBefore(minDate)) {
                 List<Courses> filteredCourses = courses.stream()
                         .filter(course -> (course.getCourseStartDate().isEqual(LocalDate.now().atStartOfDay()) || course.getCourseStartDate().isAfter(LocalDate.now().atStartOfDay()))
@@ -107,14 +118,14 @@ public class GetCourseRealAmount {
                         .toList();
                 int courseCount = filteredCourses.size();
                 if (courseCount == 0) {
-                    return new CalculationAmount(BigDecimal.ZERO, "Не найдены занятия для расчета стоимости");
+                    return new CalculationAmount(BigDecimal.ZERO, 0,"Не найдены занятия для расчета стоимости");
                 }
                 BigDecimal calcAmount = directionAmount.divide(BigDecimal.valueOf(courseCount), RoundingMode.UP);
-                return new CalculationAmount(calcAmount, "Успешно");
+                return new CalculationAmount(calcAmount, courseCount,"Успешно");
             }
         } else {
-            return new CalculationAmount(BigDecimal.ZERO, "Не найдено актуальное расписание по группе");
+            return new CalculationAmount(BigDecimal.ZERO, 0,"Не найдено актуальное расписание по группе");
         }
-        return new CalculationAmount(BigDecimal.ZERO, "Другая ошибка расчета");
+        return new CalculationAmount(BigDecimal.ZERO, 0,"Другая ошибка расчета");
     }
 }

@@ -135,21 +135,26 @@ public class CoursesCreateSch extends StandardEditor<Courses> {
     public BusinessCalendar getBusinessCalendarByCurrentYear() {
         Collection<BusinessCalendar> allCalendars = businessCalendarRepository.getAllBusinessCalendars();
         int currentYear = Year.now().getValue();
-        int nextYear = Year.now().getValue() + 1;
         for (BusinessCalendar calendar : allCalendars) {
             String calendarCode = calendar.getCode();
-            if (calendarCode.contains(String.valueOf(currentYear)) || calendarCode.contains(String.valueOf(nextYear)) ) {
+            if (calendarCode.contains(String.valueOf(currentYear))) {
                 return calendar;
             }
         }
         return null;
     }
-    /*private LocalDate getNextWorkingDay(LocalDate date) {
-        while (!Objects.requireNonNull(getBusinessCalendarByCurrentYear()).isBusinessDay(date)) {
-            date = date.plusDays(1);
+
+    public BusinessCalendar getBusinessCalendarByNextYear() {
+        Collection<BusinessCalendar> allCalendars = businessCalendarRepository.getAllBusinessCalendars();
+        int nextYear = Year.now().getValue() + 1;
+        for (BusinessCalendar calendar : allCalendars) {
+            String calendarCode = calendar.getCode();
+            if (calendarCode.contains(String.valueOf(nextYear)) ) {
+                return calendar;
+            }
         }
-        return date;
-    }*/
+        return null;
+    }
 
     private void addCourseCount(LocalDate startDate, LocalDate endDate, Boolean thisDayIs, DayOfWeek thisDay) {
         List<LocalDate> lessonDates = new ArrayList<>();
@@ -840,240 +845,93 @@ public class CoursesCreateSch extends StandardEditor<Courses> {
                 while (Objects.requireNonNull(startDate).isBefore(Objects.requireNonNull(endDate)) || Objects.requireNonNull(startDate).equals(Objects.requireNonNull(endDate))) {
                     if (Boolean.TRUE.equals(monday.getValue()) && mondayStartTime != null && mondayEndTime != null) {
                         if (startDate.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
-                            if (Objects.requireNonNull(getBusinessCalendarByCurrentYear()).isBusinessDay(startDate)) {
-                                lessonDates.add(startDate);
-                            } /*else {
-                                LocalDate nextWorkingDay = getNextWorkingDay(startDate);
-                                lessonDates.add(nextWorkingDay);
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.TUESDAY) {
-                                    tuesdayStartTime.setValue(mondayStartTime.getValue());
-                                    tuesdayEndTime.setValue(mondayEndTime.getValue());
+                            if (startDate.getYear() == Year.now().getValue()) {
+                                if (Objects.requireNonNull(getBusinessCalendarByCurrentYear()).isBusinessDay(startDate)) {
+                                    lessonDates.add(startDate);
                                 }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.WEDNESDAY) {
-                                    wednesdayStartTime.setValue(mondayStartTime.getValue());
-                                    wednesdayEndTime.setValue(mondayEndTime.getValue());
+                            } else {
+                                if (Objects.requireNonNull(getBusinessCalendarByNextYear()).isBusinessDay(startDate)) {
+                                    lessonDates.add(startDate);
                                 }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.THURSDAY) {
-                                    thursdayStartTime.setValue(mondayStartTime.getValue());
-                                    thursdayEndTime.setValue(mondayEndTime.getValue());
-                                }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.FRIDAY) {
-                                    fridayStartTime.setValue(mondayStartTime.getValue());
-                                    fridayEndTime.setValue(mondayEndTime.getValue());
-                                }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.SATURDAY) {
-                                    saturdayStartTime.setValue(mondayStartTime.getValue());
-                                    saturdayEndTime.setValue(mondayEndTime.getValue());
-                                }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.SUNDAY) {
-                                    sundayStartTime.setValue(mondayStartTime.getValue());
-                                    sundayEndTime.setValue(mondayEndTime.getValue());
-                                }
-                            }*/
+                            }
                         }
                     }
                     if (Boolean.TRUE.equals(tuesday.getValue()) && tuesdayStartTime != null && tuesdayEndTime != null) {
                         if (startDate.getDayOfWeek().equals(DayOfWeek.TUESDAY)) {
-                            if (Objects.requireNonNull(getBusinessCalendarByCurrentYear()).isBusinessDay(startDate)) {
-                                lessonDates.add(startDate);
-                            } /*else {
-                                LocalDate nextWorkingDay = getNextWorkingDay(startDate);
-                                lessonDates.add(nextWorkingDay);
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.MONDAY) {
-                                    mondayStartTime.setValue(tuesdayStartTime.getValue());
-                                    mondayEndTime.setValue(tuesdayEndTime.getValue());
+                            if (startDate.getYear() == Year.now().getValue()) {
+                                if (Objects.requireNonNull(getBusinessCalendarByCurrentYear()).isBusinessDay(startDate)) {
+                                    lessonDates.add(startDate);
                                 }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.WEDNESDAY) {
-                                    wednesdayStartTime.setValue(tuesdayStartTime.getValue());
-                                    wednesdayEndTime.setValue(tuesdayEndTime.getValue());
+                            } else {
+                                if (Objects.requireNonNull(getBusinessCalendarByNextYear()).isBusinessDay(startDate)) {
+                                    lessonDates.add(startDate);
                                 }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.THURSDAY) {
-                                    thursdayStartTime.setValue(tuesdayStartTime.getValue());
-                                    thursdayEndTime.setValue(tuesdayEndTime.getValue());
-                                }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.FRIDAY) {
-                                    fridayStartTime.setValue(tuesdayStartTime.getValue());
-                                    fridayEndTime.setValue(tuesdayEndTime.getValue());
-                                }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.SATURDAY) {
-                                    saturdayStartTime.setValue(tuesdayStartTime.getValue());
-                                    saturdayEndTime.setValue(tuesdayEndTime.getValue());
-                                }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.SUNDAY) {
-                                    sundayStartTime.setValue(tuesdayStartTime.getValue());
-                                    sundayEndTime.setValue(tuesdayEndTime.getValue());
-                                }
-                            }*/
+                            }
                         }
                     }
                     if (Boolean.TRUE.equals(wednesday.getValue()) && wednesdayStartTime != null && wednesdayEndTime != null) {
                         if (startDate.getDayOfWeek().equals(DayOfWeek.WEDNESDAY)) {
-                            if (Objects.requireNonNull(getBusinessCalendarByCurrentYear()).isBusinessDay(startDate)) {
-                                lessonDates.add(startDate);
-                            } /*else {
-                                LocalDate nextWorkingDay = getNextWorkingDay(startDate);
-                                lessonDates.add(nextWorkingDay);
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.MONDAY) {
-                                    mondayStartTime.setValue(wednesdayStartTime.getValue());
-                                    mondayEndTime.setValue(wednesdayEndTime.getValue());
+                            if (startDate.getYear() == Year.now().getValue()) {
+                                if (Objects.requireNonNull(getBusinessCalendarByCurrentYear()).isBusinessDay(startDate)) {
+                                    lessonDates.add(startDate);
                                 }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.TUESDAY) {
-                                    tuesdayStartTime.setValue(wednesdayStartTime.getValue());
-                                    tuesdayEndTime.setValue(wednesdayEndTime.getValue());
+                            } else {
+                                if (Objects.requireNonNull(getBusinessCalendarByNextYear()).isBusinessDay(startDate)) {
+                                    lessonDates.add(startDate);
                                 }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.THURSDAY) {
-                                    thursdayStartTime.setValue(wednesdayStartTime.getValue());
-                                    thursdayEndTime.setValue(wednesdayEndTime.getValue());
-                                }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.FRIDAY) {
-                                    fridayStartTime.setValue(wednesdayStartTime.getValue());
-                                    fridayEndTime.setValue(wednesdayEndTime.getValue());
-                                }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.SATURDAY) {
-                                    saturdayStartTime.setValue(wednesdayStartTime.getValue());
-                                    saturdayEndTime.setValue(wednesdayEndTime.getValue());
-                                }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.SUNDAY) {
-                                    sundayStartTime.setValue(wednesdayStartTime.getValue());
-                                    sundayEndTime.setValue(wednesdayEndTime.getValue());
-                                }
-                            }*/
+                            }
                         }
                     }
                     if (Boolean.TRUE.equals(thursday.getValue()) && thursdayStartTime != null && thursdayEndTime != null) {
                         if (startDate.getDayOfWeek().equals(DayOfWeek.THURSDAY)) {
-                            if (Objects.requireNonNull(getBusinessCalendarByCurrentYear()).isBusinessDay(startDate)) {
-                                lessonDates.add(startDate);
-                            } /*else {
-                                LocalDate nextWorkingDay = getNextWorkingDay(startDate);
-                                lessonDates.add(nextWorkingDay);
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.MONDAY) {
-                                    mondayStartTime.setValue(thursdayStartTime.getValue());
-                                    mondayEndTime.setValue(thursdayEndTime.getValue());
+                            if (startDate.getYear() == Year.now().getValue()) {
+                                if (Objects.requireNonNull(getBusinessCalendarByCurrentYear()).isBusinessDay(startDate)) {
+                                    lessonDates.add(startDate);
                                 }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.TUESDAY) {
-                                    tuesdayStartTime.setValue(thursdayStartTime.getValue());
-                                    tuesdayEndTime.setValue(thursdayEndTime.getValue());
+                            } else {
+                                if (Objects.requireNonNull(getBusinessCalendarByNextYear()).isBusinessDay(startDate)) {
+                                    lessonDates.add(startDate);
                                 }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.WEDNESDAY) {
-                                    wednesdayStartTime.setValue(thursdayStartTime.getValue());
-                                    wednesdayEndTime.setValue(thursdayEndTime.getValue());
-                                }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.FRIDAY) {
-                                    fridayStartTime.setValue(thursdayStartTime.getValue());
-                                    fridayEndTime.setValue(thursdayEndTime.getValue());
-                                }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.SATURDAY) {
-                                    saturdayStartTime.setValue(thursdayStartTime.getValue());
-                                    saturdayEndTime.setValue(thursdayEndTime.getValue());
-                                }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.SUNDAY) {
-                                    sundayStartTime.setValue(thursdayStartTime.getValue());
-                                    sundayEndTime.setValue(thursdayEndTime.getValue());
-                                }
-                            }*/
+                            }
                         }
                     }
                     if (Boolean.TRUE.equals(friday.getValue()) && fridayStartTime != null && fridayEndTime != null) {
                         if (startDate.getDayOfWeek().equals(DayOfWeek.FRIDAY)) {
-                            if (Objects.requireNonNull(getBusinessCalendarByCurrentYear()).isBusinessDay(startDate)) {
-                                lessonDates.add(startDate);
-                            } /*else {
-                                LocalDate nextWorkingDay = getNextWorkingDay(startDate);
-                                lessonDates.add(nextWorkingDay);
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.MONDAY) {
-                                    mondayStartTime.setValue(fridayStartTime.getValue());
-                                    mondayEndTime.setValue(fridayEndTime.getValue());
+                            if (startDate.getYear() == Year.now().getValue()) {
+                                if (Objects.requireNonNull(getBusinessCalendarByCurrentYear()).isBusinessDay(startDate)) {
+                                    lessonDates.add(startDate);
                                 }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.TUESDAY) {
-                                    tuesdayStartTime.setValue(fridayStartTime.getValue());
-                                    tuesdayEndTime.setValue(fridayEndTime.getValue());
+                            } else {
+                                if (Objects.requireNonNull(getBusinessCalendarByNextYear()).isBusinessDay(startDate)) {
+                                    lessonDates.add(startDate);
                                 }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.WEDNESDAY) {
-                                    wednesdayStartTime.setValue(fridayStartTime.getValue());
-                                    wednesdayEndTime.setValue(fridayEndTime.getValue());
-                                }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.THURSDAY) {
-                                    thursdayStartTime.setValue(fridayStartTime.getValue());
-                                    thursdayEndTime.setValue(fridayEndTime.getValue());
-                                }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.SATURDAY) {
-                                    saturdayStartTime.setValue(fridayStartTime.getValue());
-                                    saturdayEndTime.setValue(fridayEndTime.getValue());
-                                }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.SUNDAY) {
-                                    sundayStartTime.setValue(fridayStartTime.getValue());
-                                    sundayEndTime.setValue(fridayEndTime.getValue());
-                                }
-                            }*/
+                            }
                         }
                     }
                     if (Boolean.TRUE.equals(saturday.getValue()) && saturdayStartTime != null && saturdayEndTime != null) {
                         if (startDate.getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
-                            if (Objects.requireNonNull(getBusinessCalendarByCurrentYear()).isBusinessDay(startDate)) {
-                                lessonDates.add(startDate);
-                            } /*else {
-                                LocalDate nextWorkingDay = getNextWorkingDay(startDate);
-                                lessonDates.add(nextWorkingDay);
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.MONDAY) {
-                                    mondayStartTime.setValue(saturdayStartTime.getValue());
-                                    mondayEndTime.setValue(saturdayEndTime.getValue());
+                            if (startDate.getYear() == Year.now().getValue()) {
+                                if (Objects.requireNonNull(getBusinessCalendarByCurrentYear()).isBusinessDay(startDate)) {
+                                    lessonDates.add(startDate);
                                 }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.TUESDAY) {
-                                    tuesdayStartTime.setValue(saturdayStartTime.getValue());
-                                    tuesdayEndTime.setValue(saturdayEndTime.getValue());
+                            } else {
+                                if (Objects.requireNonNull(getBusinessCalendarByNextYear()).isBusinessDay(startDate)) {
+                                    lessonDates.add(startDate);
                                 }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.WEDNESDAY) {
-                                    wednesdayStartTime.setValue(saturdayStartTime.getValue());
-                                    wednesdayEndTime.setValue(saturdayEndTime.getValue());
-                                }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.THURSDAY) {
-                                    thursdayStartTime.setValue(saturdayStartTime.getValue());
-                                    thursdayEndTime.setValue(saturdayEndTime.getValue());
-                                }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.FRIDAY) {
-                                    fridayStartTime.setValue(saturdayStartTime.getValue());
-                                    fridayEndTime.setValue(saturdayEndTime.getValue());
-                                }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.SUNDAY) {
-                                    sundayStartTime.setValue(saturdayStartTime.getValue());
-                                    sundayEndTime.setValue(saturdayEndTime.getValue());
-                                }
-                            }*/
+                            }
                         }
                     }
                     if (Boolean.TRUE.equals(sunday.getValue()) && sundayStartTime != null && sundayEndTime != null) {
                         if (startDate.getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
-                            if (Objects.requireNonNull(getBusinessCalendarByCurrentYear()).isBusinessDay(startDate)) {
-                                lessonDates.add(startDate);
-                            } /*else {
-                                LocalDate nextWorkingDay = getNextWorkingDay(startDate);
-                                lessonDates.add(nextWorkingDay);
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.MONDAY) {
-                                    mondayStartTime.setValue(sundayStartTime.getValue());
-                                    mondayEndTime.setValue(sundayEndTime.getValue());
+                            if (startDate.getYear() == Year.now().getValue()) {
+                                if (Objects.requireNonNull(getBusinessCalendarByCurrentYear()).isBusinessDay(startDate)) {
+                                    lessonDates.add(startDate);
                                 }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.TUESDAY) {
-                                    tuesdayStartTime.setValue(sundayStartTime.getValue());
-                                    tuesdayEndTime.setValue(sundayEndTime.getValue());
+                            } else {
+                                if (Objects.requireNonNull(getBusinessCalendarByNextYear()).isBusinessDay(startDate)) {
+                                    lessonDates.add(startDate);
                                 }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.WEDNESDAY) {
-                                    wednesdayStartTime.setValue(sundayStartTime.getValue());
-                                    wednesdayEndTime.setValue(sundayEndTime.getValue());
-                                }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.THURSDAY) {
-                                    thursdayStartTime.setValue(sundayStartTime.getValue());
-                                    thursdayEndTime.setValue(sundayEndTime.getValue());
-                                }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.FRIDAY) {
-                                    fridayStartTime.setValue(sundayStartTime.getValue());
-                                    fridayEndTime.setValue(sundayEndTime.getValue());
-                                }
-                                if (nextWorkingDay.getDayOfWeek() == DayOfWeek.WEDNESDAY) {
-                                    wednesdayStartTime.setValue(sundayStartTime.getValue());
-                                    wednesdayEndTime.setValue(sundayEndTime.getValue());
-                                }
-                            }*/
+                            }
                         }
                     }
                     startDate = startDate.plusDays(1);

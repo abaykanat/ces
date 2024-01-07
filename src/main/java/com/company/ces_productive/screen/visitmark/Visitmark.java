@@ -96,24 +96,29 @@ public class Visitmark extends Screen {
         visitsDl.load();
     }
 
-    private void processVisit(Students student, Groups group, LocalDateTime startTime, LocalDateTime endTime, BigDecimal visitAmount, Courses course, User visitUser) {
+    private void processVisit(Students student, Groups group, LocalDateTime startTime, LocalDateTime endTime, BigDecimal visitAmount, int courseCount, Courses course, User visitUser) {
         List<PaymentParam> paymentParams = student.getStudPayParam();
         if (paymentParams.isEmpty()) {
-            addVisitBasedOnDiscount(student, startTime, endTime, visitAmount, course, visitUser, student.getStudDiscount());
+            addVisitBasedOnDiscount(student, startTime, endTime, visitAmount, courseCount, course, visitUser, student.getStudDiscount());
         } else {
             for (PaymentParam paymentParam : paymentParams) {
                 if (paymentParam.getPayParamGroups().getId().equals(group.getId())) {
-                    addVisitBasedOnDiscount(student, startTime, endTime, visitAmount, course, visitUser, paymentParam.getPayParamDiscontAmount());
+                    addVisitBasedOnDiscount(student, startTime, endTime, visitAmount, courseCount, course, visitUser, paymentParam.getPayParamDiscontAmount());
                 }
             }
         }
     }
 
-    private void addVisitBasedOnDiscount(Students student, LocalDateTime startTime, LocalDateTime endTime, BigDecimal visitAmount, Courses course, User visitUser, BigDecimal discount) {
+    private void addVisitBasedOnDiscount(Students student, LocalDateTime startTime, LocalDateTime endTime, BigDecimal visitAmount, int courseCount, Courses course, User visitUser, BigDecimal discount) {
         BigDecimal adjustedAmount = visitAmount;
-        if (discount != null) {
-            BigDecimal percentAmount = visitAmount.multiply(discount).divide(BigDecimal.valueOf(100), RoundingMode.UP);
-            adjustedAmount = visitAmount.subtract(percentAmount);
+            if (discount != null) {
+                BigDecimal percentAmount;
+                if (discount.compareTo(BigDecimal.valueOf(100)) < 0) {
+                    percentAmount = visitAmount.multiply(discount).divide(BigDecimal.valueOf(100), RoundingMode.UP);
+                } else {
+                    percentAmount = discount.divide(BigDecimal.valueOf(courseCount), RoundingMode.UP);
+                }
+                adjustedAmount = visitAmount.subtract(percentAmount);
         }
         createVisits.addVisit(VisitStatus.NOT_DEFINED, startTime, endTime, adjustedAmount, student, course, visitUser);
     }
@@ -178,14 +183,15 @@ public class Visitmark extends Screen {
             }
             for (Students student : Objects.requireNonNull(course.getCourseGroup().getGroupStudents())) {
                 BigDecimal visitAmount = GetCourseRealAmount.getCourseRealAmount(student, group, course.getCourseName()).getAmount();
+                int courseCount = GetCourseRealAmount.getCourseRealAmount(student, group, course.getCourseName()).getCount();
                 switch (student.getStudStatus()) {
                     case STUDY:
-                        processVisit(student, group, startTime, endTime, visitAmount, course, visitUser);
+                        processVisit(student, group, startTime, endTime, visitAmount, courseCount, course, visitUser);
                         break;
                     case STOPPED:
                         BigDecimal courseCost = course.getCourseCost();
                         if (student.getStudActualAmount().compareTo(courseCost) > 0) {
-                            processVisit(student, group, startTime, endTime, visitAmount, course, visitUser);
+                            processVisit(student, group, startTime, endTime, visitAmount, courseCount, course, visitUser);
                         }
                         break;
                     case FREEZE:
@@ -193,7 +199,7 @@ public class Visitmark extends Screen {
                         for (Freeze freeze : freezes) {
                             LocalDate freezeEndDate = freeze.getFreezeEndDate();
                             if (!freezeEndDate.isAfter(LocalDate.now())) {
-                                processVisit(student, group, startTime, endTime, visitAmount, course, visitUser);
+                                processVisit(student, group, startTime, endTime, visitAmount, courseCount, course, visitUser);
                                 student.setStudStatus(StudentStatus.STUDY);
                                 dataManager.save(student);
                             }

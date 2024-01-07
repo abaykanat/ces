@@ -2,10 +2,12 @@ package com.company.ces_productive.screen.paymentparam;
 
 import com.company.ces_productive.app.CreateOrder;
 import com.company.ces_productive.app.DocNumbGenerate;
+import com.company.ces_productive.app.GetCourseRealAmount;
 import com.company.ces_productive.entity.*;
 import com.company.ces_productive.entity.courses.Courses;
 import io.jmix.core.DataManager;
 import io.jmix.ui.Dialogs;
+import io.jmix.ui.Notifications;
 import io.jmix.ui.action.Action;
 import io.jmix.ui.action.DialogAction;
 import io.jmix.ui.component.*;
@@ -41,6 +43,18 @@ public class PaymentParamEdit extends StandardEditor<PaymentParam> {
     private Dialogs dialogs;
     @Autowired
     private EntityPicker<Groups> payParamGroupsField;
+    @Autowired
+    private CheckBox payParamMethodField;
+    @Autowired
+    private Notifications notifications;
+
+    @Subscribe
+    public void onBeforeShow(final BeforeShowEvent event) {
+        if (Boolean.FALSE.equals(payParamMethodField.getValue())) {
+            String payParamDiscontAmountCaption = payParamDiscontAmountField.getCaption();
+            payParamDiscontAmountField.setCaption(payParamDiscontAmountCaption+" %");
+        }
+    }
 
     @Subscribe("payParamDiscontAmountField")
     public void onPayParamDiscontAmountFieldValueChange(final HasValue.ValueChangeEvent<BigDecimal> event) {
@@ -57,31 +71,22 @@ public class PaymentParamEdit extends StandardEditor<PaymentParam> {
         }
     }
 
-    public BigDecimal getCourseRealAmount(Groups group, Students student) {
-        List<Courses> courses = group.getGroupCourse();
-        List<PaymentParam> paymentParams = student.getStudPayParam();
-        for (PaymentParam paymentParam : paymentParams) {
-            if (paymentParam.getPayParamGroups().getId().equals(group.getId())) {
-                List<Orders> paidOrders = student.getStudOrders().stream()
-                        .filter(orders -> orders.getOrderGroup().getId().equals(group.getId()) && orders.getOrderStatus() == OrderStatus.PAID)
-                        .toList();
-                int orderCount = paidOrders.size();
-                LocalDate baseDate = paymentParam.getPayParamPayDay();
-                LocalDate payParamDate = baseDate.minusMonths(orderCount);
-                LocalDate newParamDate = payParamDate.plusMonths(1);
-                BigDecimal directionAmount = group.getGroupDirection().getDirectionMinCost();
-                List<Courses> filteredCourses = courses.stream()
-                        .filter(course -> (course.getCourseStartDate().isEqual(payParamDate.atStartOfDay()) || course.getCourseStartDate().isAfter(payParamDate.atStartOfDay()))
-                                && course.getCourseStartDate().isBefore(newParamDate.atStartOfDay()))
-                        .toList();
-                int courseCount = filteredCourses.size();
-                if (courseCount == 0) {
-                    return BigDecimal.ZERO;
-                }
-                return directionAmount.divide(BigDecimal.valueOf(courseCount), RoundingMode.UP);
+    @Subscribe("payParamMethodField")
+    public void onPayParamMethodFieldValueChange(final HasValue.ValueChangeEvent<Boolean> event) {
+        String payParamDiscontAmountCaption = payParamDiscontAmountField.getCaption();
+        if (Boolean.FALSE.equals(payParamMethodField.getValue()) && payParamDiscontAmountCaption != null) {
+            payParamDiscontAmountField.setCaption(payParamDiscontAmountCaption+" %");
+            if (payParamDiscontAmountCaption.contains("тенге")) {
+                payParamDiscontAmountCaption = payParamDiscontAmountCaption.replace("тенге", "%");
+                payParamDiscontAmountField.setCaption(payParamDiscontAmountCaption);
+            }
+        } else if (Boolean.TRUE.equals(payParamMethodField.getValue()) && payParamDiscontAmountCaption != null) {
+            payParamDiscontAmountField.setCaption(payParamDiscontAmountCaption+" тенге");
+            if (payParamDiscontAmountCaption.contains("%")) {
+                payParamDiscontAmountCaption = payParamDiscontAmountCaption.replace("%", "тенге");
+                payParamDiscontAmountField.setCaption(payParamDiscontAmountCaption);
             }
         }
-        return BigDecimal.ZERO;
     }
 
     @Subscribe("newParamSave")
@@ -92,6 +97,24 @@ public class PaymentParamEdit extends StandardEditor<PaymentParam> {
         LocalDate newPeriod = payParamPayDayField.getValue();
         BigDecimal payParamDiscontAmountValue = payParamDiscontAmountField.getValue();
         DiscountReason payParamDiscountReasonValue = payParamDiscountReasonField.getValue();
+        Boolean payParamMethod = payParamMethodField.getValue();
+        if (Boolean.TRUE.equals(payParamMethod) && payParamDiscontAmountValue != null) {
+            if (payParamDiscontAmountValue.compareTo(BigDecimal.valueOf(100)) <= 0) {
+                notifications.create(Notifications.NotificationType.ERROR)
+                        .withCaption("Ошибка по скидке")
+                        .withDescription("Сумма скидки фиксированной суммой не может быть меньше или равно 100 тенге")
+                        .show();
+                return;
+            }
+        } else if (Boolean.FALSE.equals(payParamMethod) && payParamDiscontAmountValue != null) {
+            if (payParamDiscontAmountValue.compareTo(BigDecimal.valueOf(100)) > 0) {
+                notifications.create(Notifications.NotificationType.ERROR)
+                        .withCaption("Ошибка по скидке")
+                        .withDescription("Сумма скидки в процентах не может быть больше 100%")
+                        .show();
+                return;
+            }
+        }
         if (Objects.requireNonNull(newPeriod).isAfter(currPeriod)) {
             dialogs.createOptionDialog()
                     .withCaption("ПОДТВЕРЖДЕНИЕ")
@@ -100,29 +123,31 @@ public class PaymentParamEdit extends StandardEditor<PaymentParam> {
                             new DialogAction(DialogAction.Type.YES, Action.Status.PRIMARY).withHandler(e -> {
                                 List<Groups> studentGroups = student.getStudGroups();
                                 for (Groups studentGroup : studentGroups) {
-                                    BigDecimal courseCost = getCourseRealAmount(studentGroup, student);
-                                    if (!courseCost.equals(BigDecimal.ZERO)) {
-                                        List<Courses> courses = studentGroup.getGroupCourse();
-                                        List<LocalDate> bethCourseCount = new ArrayList<>();
-                                        for (Courses course : courses) {
-                                            LocalDateTime courseDateTime = course.getCourseStartDate();
-                                            LocalDate courseDate = LocalDate.of(courseDateTime.getYear(), courseDateTime.getMonth(), courseDateTime.getDayOfMonth());
-                                            if (courseDate.isBefore(newPeriod) && course.getCourseStatus() != CourseStatus.HELD) {
-                                                bethCourseCount.add(courseDate);
+                                    List<Courses> courses = studentGroup.getGroupCourse();
+                                    List<LocalDate> bethCourseCount = new ArrayList<>();
+                                    for (Courses course : courses) {
+                                        if (!course.getCourseCost().equals(BigDecimal.ZERO)) {
+                                            BigDecimal courseCost = GetCourseRealAmount.getCourseRealAmount(student, studentGroup, course.getCourseName()).getAmount();
+                                            if (!courseCost.equals(BigDecimal.ZERO)) {
+                                                LocalDateTime courseDateTime = course.getCourseStartDate();
+                                                LocalDate courseDate = LocalDate.of(courseDateTime.getYear(), courseDateTime.getMonth(), courseDateTime.getDayOfMonth());
+                                                if (courseDate.isBefore(newPeriod) && course.getCourseStatus() != CourseStatus.HELD) {
+                                                    bethCourseCount.add(courseDate);
+                                                }
                                             }
-                                        }
-                                        if (!bethCourseCount.isEmpty()) {
-                                            BigDecimal lastAmount;
-                                            String branchCode = studentGroup.getGroupBranch().getBranchCode();
-                                            String ordNum = docNumbGenerate.getNextNumber("ORDDIF", branchCode);
-                                            if (payParamDiscontAmountValue == null) {
-                                                lastAmount = BigDecimal.valueOf(bethCourseCount.size()).multiply(courseCost);
-                                            } else {
-                                                BigDecimal percentAmount = courseCost.multiply(student.getStudDiscount()).divide(BigDecimal.valueOf(100), RoundingMode.UP);
-                                                lastAmount = BigDecimal.valueOf(bethCourseCount.size()).multiply(courseCost).subtract(percentAmount);
+                                            if (!bethCourseCount.isEmpty()) {
+                                                BigDecimal lastAmount;
+                                                String branchCode = studentGroup.getGroupBranch().getBranchCode();
+                                                String ordNum = docNumbGenerate.getNextNumber("ORDDIF", branchCode);
+                                                if (payParamDiscontAmountValue == null) {
+                                                    lastAmount = BigDecimal.valueOf(bethCourseCount.size()).multiply(courseCost);
+                                                } else {
+                                                    BigDecimal percentAmount = courseCost.multiply(student.getStudDiscount()).divide(BigDecimal.valueOf(100), RoundingMode.UP);
+                                                    lastAmount = BigDecimal.valueOf(bethCourseCount.size()).multiply(courseCost).subtract(percentAmount);
+                                                }
+                                                createOrder.createNewOrder(ordNum, LocalDateTime.now(), studentGroup.getGroupBranch(), lastAmount,
+                                                        OrderPurpose.SUBSCRIPTION, OrderStatus.CREATED, student, newPeriod, studentGroup, null);
                                             }
-                                            createOrder.createNewOrder(ordNum, LocalDateTime.now(), studentGroup.getGroupBranch(), lastAmount,
-                                                    OrderPurpose.SUBSCRIPTION, OrderStatus.CREATED, student, newPeriod, studentGroup, null);
                                         }
                                     }
                                 }
@@ -133,12 +158,20 @@ public class PaymentParamEdit extends StandardEditor<PaymentParam> {
                                 List<Orders> orders = student.getStudOrders();
                                 for (Orders order : orders) {
                                     if (order.getOrderStatus() == OrderStatus.CREATED && order.getOrderGroup().equals(payParamGroupsField.getValue())) {
-                                        BigDecimal percentAmount = order.getOrderAmount().multiply(payParamDiscontAmountValue).divide(BigDecimal.valueOf(100), RoundingMode.UP);
-                                        BigDecimal disVisitAmount = order.getOrderAmount().subtract(percentAmount);
-                                        order.setOrderAmount(disVisitAmount);
-                                        order.setOrderDateTime(LocalDateTime.now());
-                                        order.setOrderPeriodEnd(newPeriod);
-                                        dataManager.save(order);
+                                        if (Boolean.TRUE.equals(payParamMethodField.getValue())) {
+                                            BigDecimal disVisitAmount = order.getOrderAmount().subtract(payParamDiscontAmountValue);
+                                            order.setOrderAmount(disVisitAmount);
+                                            order.setOrderDateTime(LocalDateTime.now());
+                                            order.setOrderPeriodEnd(newPeriod);
+                                            dataManager.save(order);
+                                        } else if (Boolean.FALSE.equals(payParamMethodField.getValue())) {
+                                            BigDecimal percentAmount = order.getOrderAmount().multiply(payParamDiscontAmountValue).divide(BigDecimal.valueOf(100), RoundingMode.UP);
+                                            BigDecimal disVisitAmount = order.getOrderAmount().subtract(percentAmount);
+                                            order.setOrderAmount(disVisitAmount);
+                                            order.setOrderDateTime(LocalDateTime.now());
+                                            order.setOrderPeriodEnd(newPeriod);
+                                            dataManager.save(order);
+                                        }
                                     }
                                 }
                                 student.setStudOrderPeriod(LocalDate.EPOCH);
@@ -154,12 +187,20 @@ public class PaymentParamEdit extends StandardEditor<PaymentParam> {
             if (payParamDiscontAmountValue != null && payParamDiscontAmountValue.compareTo(BigDecimal.ZERO) > 0) {
                 for (Orders order : orders) {
                     if (order.getOrderStatus() == OrderStatus.CREATED && order.getOrderGroup().equals(payParamGroupsField.getValue())) {
-                        BigDecimal percentAmount = order.getOrderAmount().multiply(payParamDiscontAmountValue).divide(BigDecimal.valueOf(100), RoundingMode.UP);
-                        BigDecimal disVisitAmount = order.getOrderAmount().subtract(percentAmount);
-                        order.setOrderAmount(disVisitAmount);
-                        order.setOrderDateTime(LocalDateTime.now());
-                        order.setOrderPeriodEnd(newPeriod);
-                        dataManager.save(order);
+                        if (Boolean.TRUE.equals(payParamMethodField.getValue())) {
+                            BigDecimal disVisitAmount = order.getOrderAmount().subtract(payParamDiscontAmountValue);
+                            order.setOrderAmount(disVisitAmount);
+                            order.setOrderDateTime(LocalDateTime.now());
+                            order.setOrderPeriodEnd(newPeriod);
+                            dataManager.save(order);
+                        } else if (Boolean.FALSE.equals(payParamMethodField.getValue())) {
+                            BigDecimal percentAmount = order.getOrderAmount().multiply(payParamDiscontAmountValue).divide(BigDecimal.valueOf(100), RoundingMode.UP);
+                            BigDecimal disVisitAmount = order.getOrderAmount().subtract(percentAmount);
+                            order.setOrderAmount(disVisitAmount);
+                            order.setOrderDateTime(LocalDateTime.now());
+                            order.setOrderPeriodEnd(newPeriod);
+                            dataManager.save(order);
+                        }
                     }
                 }
                 paymentParam.setPayParamDiscount(payParamDiscountReasonValue);
