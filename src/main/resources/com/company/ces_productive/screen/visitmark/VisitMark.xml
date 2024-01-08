@@ -17,7 +17,7 @@
                     where e.courseTeacher = :currTeacher
                     and e.courseStartDate <= :courseStartDate
                     and e.courseEndDate >= :courseEndDate
-                    and e.courseStatus in ('NEW', 'NOT_DONE')  ]]>
+                    and e.courseStatus in ('NEW', 'NOT_DONE') ]]>
                 </query>
             </loader>
         </collection>

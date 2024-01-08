@@ -116,7 +116,11 @@ public class Visitmark extends Screen {
                 if (discount.compareTo(BigDecimal.valueOf(100)) < 0) {
                     percentAmount = visitAmount.multiply(discount).divide(BigDecimal.valueOf(100), RoundingMode.UP);
                 } else {
-                    percentAmount = discount.divide(BigDecimal.valueOf(courseCount), RoundingMode.UP);
+                    if (courseCount != 0) {
+                        percentAmount = discount.divide(BigDecimal.valueOf(courseCount), RoundingMode.UP);
+                    } else {
+                        percentAmount = discount.multiply(BigDecimal.valueOf(courseCount));
+                    }
                 }
                 adjustedAmount = visitAmount.subtract(percentAmount);
         }
