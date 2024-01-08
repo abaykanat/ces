@@ -43,7 +43,7 @@ public class CourseDeleteQuartz implements Job {
         try {
             log.info("Starting GetCourseAmountQuartz job execution...");
             List<Courses> courses = dataManager.load(Courses.class)
-                    .query("select c from CES_Courses c")
+                    .query("select c from CES_Courses c where c.courseStatus = 'NEW'")
                     .list();
             List<Courses> deleteCourses = new ArrayList<>();
             for (Courses course : courses) {
