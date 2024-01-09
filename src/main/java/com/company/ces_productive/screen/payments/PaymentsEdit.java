@@ -58,8 +58,8 @@ public class PaymentsEdit extends StandardEditor<Payments> {
     public void onBeforeCommitChanges(BeforeCommitChangesEvent event) {
         Students student = getEditedEntity().getPayStudent();
         dialogs.createOptionDialog()
-                .withCaption("Confirmation")
-                .withMessage("Do you want accept payment for:" + student.getStudLastName() + " " + student.getStudFirstName() + "?")
+                .withCaption("Подтверждение")
+                .withMessage("Принимаем оплату по студенту " + student.getStudLastName() + " " + student.getStudFirstName() + "?")
                 .withActions(
                         new DialogAction(DialogAction.Type.OK).withHandler(e -> {
                             event.resume();
