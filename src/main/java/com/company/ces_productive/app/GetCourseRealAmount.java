@@ -59,7 +59,7 @@ public class GetCourseRealAmount {
                 if (orders.getOrderGroup().equals(group)
                         && orders.getOrderStatus() == OrderStatus.PAID
                         && !orders.getOrderNumber().contains("ORDDIF")
-                        && orders.getOrderPeriodEnd().isAfter(LocalDate.now().plusMonths(1))) {
+                        && orders.getOrderPeriodEnd().isAfter(LocalDate.now())) {
                     paidOrders.add(orders);
                 }
             }
