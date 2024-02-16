@@ -59,7 +59,7 @@ public class GetCourseRealAmount {
                 if (orders.getOrderGroup().equals(group)
                         && orders.getOrderStatus() == OrderStatus.PAID
                         && !orders.getOrderNumber().contains("ORDDIF")
-                        && orders.getOrderPeriodEnd().isAfter(LocalDate.now())) {
+                        && orders.getOrderPeriodEnd().isAfter(LocalDate.now().minusMonths(1).minusDays(7))) {
                     paidOrders.add(orders);
                 }
             }
@@ -82,7 +82,7 @@ public class GetCourseRealAmount {
                         }
                     }
                 } else {
-                    return new CalculationResult(BigDecimal.ZERO, 0, "Дата платежа установлена неправильно");
+                    return new CalculationResult(BigDecimal.ZERO, 0, "Дата платежа неактуальная или просрочена. Обновите дату платежа или внесите платеж");
                 }
             }
             return new CalculationResult(BigDecimal.ZERO, 0,"По параметру платежа отсутствует группа");
