@@ -1,5 +1,6 @@
 package com.company.ces_productive.app;
 
+import com.company.ces_productive.entity.CourseStatus;
 import com.company.ces_productive.entity.Groups;
 import com.company.ces_productive.entity.Students;
 import com.company.ces_productive.entity.courses.Courses;
@@ -44,7 +45,8 @@ public class GetCourseAmountQuartz implements Job {
                 for (Groups group : groups) {
                     List<Courses> courses = group.getGroupCourse();
                     Map<String, List<Courses>> courseNames = courses.stream()
-                            .filter(course -> course.getCourseCost().compareTo(BigDecimal.ZERO) > 0)
+                            .filter(course -> course.getCourseCost().compareTo(BigDecimal.ZERO) > 0
+                                    && course.getCourseStatus().equals(CourseStatus.NEW))
                             .collect(Collectors.groupingBy(Courses::getCourseName));
                     List<String> courseNamesLists = courseNames.keySet().stream().toList();
 
