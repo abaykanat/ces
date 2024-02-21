@@ -115,7 +115,7 @@ public class PaymentParamEdit extends StandardEditor<PaymentParam> {
                 return;
             }
         }
-        if (Objects.requireNonNull(newPeriod).isAfter(currPeriod)) {
+        if (Objects.requireNonNull(newPeriod).isAfter(currPeriod) && newPeriod.isBefore(currPeriod.plusMonths(1))) {
             dialogs.createOptionDialog()
                     .withCaption("ПОДТВЕРЖДЕНИЕ")
                     .withMessage("Вы сдвинули дату платежа. По занятиям, которые  не были проведены до " + newPeriod + " будет создано новое платежное требование для оплаты. Вы уверены?")
@@ -125,30 +125,39 @@ public class PaymentParamEdit extends StandardEditor<PaymentParam> {
                                 for (Groups studentGroup : studentGroups) {
                                     List<Courses> courses = studentGroup.getGroupCourse();
                                     List<LocalDate> bethCourseCount = new ArrayList<>();
+                                    boolean shouldCreateOrder = false;
+                                    BigDecimal totalLastAmount = BigDecimal.ZERO;
                                     for (Courses course : courses) {
                                         if (!course.getCourseCost().equals(BigDecimal.ZERO)) {
                                             BigDecimal courseCost = GetCourseRealAmount.getCourseRealAmount(student, studentGroup, course.getCourseName()).getAmount();
                                             if (!courseCost.equals(BigDecimal.ZERO)) {
                                                 LocalDateTime courseDateTime = course.getCourseStartDate();
                                                 LocalDate courseDate = LocalDate.of(courseDateTime.getYear(), courseDateTime.getMonth(), courseDateTime.getDayOfMonth());
-                                                if (courseDate.isBefore(newPeriod) && course.getCourseStatus() != CourseStatus.HELD) {
+                                                if (courseDate.isBefore(newPeriod) && courseDate.isAfter(LocalDate.now()) && course.getCourseStatus() != CourseStatus.HELD) {
                                                     bethCourseCount.add(courseDate);
                                                 }
                                             }
                                             if (!bethCourseCount.isEmpty()) {
-                                                BigDecimal lastAmount;
-                                                String branchCode = studentGroup.getGroupBranch().getBranchCode();
-                                                String ordNum = docNumbGenerate.getNextNumber("ORDDIF", branchCode);
-                                                if (payParamDiscontAmountValue == null) {
-                                                    lastAmount = BigDecimal.valueOf(bethCourseCount.size()).multiply(courseCost);
+                                                shouldCreateOrder = true;
+                                                if (payParamDiscontAmountValue == null || payParamDiscontAmountValue.compareTo(BigDecimal.ZERO) == 0) {
+                                                    totalLastAmount = totalLastAmount.add(BigDecimal.valueOf(bethCourseCount.size()).multiply(courseCost));
                                                 } else {
-                                                    BigDecimal percentAmount = courseCost.multiply(student.getStudDiscount()).divide(BigDecimal.valueOf(100), RoundingMode.UP);
-                                                    lastAmount = BigDecimal.valueOf(bethCourseCount.size()).multiply(courseCost).subtract(percentAmount);
+                                                    BigDecimal percentAmount = BigDecimal.ZERO;
+                                                    if (payParamDiscontAmountValue.compareTo(BigDecimal.ZERO) > 0 && payParamDiscontAmountValue.compareTo(BigDecimal.valueOf(100)) < 0) {
+                                                        percentAmount = courseCost.multiply(student.getStudDiscount()).divide(BigDecimal.valueOf(100), RoundingMode.UP);
+                                                    } else {
+                                                        percentAmount = courseCost.subtract(student.getStudDiscount());
+                                                    }
+                                                    totalLastAmount = totalLastAmount.add(BigDecimal.valueOf(bethCourseCount.size()).multiply(courseCost).subtract(percentAmount));
                                                 }
-                                                createOrder.createNewOrder(ordNum, LocalDateTime.now(), studentGroup.getGroupBranch(), lastAmount,
-                                                        OrderPurpose.SUBSCRIPTION, OrderStatus.CREATED, student, newPeriod, studentGroup, null);
                                             }
                                         }
+                                    }
+                                    if (shouldCreateOrder) {
+                                        String branchCode = studentGroup.getGroupBranch().getBranchCode();
+                                        String ordNum = docNumbGenerate.getNextNumber("ORDDIF", branchCode);
+                                        createOrder.createNewOrder(ordNum, LocalDateTime.now(), studentGroup.getGroupBranch(), totalLastAmount,
+                                                OrderPurpose.SUBSCRIPTION, OrderStatus.CREATED, student, newPeriod, studentGroup, null);
                                     }
                                 }
                                 paymentParam.setPayParamPayDay(newPeriod);
@@ -181,6 +190,11 @@ public class PaymentParamEdit extends StandardEditor<PaymentParam> {
                             }),
                             new DialogAction(DialogAction.Type.NO)
                     )
+                    .show();
+        } else if (newPeriod.isAfter(currPeriod.plusMonths(1))) {
+            notifications.create(Notifications.NotificationType.ERROR)
+                    .withCaption("Ошибка переноса даты платежа")
+                    .withDescription("Максимальная дата платежа не может быть больше одного месяца с текущей даты")
                     .show();
         } else {
             List<Orders> orders = student.getStudOrders();
