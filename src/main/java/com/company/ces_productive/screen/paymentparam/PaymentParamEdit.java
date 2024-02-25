@@ -191,12 +191,7 @@ public class PaymentParamEdit extends StandardEditor<PaymentParam> {
                             new DialogAction(DialogAction.Type.NO)
                     )
                     .show();
-        } else if (newPeriod.isAfter(currPeriod.plusMonths(1))) {
-            notifications.create(Notifications.NotificationType.ERROR)
-                    .withCaption("Ошибка переноса даты платежа")
-                    .withDescription("Максимальная дата платежа не может быть больше одного месяца с текущей даты")
-                    .show();
-        } else {
+        } else if (newPeriod.isBefore(currPeriod) && newPeriod.isAfter(currPeriod.minusMonths(1))) {
             List<Orders> orders = student.getStudOrders();
             if (payParamDiscontAmountValue != null && payParamDiscontAmountValue.compareTo(BigDecimal.ZERO) > 0) {
                 for (Orders order : orders) {
@@ -208,7 +203,8 @@ public class PaymentParamEdit extends StandardEditor<PaymentParam> {
                             order.setOrderPeriodEnd(newPeriod);
                             dataManager.save(order);
                         } else if (Boolean.FALSE.equals(payParamMethodField.getValue())) {
-                            BigDecimal percentAmount = order.getOrderAmount().multiply(payParamDiscontAmountValue).divide(BigDecimal.valueOf(100), RoundingMode.UP);
+                            BigDecimal discountAmount = (payParamDiscontAmountValue).divide(BigDecimal.valueOf(100), RoundingMode.UP);
+                            BigDecimal percentAmount = order.getOrderAmount().multiply(discountAmount);
                             BigDecimal disVisitAmount = order.getOrderAmount().subtract(percentAmount);
                             order.setOrderAmount(disVisitAmount);
                             order.setOrderDateTime(LocalDateTime.now());
@@ -234,6 +230,16 @@ public class PaymentParamEdit extends StandardEditor<PaymentParam> {
             }
             paymentParam.setPayParamPayDay(newPeriod);
             dataManager.save(paymentParam);
+        } else if (newPeriod.isAfter(currPeriod.plusMonths(1))) {
+            notifications.create(Notifications.NotificationType.ERROR)
+                    .withCaption("Ошибка переноса даты платежа")
+                    .withDescription("Максимальная дата платежа не может быть больше одного месяца с текущей даты")
+                    .show();
+        } else if (newPeriod.isBefore(currPeriod.minusMonths(1))) {
+            notifications.create(Notifications.NotificationType.ERROR)
+                    .withCaption("Ошибка переноса даты платежа")
+                    .withDescription("Минимальная дата платежа не может быть меньше месяца с текущей даты")
+                    .show();
         }
         closeWithDiscard();
     }
