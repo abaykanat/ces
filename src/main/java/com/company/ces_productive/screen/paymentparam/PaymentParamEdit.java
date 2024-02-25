@@ -174,19 +174,21 @@ public class PaymentParamEdit extends StandardEditor<PaymentParam> {
                                 List<Orders> orders = student.getStudOrders();
                                 for (Orders order : orders) {
                                     if (order.getOrderStatus() == OrderStatus.CREATED && order.getOrderGroup().equals(payParamGroupsField.getValue())) {
-                                        if (Boolean.TRUE.equals(payParamMethodField.getValue())) {
-                                            BigDecimal disVisitAmount = order.getOrderAmount().subtract(payParamDiscontAmountValue);
-                                            order.setOrderAmount(disVisitAmount);
-                                            order.setOrderDateTime(LocalDateTime.now());
-                                            order.setOrderPeriodEnd(newPeriod);
-                                            dataManager.save(order);
-                                        } else if (Boolean.FALSE.equals(payParamMethodField.getValue())) {
-                                            BigDecimal percentAmount = order.getOrderAmount().multiply(payParamDiscontAmountValue).divide(BigDecimal.valueOf(100), RoundingMode.UP);
-                                            BigDecimal disVisitAmount = order.getOrderAmount().subtract(percentAmount);
-                                            order.setOrderAmount(disVisitAmount);
-                                            order.setOrderDateTime(LocalDateTime.now());
-                                            order.setOrderPeriodEnd(newPeriod);
-                                            dataManager.save(order);
+                                        if (order.getOrderAmount().equals(paymentParam.getPayParamGroups().getGroupCost())) {
+                                            if (Boolean.TRUE.equals(payParamMethodField.getValue())) {
+                                                BigDecimal disVisitAmount = order.getOrderAmount().subtract(payParamDiscontAmountValue);
+                                                order.setOrderAmount(disVisitAmount);
+                                                order.setOrderDateTime(LocalDateTime.now());
+                                                order.setOrderPeriodEnd(newPeriod);
+                                                dataManager.save(order);
+                                            } else if (Boolean.FALSE.equals(payParamMethodField.getValue())) {
+                                                BigDecimal percentAmount = order.getOrderAmount().multiply(payParamDiscontAmountValue).divide(BigDecimal.valueOf(100), RoundingMode.UP);
+                                                BigDecimal disVisitAmount = order.getOrderAmount().subtract(percentAmount);
+                                                order.setOrderAmount(disVisitAmount);
+                                                order.setOrderDateTime(LocalDateTime.now());
+                                                order.setOrderPeriodEnd(newPeriod);
+                                                dataManager.save(order);
+                                            }
                                         }
                                     }
                                 }
