@@ -107,9 +107,12 @@ public class GetCourseRealAmount {
                         .toList();
                 int courseCount = filteredCourses.size();
                 if (courseCount == 0) {
-                    return new CalculationAmount(BigDecimal.ZERO, 0,"Не найдены занятия для расчета стоимости. Дата платежа больше даты оплаты");
+                    return new CalculationAmount(BigDecimal.ZERO, 0,"Не найдены занятия для расчета стоимости");
                 }
                 BigDecimal calcAmount = directionAmount.divide(BigDecimal.valueOf(courseCount), RoundingMode.UP);
+                if (calcAmount.compareTo(BigDecimal.ZERO) == 0) {
+                    return new CalculationAmount(BigDecimal.ZERO, 0,"Не найдены занятия для расчета стоимости. Дата платежа больше даты оплаты");
+                }
                 return new CalculationAmount(calcAmount, courseCount,"Успешно");
             } else if (payDate.isBefore(minDate)) {
                 List<Courses> filteredCourses = courses.stream()
@@ -118,9 +121,12 @@ public class GetCourseRealAmount {
                         .toList();
                 int courseCount = filteredCourses.size();
                 if (courseCount == 0) {
-                    return new CalculationAmount(BigDecimal.ZERO, 0,"Не найдены занятия для расчета стоимости. Дата платежа меньше даты оплаты");
+                    return new CalculationAmount(BigDecimal.ZERO, 0,"Не найдены занятия для расчета стоимости");
                 }
                 BigDecimal calcAmount = directionAmount.divide(BigDecimal.valueOf(courseCount), RoundingMode.UP);
+                if (calcAmount.compareTo(BigDecimal.ZERO) == 0) {
+                    return new CalculationAmount(BigDecimal.ZERO, 0,"Не найдены занятия для расчета стоимости. Дата платежа меньше даты оплаты");
+                }
                 return new CalculationAmount(calcAmount, courseCount,"Успешно");
             }
         } else {

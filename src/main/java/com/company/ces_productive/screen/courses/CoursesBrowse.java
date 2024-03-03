@@ -28,7 +28,6 @@ import io.jmix.ui.component.RadioButtonGroup;
 import io.jmix.ui.model.CollectionContainer;
 import io.jmix.ui.model.CollectionLoader;
 import io.jmix.ui.model.DataContext;
-import io.jmix.ui.screen.LookupComponent;
 import io.jmix.ui.screen.MessageBundle;
 import io.jmix.ui.screen.OpenMode;
 import io.jmix.ui.screen.Screen;
