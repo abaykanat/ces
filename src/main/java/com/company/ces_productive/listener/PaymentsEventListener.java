@@ -62,6 +62,14 @@ public class PaymentsEventListener {
                                         paymentParam.setPayParamPayDay(payPeriod);
                                         dataManager.save(paymentParam);
                                     }
+                                } else if (paramDiscount.compareTo(BigDecimal.ZERO) == 0) {
+                                    LocalDate payPeriod = paymentParam.getPayParamPayDay().plusMonths(1);
+                                    if (!orderNumber.contains("ORDDIF")) {
+                                        createOrder.createNewOrder(ordNum, LocalDateTime.now(), branch, cost,
+                                                OrderPurpose.SUBSCRIPTION, OrderStatus.CREATED, stud, payPeriod, group, null);
+                                        paymentParam.setPayParamPayDay(payPeriod);
+                                        dataManager.save(paymentParam);
+                                    }
                                 } else {
                                     if (!orderNumber.contains("ORDDIF")) {
                                         if (paramDiscount.compareTo(BigDecimal.ZERO) > 0 && paramDiscount.compareTo(BigDecimal.valueOf(100)) < 0) {
@@ -147,10 +155,18 @@ public class PaymentsEventListener {
                                             paymentParam.setPayParamPayDay(payPeriod);
                                             dataManager.save(paymentParam);
                                         }
+                                    } else if (paramDiscount.compareTo(BigDecimal.ZERO) == 0) {
+                                        LocalDate payPeriod = paymentParam.getPayParamPayDay().plusMonths(1);
+                                        if (!orderNumber.contains("ORDDIF")) {
+                                            createOrder.createNewOrder(ordNum, LocalDateTime.now(), branch, cost,
+                                                    OrderPurpose.SUBSCRIPTION, OrderStatus.CREATED, stud, payPeriod, group, null);
+                                            paymentParam.setPayParamPayDay(payPeriod);
+                                            dataManager.save(paymentParam);
+                                        }
                                     }
                                     else {
                                         if (!orderNumber.contains("ORDDIF")) {
-                                            if (paramDiscount.compareTo(BigDecimal.valueOf(100)) < 0 || paramDiscount.compareTo(BigDecimal.ZERO) == 0) {
+                                            if (paramDiscount.compareTo(BigDecimal.ZERO) > 0 && paramDiscount.compareTo(BigDecimal.valueOf(100)) < 0) {
                                                 BigDecimal percentAmount = (cost.multiply((paramDiscount))).divide(BigDecimal.valueOf(100), RoundingMode.UP);
                                                 BigDecimal finalCost = cost.subtract(percentAmount);
                                                 LocalDate payPeriod = paymentParam.getPayParamPayDay().plusMonths(1);

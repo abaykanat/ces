@@ -107,7 +107,7 @@ public class GetCourseRealAmount {
                         .toList();
                 int courseCount = filteredCourses.size();
                 if (courseCount == 0) {
-                    return new CalculationAmount(BigDecimal.ZERO, 0,"Не найдены занятия для расчета стоимости");
+                    return new CalculationAmount(BigDecimal.ZERO, 0,"Не найдены занятия для расчета стоимости. Дата платежа больше даты занятии");
                 }
                 BigDecimal calcAmount = directionAmount.divide(BigDecimal.valueOf(courseCount), RoundingMode.UP);
                 if (calcAmount.compareTo(BigDecimal.ZERO) == 0) {
@@ -121,7 +121,7 @@ public class GetCourseRealAmount {
                         .toList();
                 int courseCount = filteredCourses.size();
                 if (courseCount == 0) {
-                    return new CalculationAmount(BigDecimal.ZERO, 0,"Не найдены занятия для расчета стоимости");
+                    return new CalculationAmount(BigDecimal.ZERO, 0,"Не найдены занятия для расчета стоимости. Дата платежа меньше даты занятии");
                 }
                 BigDecimal calcAmount = directionAmount.divide(BigDecimal.valueOf(courseCount), RoundingMode.UP);
                 if (calcAmount.compareTo(BigDecimal.ZERO) == 0) {

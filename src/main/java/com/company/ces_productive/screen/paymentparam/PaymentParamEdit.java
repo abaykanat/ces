@@ -212,8 +212,8 @@ public class PaymentParamEdit extends StandardEditor<PaymentParam> {
                             order.setOrderPeriodEnd(newPeriod);
                             dataManager.save(order);
                         } else if (Boolean.FALSE.equals(payParamMethodField.getValue())) {
-                            BigDecimal discountAmount = (payParamDiscontAmountValue).divide(BigDecimal.valueOf(100), RoundingMode.UP);
-                            BigDecimal percentAmount = order.getOrderAmount().multiply(discountAmount);
+                            BigDecimal discountAmount = order.getOrderAmount().multiply(payParamDiscontAmountValue);
+                            BigDecimal percentAmount = (discountAmount).divide(BigDecimal.valueOf(100), RoundingMode.UP);
                             BigDecimal disVisitAmount = order.getOrderAmount().subtract(percentAmount);
                             order.setOrderAmount(disVisitAmount);
                             order.setOrderDateTime(LocalDateTime.now());
