@@ -17,7 +17,9 @@
                 </query>
             </loader>
             <collection id="groupCourseDc" property="groupCourse"/>
-            <collection id="groupStudentsDc" property="groupStudents"/>
+            <collection id="groupStudentsDc" property="groupStudents">
+                <collection id="studPaymentsDc" property="studPayments"/>
+            </collection>
         </collection>
     </data>
     <facets>
@@ -91,7 +93,6 @@
                         <column id="studDateOfBirth" caption="msg://studDateOfBirth.caption"/>
                         <column id="studSex" caption="msg:///studSex.caption"/>
                         <column id="studEngLevel" caption="msg://studEngLevel.caption"/>
-                        <column id="studBeginDate" caption="msg://studBeginDate.caption"/>
                         <column id="studActualAmount" caption="msg://studActualAmount.caption"/>
                     </columns>
                 </groupTable>

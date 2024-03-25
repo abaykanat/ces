@@ -239,12 +239,12 @@ public class PaymentParamEdit extends StandardEditor<PaymentParam> {
             }
             paymentParam.setPayParamPayDay(newPeriod);
             dataManager.save(paymentParam);
-        } else if (newPeriod.isAfter(currPeriod.plusMonths(1))) {
+        } else if (newPeriod.isAfter(currPeriod.plusMonths(1).plusDays(7))) {
             notifications.create(Notifications.NotificationType.ERROR)
                     .withCaption("Ошибка переноса даты платежа")
                     .withDescription("Максимальная дата платежа не может быть больше одного месяца с текущей даты")
                     .show();
-        } else if (newPeriod.isBefore(currPeriod.minusMonths(1))) {
+        } else if (newPeriod.isBefore(currPeriod.minusMonths(1).plusDays(7))) {
             notifications.create(Notifications.NotificationType.ERROR)
                     .withCaption("Ошибка переноса даты платежа")
                     .withDescription("Минимальная дата платежа не может быть меньше месяца с текущей даты")

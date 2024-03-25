@@ -16,6 +16,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @UiController("CES_Courses.Delete")
 @UiDescriptor("courses-delete.xml")
@@ -135,16 +136,16 @@ public class CoursesDelete extends StandardEditor<Courses> {
             selectSchedule.setEnabled(false);
             return;
         }
-        Set<String> courseNames = new HashSet<>();
-        List<Courses> distinctCourses = new ArrayList<>();
-        for (Courses course : coursesesDc.getItems()) {
-            if (course.getCourseGroup().equals(selectedGroup) && course.getCourseStatus().equals(CourseStatus.NEW)) {
-                String courseName = course.getCourseName();
-                if (courseNames.add(courseName)) {
-                    distinctCourses.add(course);
-                }
-            }
-        }
+        List<Courses> allCourses =  dataManager.load(Courses.class)
+                .query("select c from CES_Courses c where c.courseGroup = :group and c.courseStatus = :status")
+                .parameter("group", selectedGroup)
+                .parameter("status", CourseStatus.NEW)
+                .list();
+        Map<String, List<Courses>> groupedByCourseName = allCourses.stream()
+                .collect(Collectors.groupingBy(Courses::getCourseName));
+        List<Courses> distinctCourses = groupedByCourseName.values().stream()
+                .map(courseList -> courseList.get(0))
+                .collect(Collectors.toList());
         selectSchedule.setOptionsList(distinctCourses);
         selectSchedule.setEnabled(!distinctCourses.isEmpty());
     }

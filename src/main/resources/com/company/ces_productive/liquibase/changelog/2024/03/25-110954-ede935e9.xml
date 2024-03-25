@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.11.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="CES">
+        <createIndex indexName="IDX_CES_COURSES" tableName="CES_COURSES">
+            <column name="COURSE_NAME"/>
+            <column name="COURSE_STATUS"/>
+            <column name="COURSE_GROUP_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="2" author="CES">
+        <dropIndex indexName="idx_ces_courses_course_group" tableName="ces_courses"/>
+    </changeSet>
+    <changeSet id="3" author="CES">
+        <createIndex indexName="IDX_CES_COURSES_COURSE_GROUP" tableName="CES_COURSES">
+            <column name="COURSE_GROUP_ID"/>
+            <column name="COURSE_NAME"/>
+            <column name="COURSE_STATUS"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="4" author="CES">
+        <dropIndex indexName="idx_ces_courses_course_status" tableName="ces_courses"/>
+    </changeSet>
+    <changeSet id="5" author="CES">
+        <createIndex indexName="IDX_CES_COURSES_COURSE_STATUS" tableName="CES_COURSES">
+            <column name="COURSE_STATUS"/>
+            <column name="COURSE_NAME"/>
+            <column name="COURSE_GROUP_ID"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

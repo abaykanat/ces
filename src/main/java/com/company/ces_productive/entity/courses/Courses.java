@@ -17,11 +17,13 @@ import java.util.UUID;
 
 @JmixEntity
 @Table(name = "CES_COURSES", indexes = {
-        @Index(name = "IDX_CES_COURSES_COURSE_GROUP", columnList = "COURSE_GROUP_ID"),
+        @Index(name = "IDX_CES_COURSES_COURSE_GROUP", columnList = "COURSE_GROUP_ID, COURSE_NAME, COURSE_STATUS"),
         @Index(name = "IDX_CES_COURSES_COURSE_CABINET", columnList = "COURSE_CABINET_ID"),
         @Index(name = "IDX_CES_COURSES_COURSE_TEACHER", columnList = "COURSE_TEACHER_ID"),
         @Index(name = "IDX_CES_COURSES_COURSE_BRANCH", columnList = "COURSE_BRANCH_ID"),
-        @Index(name = "IDX_CES_COURSES_COURSE_MANAGER", columnList = "COURSE_MANAGER_ID")
+        @Index(name = "IDX_CES_COURSES_COURSE_MANAGER", columnList = "COURSE_MANAGER_ID"),
+        @Index(name = "IDX_CES_COURSES_COURSE_STATUS", columnList = "COURSE_STATUS, COURSE_NAME, COURSE_GROUP_ID"),
+        @Index(name = "IDX_CES_COURSES", columnList = "COURSE_NAME, COURSE_STATUS, COURSE_GROUP_ID")
 })
 @Entity(name = "CES_Courses")
 public class Courses {

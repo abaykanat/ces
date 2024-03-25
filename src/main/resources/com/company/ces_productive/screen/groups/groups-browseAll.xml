@@ -130,7 +130,7 @@
                         <column id="courseEndDate" caption="msg://courseEndDate.caption"/>
                         <column id="courseTeacher" caption="msg://courseTeacher.caption"/>
                         <column id="courseManager" caption="msg://courseManager.caption"/>
-                        <column id="courseCost" caption="msg://courseCost.caption" visible="false"/>
+                        <column id="courseCost" caption="msg://courseCost.caption"/>
                         <column id="courseGroup" caption="msg://courseGroup.caption"/>
                     </columns>
                 </groupTable>

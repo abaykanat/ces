@@ -13,8 +13,10 @@
                 <property name="groupBranch" fetchPlan="_base"/>
             </fetchPlan>
             <loader/>
-            <collection id="groupStudentsDc" property="groupStudents"/>
-            <collection id="groupCourseDc" property="groupCourse"/>
+            <collection id="groupStudentsDc" property="groupStudents">
+            </collection>
+            <collection id="groupCourseDc" property="groupCourse">
+            </collection>
         </instance>
         <collection id="usersDc" class="com.company.ces_productive.entity.User">
             <fetchPlan extends="_base"/>
