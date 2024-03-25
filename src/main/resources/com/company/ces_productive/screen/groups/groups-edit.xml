@@ -17,6 +17,8 @@
             </collection>
             <collection id="groupCourseDc" property="groupCourse">
             </collection>
+            <collection id="groupPayParamDc" property="groupPayParam">
+            </collection>
         </instance>
         <collection id="usersDc" class="com.company.ces_productive.entity.User">
             <fetchPlan extends="_base"/>
@@ -79,7 +81,7 @@
             </gridLayout>
             <groupBox id="groupStudentsBox" caption="msg://com.company.ces_productive.entity/Groups.groupStudents">
                 <groupTable id="groupStudentsTable" dataContainer="groupStudentsDc" width="AUTO" height="AUTO"
-                       contextMenuEnabled="false" aggregatable="true" aggregationStyle="BOTTOM" multiselect="true">
+                            contextMenuEnabled="false" aggregatable="true" aggregationStyle="BOTTOM" multiselect="true">
                     <actions>
                         <action id="add" type="add"/>
                         <action id="exclude" type="exclude"/>
@@ -94,11 +96,11 @@
                             <column id="studPeriodDesc" caption="msg://studPeriodDesc.caption"/>
                         </group>
                         <column id="studStatus" caption="msg://studStatus.caption"/>
-                        <column id="studFirstName" caption="msg://studFirstName.caption"/>
                         <column id="studLastName" caption="msg://studLastName.caption"/>
+                        <column id="studFirstName" caption="msg://studFirstName.caption"/>
+                        <column id="studActualAmount" caption="msg://studActualAmount.caption"/>
                         <column id="studEngLevel" caption="msg://studEngLevel.caption"/>
                         <column id="studParent" caption="msg://studParent.caption"/>
-                        <column id="studActualAmount" caption="msg://studActualAmount.caption"/>
                     </columns>
                     <buttonsPanel>
                         <button action="groupStudentsTable.add"/>
@@ -107,6 +109,17 @@
                                 enable="false"/>
                     </buttonsPanel>
                 </groupTable>
+            </groupBox>
+            <groupBox orientation="horizontal" spacing="true">
+                <table id="paymentParamsTable" height="100%" width="AUTO" dataContainer="groupPayParamDc">
+                    <columns>
+                        <column id="payParamStudent" caption="msg://payParamStudent.caption"/>
+                        <column id="payParamPayDay" caption="msg://payParamPayDay.caption"/>
+                        <column id="payParamDiscontAmount" caption="msg://payParamDiscontAmount.caption"/>
+                        <column id="payParamMethod" caption="msg://payParamMethod.caption"/>
+                        <column id="payParamDiscountReason" caption="msg://payParamDiscountReason.caption"/>
+                    </columns>
+                </table>
             </groupBox>
         </scrollBox>
         <hbox id="editActions" spacing="true">
