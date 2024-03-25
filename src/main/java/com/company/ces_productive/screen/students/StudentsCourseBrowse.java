@@ -27,10 +27,10 @@ public class StudentsCourseBrowse extends StandardLookup<Students> {
     public void onInit(final InitEvent event) {
         groupCourseStudDl.setParameter("currUserBranch", ((User) currentAuthentication.getUser()).getBranch());
         groupCourseStudDl.setParameter("status", GroupStatus.OPEN);
-        groupCourseStudDl.setParameter("currDate", LocalDate.now());
+        groupCourseStudDl.setParameter("currDate", LocalDate.now().plusDays(1));
         groupCourseStudDl.load();
         coursesDl.setParameter("currUserBranch", ((User) currentAuthentication.getUser()).getBranch());
-        coursesDl.setParameter("currDate", LocalDate.now());
+        coursesDl.setParameter("currDate", LocalDate.now().plusDays(1));
         coursesDl.load();
         selectedDate.setValue(LocalDate.now());
     }
@@ -67,10 +67,10 @@ public class StudentsCourseBrowse extends StandardLookup<Students> {
     public void onSelectDateBtnClick(final Button.ClickEvent event) {
         groupCourseStudDl.setParameter("currUserBranch", ((User) currentAuthentication.getUser()).getBranch());
         groupCourseStudDl.setParameter("status", GroupStatus.OPEN);
-        groupCourseStudDl.setParameter("currDate", selectedDate.getValue());
+        groupCourseStudDl.setParameter("currDate", selectedDate.getValue().plusDays(1));
         groupCourseStudDl.load();
         coursesDl.setParameter("currUserBranch", ((User) currentAuthentication.getUser()).getBranch());
-        coursesDl.setParameter("currDate", selectedDate.getValue());
+        coursesDl.setParameter("currDate", selectedDate.getValue().plusDays(1));
         coursesDl.load();
     }
 }

@@ -51,6 +51,9 @@ public class Groups {
     @ManyToMany
     private List<Students> groupStudents;
 
+    @OneToMany(mappedBy = "payParamGroups")
+    private List<PaymentParam> groupPayParam;
+
     @OneToMany(mappedBy = "courseGroup")
     private List<Courses> groupCourse;
 
@@ -99,6 +102,14 @@ public class Groups {
     @Column(name = "DELETED_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date deletedDate;
+
+    public List<PaymentParam> getGroupPayParam() {
+        return groupPayParam;
+    }
+
+    public void setGroupPayParam(List<PaymentParam> groupPayParam) {
+        this.groupPayParam = groupPayParam;
+    }
 
     public BigDecimal getGroupCount() {
         return groupCount;

@@ -239,9 +239,11 @@
                             <table id="groupsesTable" height="100%" width="100%" dataContainer="studGroupsDc">
                                 <actions>
                                     <action id="refresh" type="refresh"/>
+                                    <action id="add" type="add"/>
                                 </actions>
                                 <buttonsPanel alwaysVisible="true">
                                     <button id="groupsesTableRefreshBtn" action="groupsesTable.refresh"/>
+                                    <button id="groupsesTableAddBtn" action="groupsesTable.add" visible="false"/>
                                 </buttonsPanel>
                                 <columns>
                                     <column id="groupName" caption="msg://groupName.caption"/>
