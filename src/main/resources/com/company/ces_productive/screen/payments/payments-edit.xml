@@ -14,7 +14,9 @@
             <loader/>
         </instance>
         <collection id="ordersesDc" class="com.company.ces_productive.entity.Orders">
-            <fetchPlan extends="_base"/>
+            <fetchPlan extends="_base">
+                <property name="orderGroup" fetchPlan="_base"/>
+            </fetchPlan>
             <loader id="ordersesDl">
                 <query>
                     <![CDATA[select e from CES_Orders e
@@ -56,6 +58,11 @@
                     <comboBox id="payModeField" property="payMode" caption="msg://payModeField.caption"/>
                     <entityComboBox caption="msg://payOrderField.caption" id="payOrderField"
                                     optionsContainer="ordersesDc" dataContainer="paymentsDc" property="payOrder"/>
+                    <textField id="groupName"
+                               property="orderGroup" dataContainer="ordersesDc" editable="false" enable="false"
+                               caption="msg://groupName.caption"/>
+                    <dateField id="orderDate" dataContainer="ordersesDc" property="orderPeriodEnd" editable="false"
+                               enable="false" caption="msg://orderDate.caption"/>
                     <textField id="realAmountField" caption="msg://realPayAmountField.caption"
                                maxLength="6" property="payAmount" dataContainer="paymentsDc"/>
                     <entityPicker id="payStudentField" property="payStudent" caption="msg://payStudentField.caption"

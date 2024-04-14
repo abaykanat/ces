@@ -15,9 +15,11 @@ import io.jmix.core.Messages;
 import io.jmix.core.TimeSource;
 import io.jmix.core.metamodel.datatype.DatatypeFormatter;
 import io.jmix.core.security.CurrentAuthentication;
+import io.jmix.ui.Dialogs;
 import io.jmix.ui.Notifications;
 import io.jmix.ui.ScreenBuilders;
 import io.jmix.ui.action.Action;
+import io.jmix.ui.action.DialogAction;
 import io.jmix.ui.component.Button;
 import io.jmix.ui.component.Calendar;
 import io.jmix.ui.component.CheckBoxGroup;
@@ -91,6 +93,8 @@ public class CoursesBrowse extends StandardLookup<Courses> {
     protected Messages messages;
     @Autowired
     private DataManager dataManager;
+    @Autowired
+    private Dialogs dialogs;
 
     @Subscribe
     protected void onInit(InitEvent event) {
@@ -287,12 +291,38 @@ public class CoursesBrowse extends StandardLookup<Courses> {
 
     @Subscribe("calendar")
     protected void onCalendarCalendarEventResize(Calendar.CalendarEventResizeEvent<LocalDateTime> event) {
-        updateVisit(event.getEntity(), event.getNewStart(), event.getNewEnd());
+        dialogs.createOptionDialog()
+                .withCaption("Изменение занятия")
+                .withMessage("Вы точно хотите изменить длительность занятия?")
+                .withActions(
+                        new DialogAction(DialogAction.Type.YES, Action.Status.PRIMARY)
+                                .withHandler(e -> {
+                                    updateVisit(event.getEntity(), event.getNewStart(), event.getNewEnd());
+                                }),
+                        new DialogAction(DialogAction.Type.NO)
+                                .withHandler(e -> {
+                                    loadEvents();
+                                })
+                )
+                .show();
     }
 
     @Subscribe("calendar")
     protected void onCalendarCalendarEventMove(Calendar.CalendarEventMoveEvent<LocalDateTime> event) {
-        updateVisit(event.getEntity(), event.getNewStart(), event.getNewEnd());
+        dialogs.createOptionDialog()
+                .withCaption("Изменение занятия")
+                .withMessage("Вы точно хотите изменить время занятия?")
+                .withActions(
+                        new DialogAction(DialogAction.Type.YES, Action.Status.PRIMARY)
+                                .withHandler(e -> {
+                                    updateVisit(event.getEntity(), event.getNewStart(), event.getNewEnd());
+                                }),
+                        new DialogAction(DialogAction.Type.NO)
+                                .withHandler(e -> {
+                                    loadEvents();
+                                })
+                )
+                .show();
     }
 
     private void updateVisit(Object entity, LocalDateTime newStart, LocalDateTime newEnd) {

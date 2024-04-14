@@ -111,7 +111,8 @@
                 </groupTable>
             </groupBox>
             <groupBox orientation="horizontal" spacing="true">
-                <table id="paymentParamsTable" height="100%" width="AUTO" dataContainer="groupPayParamDc">
+                <table id="paymentParamsTable" height="100%" width="AUTO" dataContainer="groupPayParamDc"
+                       aggregationStyle="BOTTOM">
                     <columns>
                         <column id="payParamStudent" caption="msg://payParamStudent.caption"/>
                         <column id="payParamPayDay" caption="msg://payParamPayDay.caption"/>
