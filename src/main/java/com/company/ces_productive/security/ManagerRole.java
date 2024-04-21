@@ -47,8 +47,8 @@ public interface ManagerRole {
     @EntityAttributePolicy(entityClass = Students.class, attributes = "*", action = EntityAttributePolicyAction.MODIFY)
     void students();
 
-    @EntityAttributePolicy(entityClass = Books.class, attributes = "*", action = EntityAttributePolicyAction.MODIFY)
-    @EntityPolicy(entityClass = Books.class, actions = EntityPolicyAction.ALL)
+    @EntityAttributePolicy(entityClass = Books.class, attributes = "*", action = EntityAttributePolicyAction.VIEW)
+    @EntityPolicy(entityClass = Books.class, actions = {EntityPolicyAction.READ, EntityPolicyAction.UPDATE, EntityPolicyAction.CREATE})
     void books();
 
     @EntityAttributePolicy(entityClass = Parents.class, attributes = "*", action = EntityAttributePolicyAction.MODIFY)

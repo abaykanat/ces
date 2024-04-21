@@ -179,7 +179,8 @@
                                 <buttonsPanel alwaysVisible="true">
                                     <button id="paymentParamsTableEditBtn" action="paymentParamsTable.edit"/>
                                     <button id="paymentParamsTableRefreshBtn" action="paymentParamsTable.refresh"/>
-                                    <button id="paymentParamsTableRemoveBtn" action="paymentParamsTable.remove"/>
+                                    <button id="paymentParamsTableRemoveBtn" action="paymentParamsTable.remove"
+                                            visible="false"/>
                                 </buttonsPanel>
                                 <columns>
                                     <column id="payParamPayDay" caption="msg://payParamPayDay.caption"/>
@@ -238,12 +239,15 @@
                         <tab caption="msg://studGroups1.caption" id="studGroups" spacing="true">
                             <table id="groupsesTable" height="100%" width="100%" dataContainer="studGroupsDc">
                                 <actions>
-                                    <action id="refresh" type="refresh"/>
                                     <action id="add" type="add"/>
+                                    <action id="refresh" type="refresh"/>
+                                    <action id="saveGroup" caption="msg://saveGroup.caption"/>
                                 </actions>
                                 <buttonsPanel alwaysVisible="true">
+                                    <button id="groupsesTableAddBtn" action="groupsesTable.add"/>
+                                    <button id="groupsesTableSaveGroupBtn" action="groupsesTable.saveGroup"
+                                            visible="false" icon="font-icon:SAVE"/>
                                     <button id="groupsesTableRefreshBtn" action="groupsesTable.refresh"/>
-                                    <button id="groupsesTableAddBtn" action="groupsesTable.add" visible="false"/>
                                 </buttonsPanel>
                                 <columns>
                                     <column id="groupName" caption="msg://groupName.caption"/>
