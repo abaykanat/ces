@@ -67,14 +67,16 @@
                 <group>
                     <column id="studBranch" caption="msg://studBranch.caption"/>
                     <column id="studStatus" caption="msg://studStatus.caption"/>
-                    <column id="studPeriodDesc" caption="msg://studPeriodDesc.caption"/>
                 </group>
+                <column id="studPeriodDesc" caption="msg://studPeriodDesc.caption"/>
                 <column id="studID" caption="msg://studIIN.caption"/>
                 <column id="studIIN" caption="msg://studIINField1.caption"/>
                 <column id="studLastName" caption="msg://studLastName.caption"/>
                 <column id="studFirstName" caption="msg://studFirstName.caption"/>
                 <column id="studMiddleName" caption="msg://studMiddleName.caption"/>
                 <column id="studMoblieNumber" caption="msg://studMoblieNumber.caption"/>
+                <column id="studDateOfBirth" caption="msg://studDateOfBirth1.caption"/>
+                <column id="studSex" caption="msg://studSex1.caption"/>
                 <column id="studActualAmount" caption="msg://studActualAmount.caption"/>
                 <column id="studEmail" caption="msg://studEmail.caption"/>
                 <column id="studParent" caption="msg://studParent.caption"/>
