@@ -39,8 +39,8 @@
                 width="800"/>
     <layout spacing="true" expand="directionsTable">
         <groupTable id="directionsTable"
-                        width="100%"
-                        dataContainer="directionsDc">
+                    width="100%"
+                    dataContainer="directionsDc">
             <actions>
                 <action id="refresh" type="refresh"/>
             </actions>

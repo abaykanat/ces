@@ -75,10 +75,6 @@ public class Students {
     @Column(name = "STUD_SEX", nullable = false)
     private String studSex;
 
-    @JoinColumn(name = "STUD_PARENT_ID")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Parents studParent;
-
     @Column(name = "STUD_ENG_LEVEL")
     private String studEngLevel;
 
@@ -95,9 +91,9 @@ public class Students {
     @Column(name = "STUD_DISCOUNT", precision = 19, scale = 2)
     private BigDecimal studDiscount;
 
-    @JoinColumn(name = "STUD_DISCOUNT_REASON_ID")
+    @JoinColumn(name = "STUD_PARENT_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private DiscountReason studDiscountReason;
+    private Parents studParent;
 
     @JoinTable(name = "CES_GROUPS_STUDENTS_LINK",
             joinColumns = @JoinColumn(name = "STUDENTS_ID", referencedColumnName = "ID"),
@@ -114,15 +110,8 @@ public class Students {
     @OneToMany(mappedBy = "payStudent")
     private List<Payments> studPayments;
 
-    @NotNull
-    @Column(name = "STUD_ORDER_PERIOD", nullable = false)
-    private LocalDate studOrderPeriod;
-
     @OneToMany(mappedBy = "payParamStudent")
     private List<PaymentParam> studPayParam;
-
-    @Column(name = "STUD_ACTUAL_AMOUNT", precision = 19, scale = 2)
-    private BigDecimal studActualAmount;
 
     @OneToMany(mappedBy = "bookStudent")
     private List<Books> studBooks;
@@ -139,6 +128,9 @@ public class Students {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private User studManager;
+
+    @Column(name = "STUD_ACTUAL_AMOUNT", precision = 19, scale = 2)
+    private BigDecimal studActualAmount;
 
     @Column(name = "VERSION", nullable = false)
     @Version
@@ -161,6 +153,14 @@ public class Students {
     @Column(name = "LAST_MODIFIED_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastModifiedDate;
+
+    @JoinColumn(name = "STUD_DISCOUNT_REASON_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private DiscountReason studDiscountReason;
+
+    @NotNull
+    @Column(name = "STUD_ORDER_PERIOD", nullable = false)
+    private LocalDate studOrderPeriod;
 
     public List<Freeze> getStudFreeze() {
         return studFreeze;

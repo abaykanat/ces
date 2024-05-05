@@ -149,20 +149,18 @@ public class PaymentParamEdit extends StandardEditor<PaymentParam> {
                                 paymentParam.setPayParamDiscontAmount(payParamDiscontAmountValue);
                                 dataManager.save(paymentParam);
                                 for (Orders order : student.getStudOrders()) {
-                                    if (order.getOrderStatus() == OrderStatus.CREATED && order.getOrderGroup().equals(payParamGroupsField.getValue())) {
-                                        if (order.getOrderAmount().equals(paymentParam.getPayParamGroups().getGroupCost())) {
-                                            BigDecimal discountAmount;
-                                            if (Boolean.TRUE.equals(payParamMethodField.getValue())) {
-                                                discountAmount = payParamDiscontAmountValue;
-                                            } else {
-                                                discountAmount = order.getOrderAmount().multiply(payParamDiscontAmountValue).divide(BigDecimal.valueOf(100), RoundingMode.UP);
-                                            }
-                                            BigDecimal discountedAmount = order.getOrderAmount().subtract(discountAmount);
-                                            order.setOrderAmount(discountedAmount);
-                                            order.setOrderDateTime(LocalDateTime.now());
-                                            order.setOrderPeriodEnd(newPeriod);
-                                            dataManager.save(order);
+                                    if (order.getOrderStatus().equals(OrderStatus.CREATED) && order.getOrderGroup().equals(payParamGroupsField.getValue())) {
+                                        BigDecimal discountAmount;
+                                        if (Boolean.TRUE.equals(payParamMethodField.getValue())) {
+                                            discountAmount = payParamDiscontAmountValue;
+                                        } else {
+                                            discountAmount = order.getOrderAmount().multiply(payParamDiscontAmountValue).divide(BigDecimal.valueOf(100), RoundingMode.UP);
                                         }
+                                        BigDecimal discountedAmount = order.getOrderAmount().subtract(discountAmount);
+                                        order.setOrderAmount(discountedAmount);
+                                        order.setOrderDateTime(LocalDateTime.now());
+                                        order.setOrderPeriodEnd(newPeriod);
+                                        dataManager.save(order);
                                     }
                                 }
                                 student.setStudOrderPeriod(LocalDate.EPOCH);
@@ -177,7 +175,7 @@ public class PaymentParamEdit extends StandardEditor<PaymentParam> {
             List<Orders> orders = student.getStudOrders();
             if (payParamDiscontAmountValue != null && payParamDiscontAmountValue.compareTo(BigDecimal.ZERO) > 0) {
                 for (Orders order : orders) {
-                    if (order.getOrderStatus() == OrderStatus.CREATED && order.getOrderGroup().equals(payParamGroupsField.getValue())) {
+                    if (order.getOrderStatus().equals(OrderStatus.CREATED) && order.getOrderGroup().equals(payParamGroupsField.getValue())) {
                         if (Boolean.TRUE.equals(payParamMethodField.getValue())) {
                             BigDecimal disVisitAmount = order.getOrderAmount().subtract(payParamDiscontAmountValue);
                             order.setOrderAmount(disVisitAmount);

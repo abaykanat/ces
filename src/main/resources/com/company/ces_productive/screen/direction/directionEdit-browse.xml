@@ -60,7 +60,7 @@
                 </filter>
                 <groupTable id="table"
                             width="100%"
-                            dataContainer="directionsDc">
+                            dataContainer="directionsDc" multiselect="true">
                     <actions>
                         <action id="create" type="create"/>
                         <action id="edit" type="edit"/>
