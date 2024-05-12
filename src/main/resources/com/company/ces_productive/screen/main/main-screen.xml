@@ -2,6 +2,29 @@
         xmlns:c="http://jmix.io/schema/ui/jpql-condition"
         caption="msg://application.caption">
     <data>
+        <keyValueCollection id="groupStudentsDc">
+            <loader id="groupStudentsDl">
+                <query>
+                    <![CDATA[select g.groupName, s.studFirstName, s.studLastName, d.directionType,
+                                p.payParamPayDay, p.payParamDiscontAmount, COUNT(s.studID)
+                    from CES_Groups g
+                    join g.groupStudents s
+                    join g.groupDirection d
+                    join s.studPayParam p
+                    where g.groupBranch in :currBranch
+                    group by g.groupName, s.studFirstName, s.studLastName, d.directionType, p.payParamPayDay, p.payParamDiscontAmount]]>
+                </query>
+            </loader>
+            <properties>
+                <property name="groupName" datatype="string"/>
+                <property name="studFirstName" datatype="string"/>
+                <property name="studLastName" datatype="string"/>
+                <property name="directionType" class="com.company.ces_productive.entity.courses.CourseType"/>
+                <property name="payParamPayDay" datatype="localDate"/>
+                <property name="payParamDiscontAmount" datatype="bigInteger"/>
+                <property name="COUNT" datatype="long"/>
+            </properties>
+        </keyValueCollection>
         <collection id="coursesCalendarDc" class="com.company.ces_productive.entity.courses.Courses">
             <fetchPlan extends="_base">
                 <property name="courseGroup" fetchPlan="_base"/>
@@ -28,7 +51,7 @@
             <loader id="managerTasksesDl">
                 <query>
                     <![CDATA[select e from CES_ManagerTasks e
-                    where e.taskRole = :currRole  ]]>
+                    where e.taskRole = :currRole]]>
                 </query>
             </loader>
         </collection>
@@ -37,7 +60,7 @@
             <loader id="documentationsDl">
                 <query>
                     <![CDATA[select e from CES_Documentation e
-                    where e.docRole = :currRole ]]>
+                    where e.docRole = :currRole]]>
                 </query>
             </loader>
         </collection>
@@ -85,85 +108,105 @@
                       stylename="jmix-workarea"
                       width="AUTO" height="AUTO">
                 <initialLayout spacing="true" margin="true">
-                <split orientation="vertical" locked="true" pos="65">
-                    <groupBox orientation="horizontal" spacing="true" id="clndrBox" caption="msg://clndrBox.caption"
-                              width="100%" height="100%">
-                        <split orientation="horizontal" height="100%" width="100%" pos="18" locked="true">
-                            <vbox spacing="true" align="MIDDLE_LEFT">
-                                <radioButtonGroup
-                                        width="100%"
-                                        orientation="horizontal"
-                                        stylename="button-switcher"
-                                        optionsEnum="com.company.ces_productive.screen.courses.calendar.CalendarMode"
-                                        id="calendarMode"
-                                        visible="false"/>
-                                <datePicker id="calendarNavigator"
-                                            datatype="localDate"
-                                            width="100%"/>
-                                <checkBoxGroup id="typeMultiFilter"
-                                               stylename="visit-type"
-                                               orientation="vertical"/>
-                            </vbox>
-                            <vbox spacing="true" expand="calendar" width="100%" height="100%">
-                                <buttonsPanel id="navigator" margin="false" spacing="false" height="100%" width="100%">
-                                    <button id="navigatorCurrent"
-                                            stylename="borderless-colored"
-                                            icon="HOME"/>
-                                    <button id="navigatorPrevious"
-                                            stylename="borderless-colored"
-                                            icon="CARET_LEFT"/>
-                                    <button id="navigatorNext"
-                                            stylename="borderless-colored"
-                                            icon="CARET_RIGHT"/>
-                                    <label id="calendarTitle"
-                                           stylename="h3"
-                                           align="MIDDLE_CENTER"
-                                           icon="font-icon:CALENDAR"
-                                           width="200px"/>
-                                </buttonsPanel>
-                                <calendar id="calendar"
-                                          dataContainer="coursesCalendarDc"
-                                          captionProperty="courseName"
-                                          startDateProperty="courseStartDate"
-                                          endDateProperty="courseEndDate"
-                                          firstVisibleDayOfWeek="2"
-                                          firstVisibleHourOfDay="8"
-                                          lastVisibleHourOfDay="19"
-                                          stylenameProperty="typeStyle"
-                                          navigationButtonsVisible="false" width="100%" height="100%"/>
-                            </vbox>
-                        </split>
-                    </groupBox>
-                    <hbox spacing="true" width="100%" height="100%">
-                        <groupBox orientation="vertical" spacing="true">
-                            <split orientation="horizontal" pos="70" locked="true" width="100%" height="100%">
-                                <groupBox orientation="vertical" spacing="true" id="taskBox"
-                                          caption="msg://tblBox.caption" height="AUTO" width="100%">
-                                    <table id="managerTasksesTable" dataContainer="managerTasksesDc" width="AUTO"
-                                           height="AUTO">
-                                        <columns>
-                                            <column id="completed" caption="msg://completed.caption"/>
-                                            <column id="taskName" caption="msg://taskName.caption"/>
-                                            <column id="taskDescription" caption="msg://taskDescription.caption"
-                                                    maxTextLength="90"/>
-                                        </columns>
-                                    </table>
+                    <tabSheet height="100%" id="startMainTab">
+                        <tab caption="msg://courseSchedules.caption" id="courseSchedulesTab" spacing="true">
+                            <split orientation="vertical" locked="true" pos="65">
+                                <groupBox orientation="horizontal" spacing="true" id="clndrBox" caption="msg://clndrBox.caption"
+                                          width="100%" height="100%">
+                                    <split orientation="horizontal" height="100%" width="100%" pos="18" locked="true">
+                                        <vbox spacing="true" align="MIDDLE_LEFT">
+                                            <radioButtonGroup
+                                                    width="100%"
+                                                    orientation="horizontal"
+                                                    stylename="button-switcher"
+                                                    optionsEnum="com.company.ces_productive.screen.courses.calendar.CalendarMode"
+                                                    id="calendarMode"
+                                                    visible="false"/>
+                                            <datePicker id="calendarNavigator"
+                                                        datatype="localDate"
+                                                        width="100%"/>
+                                            <checkBoxGroup id="typeMultiFilter"
+                                                           stylename="visit-type"
+                                                           orientation="vertical"/>
+                                        </vbox>
+                                        <vbox spacing="true" expand="calendar" width="100%" height="100%">
+                                            <buttonsPanel id="navigator" margin="false" spacing="false" height="100%" width="100%">
+                                                <button id="navigatorCurrent"
+                                                        stylename="borderless-colored"
+                                                        icon="HOME"/>
+                                                <button id="navigatorPrevious"
+                                                        stylename="borderless-colored"
+                                                        icon="CARET_LEFT"/>
+                                                <button id="navigatorNext"
+                                                        stylename="borderless-colored"
+                                                        icon="CARET_RIGHT"/>
+                                                <label id="calendarTitle"
+                                                       stylename="h3"
+                                                       align="MIDDLE_CENTER"
+                                                       icon="font-icon:CALENDAR"
+                                                       width="200px"/>
+                                            </buttonsPanel>
+                                            <calendar id="calendar"
+                                                      dataContainer="coursesCalendarDc"
+                                                      captionProperty="courseName"
+                                                      startDateProperty="courseStartDate"
+                                                      endDateProperty="courseEndDate"
+                                                      firstVisibleDayOfWeek="2"
+                                                      firstVisibleHourOfDay="8"
+                                                      lastVisibleHourOfDay="19"
+                                                      stylenameProperty="typeStyle"
+                                                      navigationButtonsVisible="false" width="100%"
+                                                      height="100%"/>
+                                        </vbox>
+                                    </split>
                                 </groupBox>
-                                <groupBox orientation="vertical" spacing="true" id="docBox"
-                                          caption="msg://btnBox.caption" height="AUTO" width="AUTO">
-                                    <table id="documentationsTable" height="100%" width="100%"
-                                           dataContainer="documentationsDc" columnHeaderVisible="false">
-                                        <columns>
-                                            <column id="docUserManual" link="true"
-                                                    linkScreenId="CES_Documentation.edit"
-                                                    caption="msg://docUserManual.caption"/>
-                                        </columns>
-                                    </table>
-                                </groupBox>
+                                <hbox spacing="true" width="100%" height="100%">
+                                    <groupBox orientation="vertical" spacing="true">
+                                        <split orientation="horizontal" pos="70" locked="true" width="100%" height="100%">
+                                            <groupBox orientation="vertical" spacing="true" id="taskBox"
+                                                      caption="msg://tblBox.caption" height="AUTO" width="100%">
+                                                <table id="managerTasksesTable" dataContainer="managerTasksesDc" width="AUTO"
+                                                       height="AUTO">
+                                                    <columns>
+                                                        <column id="completed" caption="msg://completed.caption"/>
+                                                        <column id="taskName" caption="msg://taskName.caption"/>
+                                                        <column id="taskDescription" caption="msg://taskDescription.caption"
+                                                                maxTextLength="90"/>
+                                                    </columns>
+                                                </table>
+                                            </groupBox>
+                                            <groupBox orientation="vertical" spacing="true" id="docBox"
+                                                      caption="msg://btnBox.caption" height="AUTO" width="AUTO">
+                                                <table id="documentationsTable" height="100%" width="100%"
+                                                       dataContainer="documentationsDc" columnHeaderVisible="false">
+                                                    <columns>
+                                                        <column id="docUserManual" link="true"
+                                                                linkScreenId="CES_Documentation.edit"
+                                                                caption="msg://docUserManual.caption"/>
+                                                    </columns>
+                                                </table>
+                                            </groupBox>
+                                        </split>
+                                    </groupBox>
+                                </hbox>
                             </split>
-                        </groupBox>
-                    </hbox>
-                </split>
+                        </tab>
+                        <tab caption="msg://groupStudents.caption" id="groupStudentsTab" spacing="true" lazy="true">
+                            <groupTable id="groupsesTable" height="100%" width="100%" dataContainer="groupStudentsDc">
+                                <columns>
+                                    <group>
+                                        <column id="directionType" captionProperty="directionType" caption="msg://directionType.caption"/>
+                                        <column id="groupName" caption="msg://groupName.caption"/>
+                                    </group>
+                                    <column id="studLastName" caption="msg://studLastName1.caption"/>
+                                    <column id="studFirstName" caption="msg://studFirstName1.caption"/>
+                                    <column id="payParamPayDay" caption="msg://payParamPayDay.caption"/>
+                                    <column id="payParamDiscontAmount" caption="msg://payParamDiscontAmount.caption"/>
+                                    <column id="COUNT" visible="false"/>
+                                </columns>
+                            </groupTable>
+                        </tab>
+                    </tabSheet>
                 </initialLayout>
             </workArea>
         </cssLayout>

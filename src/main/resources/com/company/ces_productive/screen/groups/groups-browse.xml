@@ -40,6 +40,20 @@
                 width="800"/>
     <layout spacing="true">
         <vbox spacing="true">
+            <filter id="filter" columnsCount="3" dataLoader="groupsesDl">
+                <properties include=".*"/>
+                <configurations>
+                    <configuration id="defaultFilter"
+                                   operation="AND"
+                                   name="msg://defaultFilter.name"
+                                   default="true">
+                        <propertyFilter property="groupTeacher" operation="EQUAL" operationEditable="true"
+                                        caption="msg://propertyFilter1.caption"/>
+                        <propertyFilter property="groupDirection" operation="EQUAL" operationEditable="true"
+                                        caption="msg://propertyFilter2.caption"/>
+                    </configuration>
+                </configurations>
+            </filter>
             <groupBox orientation="vertical" spacing="true" caption="msg://groupBox.caption">
                 <groupTable id="groupsesTable"
                                 dataContainer="groupsesDc" width="100%">

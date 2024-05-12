@@ -20,6 +20,7 @@ import io.jmix.ui.component.Calendar;
 import io.jmix.ui.component.mainwindow.Drawer;
 import io.jmix.ui.icon.JmixIcon;
 import io.jmix.ui.model.CollectionLoader;
+import io.jmix.ui.model.KeyValueCollectionLoader;
 import io.jmix.ui.navigation.Route;
 import io.jmix.ui.screen.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,8 @@ public class MainScreen extends Screen implements Window.HasWorkArea {
     private CurrentAuthentication currentAuthentication;
     @Autowired
     private DataManager dataManager;
+    @Autowired
+    private KeyValueCollectionLoader groupStudentsDl;
 
     @Override
     public AppWorkArea getWorkArea() {
@@ -155,12 +158,18 @@ public class MainScreen extends Screen implements Window.HasWorkArea {
             coursesCalendarDl.setParameter("currUser", getCurrUser());
             coursesCalendarDl.setParameter("courseStartDate", LocalDateTime.now().minusDays(3));
             coursesCalendarDl.setParameter("courseEndDate", LocalDateTime.now().plusDays(3));
+
         }
-        else {
+        else if (getUserRoles().contains("manager")) {
             coursesCalendarDl.setParameter("currBranch", getCurrBranch());
             coursesCalendarDl.setParameter("currUser", getCurrUsers());
             coursesCalendarDl.setParameter("courseStartDate", LocalDateTime.now().minusDays(3));
             coursesCalendarDl.setParameter("courseEndDate", LocalDateTime.now().plusDays(3));
+            groupStudentsDl.setParameter("currBranch", getCurrBranch());
+            groupStudentsDl.load();
+        } else {
+            groupStudentsDl.setParameter("currBranch", getCurrBranches());
+            groupStudentsDl.load();
         }
         coursesCalendarDl.removeParameter("type");
         coursesCalendarDl.load();
