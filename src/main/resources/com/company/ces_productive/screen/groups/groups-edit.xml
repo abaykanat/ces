@@ -46,7 +46,7 @@
     <dialogMode height="AUTO"
                 width="AUTO"
                 modal="true"
-                forceDialog="true"/>
+                forceDialog="true" resizable="true" positionX="3" positionY="3"/>
     <layout spacing="true" expand="scrollBox">
         <scrollBox id="scrollBox" spacing="true">
             <gridLayout spacing="true" align="TOP_CENTER">

@@ -79,7 +79,7 @@
     </actions>
     <dialogMode height="AUTO"
                 modal="true"
-                forceDialog="true" width="AUTO"/>
+                forceDialog="true" width="AUTO" positionX="3" positionY="3"/>
     <layout spacing="true" expand="scrollBox" width="AUTO">
         <scrollBox id="scrollBox" spacing="true" width="AUTO">
             <gridLayout spacing="true">

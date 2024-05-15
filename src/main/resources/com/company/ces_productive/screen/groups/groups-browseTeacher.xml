@@ -49,13 +49,13 @@
                     <columns>
                         <group>
                             <column id="groupBranch" caption="msg://groupBranch.caption"/>
-                            <column id="groupStatus" caption="msg://groupStatus.caption"/>
                         </group>
                         <column id="groupName" caption="msg://groupName.caption"/>
                         <column id="groupTeacher" caption="msg://groupTeacher.caption"/>
                         <column id="groupDirection" caption="msg://groupDirection.caption"/>
                         <column id="groupCost" caption="msg://groupCost.caption"/>
                         <column id="createdBy" caption="msg://createdBy.caption"/>
+                        <column id="groupStatus" caption="msg://groupStatus.caption"/>
                     </columns>
                     <simplePagination/>
                     <buttonsPanel id="buttonsPanel"

@@ -64,7 +64,7 @@
                 <action id="resetRememberMeToken" type="resetRememberMeToken"/>
                 <action id="sendPassword" caption="msg://sendPassword.caption"
                         description="msg://sendPassword.description"/>
-                <action id="excelExport" type="excelExport"/>
+                <action id="excelExport" type="excelExport" enable="false"/>
             </actions>
             <columns>
                 <group>

@@ -72,6 +72,8 @@ public class StudentsEdit extends StandardEditor<Students> {
     private CreateOrder createOrder;
     @Autowired
     private DocNumbGenerate docNumbGenerate;
+    @Autowired
+    private Button commitAndCloseBtn;
 
     @Subscribe
     public void onInitEntity(InitEntityEvent<Students> event) {
@@ -155,6 +157,7 @@ public class StudentsEdit extends StandardEditor<Students> {
     private void groupsesTableAddAfterCloseHandler(final AfterCloseEvent afterCloseEvent) {
         groupsesTableSaveGroupBtn.setVisible(true);
         groupsesTableAddBtn.setVisible(false);
+        commitAndCloseBtn.setEnabled(false);
     }
 
     @Subscribe("groupsesTable.saveGroup")
