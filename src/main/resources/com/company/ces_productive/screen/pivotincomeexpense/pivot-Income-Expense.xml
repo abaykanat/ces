@@ -49,6 +49,32 @@
                 </query>
             </loader>
         </collection>
+        <keyValueCollection id="studentsPriceDc">
+            <loader id="studentsPriceDl">
+                <query>
+                    <![CDATA[select g.groupName, s.studFirstName, s.studLastName, d.directionType, d.directionBranch,
+                            d.directionName, p.payParamPayDay, p.payParamDiscontAmount, COUNT(s.studID)
+                    from CES_Groups g
+                    join g.groupStudents s
+                    join g.groupDirection d
+                    join s.studPayParam p
+                    where g.groupBranch in :currBranch
+                    group by g.groupName, s.studFirstName, s.studLastName, d.directionType, d.directionBranch,
+                            d.directionName, p.payParamPayDay, p.payParamDiscontAmount]]>
+                </query>
+            </loader>
+            <properties>
+                <property name="groupName" datatype="string"/>
+                <property name="studFirstName" datatype="string"/>
+                <property name="studLastName" datatype="string"/>
+                <property name="directionType" class="com.company.ces_productive.entity.courses.CourseType"/>
+                <property name="directionBranch" class="com.company.ces_productive.entity.Branches"/>
+                <property name="directionName" datatype="string"/>
+                <property name="payParamPayDay" datatype="localDate"/>
+                <property name="payParamDiscontAmount" datatype="bigInteger"/>
+                <property name="COUNT" datatype="long"/>
+            </properties>
+        </keyValueCollection>
         <collection id="booksDc" class="com.company.ces_productive.entity.Books">
             <fetchPlan extends="_base">
                 <property name="bookType" fetchPlan="_base"/>
@@ -464,6 +490,7 @@
                             </pivot:pivotTable>
                         </vbox>
                     </groupBox>
+
                     <groupBox orientation="horizontal" spacing="true">
                         <groupTable id="studentsesTable" height="100%" width="100%" dataContainer="studentsesDc">
                             <actions>
@@ -489,6 +516,26 @@
                                 <column id="studActualAmount" caption="msg://studActualAmount.caption"/>
                                 <column id="studBranch" caption="msg://studBranch.caption"/>
                                 <column id="studManager" caption="msg://studManager.caption"/>
+                            </columns>
+                        </groupTable>
+                    </groupBox>
+                </tab>
+                <tab id="studPriceTab" spacing="true" caption="msg://studPriceTab.caption" icon="font-icon:ARROWS">
+                    <groupBox orientation="vertical" spacing="true">
+                        <groupTable id="priceStudents" height="100%" width="100%" dataContainer="studentsPriceDc">
+                            <columns>
+                                <group>
+                                    <column id="directionBranch" caption="msg://directionBranch.caption"/>
+                                    <column id="directionType" captionProperty="directionType"
+                                            caption="msg://directionType.caption"/>
+                                    <column id="directionName" caption="msg://directionName.caption"/>
+                                    <column id="groupName" caption="msg://groupName.caption"/>
+                                </group>
+                                <column id="studLastName" caption="msg://studLastName1.caption"/>
+                                <column id="studFirstName" caption="msg://studFirstName1.caption"/>
+                                <column id="payParamPayDay" caption="msg://payParamPayDay.caption"/>
+                                <column id="payParamDiscontAmount" caption="msg://payParamDiscontAmount.caption"/>
+                                <column id="COUNT" visible="false"/>
                             </columns>
                         </groupTable>
                     </groupBox>

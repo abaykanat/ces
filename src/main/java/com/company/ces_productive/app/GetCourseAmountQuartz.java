@@ -55,7 +55,6 @@ public class GetCourseAmountQuartz implements Job {
                             .collect(Collectors.groupingBy(Courses::getCourseName));
                     for (Map.Entry<String, List<Courses>> entry : courseNames.entrySet()) {
                         String courseName = entry.getKey();
-                        List<Courses> courseList = entry.getValue();
                         BigDecimal realCourseAmount = GetCourseRealAmount.getCourseRealAmount(student, group, courseName).getAmount();
                         String realCourseReason = GetCourseRealAmount.getCourseRealAmount(student, group, courseName).getReason();
                         if (realCourseAmount.compareTo(BigDecimal.ZERO) > 0) {

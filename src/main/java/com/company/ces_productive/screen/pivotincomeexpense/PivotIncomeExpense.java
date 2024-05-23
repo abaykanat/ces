@@ -93,6 +93,8 @@ public class PivotIncomeExpense extends Screen {
     private CollectionLoader<Courses> coursesesDl;
     @Autowired
     private CollectionContainer<Courses> coursesesDc;
+    @Autowired
+    private KeyValueCollectionLoader studentsPriceDl;
 
     public List<String> getUserRoles() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -171,6 +173,13 @@ public class PivotIncomeExpense extends Screen {
         studChartsDl.load();
 
         if (getUserRoles().contains("manager")) {
+            studentsPriceDl.setParameter("currBranch", getCurrBranch());
+        } else {
+            studentsPriceDl.setParameter("currBranch", getCurrBranches());
+        }
+        studentsPriceDl.load();
+
+        if (getUserRoles().contains("manager")) {
             bookChartDl.setParameter("currBranch", getCurrBranch());
             bookChartDl.setParameter("startDate", getBookStartDate());
             bookChartDl.setParameter("endDate", getBookEndDate());
@@ -181,7 +190,6 @@ public class PivotIncomeExpense extends Screen {
             bookChartDl.setParameter("endDate", getBookEndDate());
         }
         bookChartDl.load();
-
         extensionBal = new PivotTableExtensionImpl(balanceTable, excelExporterObjectProvider.getObject());
         extensionStud = new PivotTableExtensionImpl(studentsTable, excelExporterObjectProvider.getObject());
         extensionPay = new PivotTableExtensionImpl(incomesTable, excelExporterObjectProvider.getObject());

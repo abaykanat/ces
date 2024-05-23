@@ -2,8 +2,10 @@ package com.company.ces_productive.screen.students;
 
 import com.company.ces_productive.app.CreateOrder;
 import com.company.ces_productive.app.DocNumbGenerate;
+import com.company.ces_productive.app.GetCourseRealAmount;
 import com.company.ces_productive.app.StudNumbGenerate;
 import com.company.ces_productive.entity.*;
+import com.company.ces_productive.entity.courses.Courses;
 import io.jmix.core.DataManager;
 import io.jmix.core.security.CurrentAuthentication;
 import io.jmix.ui.Dialogs;
@@ -205,5 +207,30 @@ public class StudentsEdit extends StandardEditor<Students> {
                         new DialogAction(DialogAction.Type.NO)
                 )
                 .show();
+    }
+
+    @Install(to = "paymentParamsTable.numberOfCourse", subject = "columnGenerator")
+    private Component paymentParamsTableNumberOfCourseColumnGenerator(PaymentParam payParam) {
+        Groups group = payParam.getPayParamGroups();
+        LocalDate payDate = payParam.getPayParamPayDay();
+        LocalDate newDate = payDate.plusMonths(1);
+        LocalDate todayDate = LocalDate.now();
+        List<Courses> courses = group.getGroupCourse();
+        List<Courses> allMonthCourses = courses.stream()
+                .filter(course -> (course.getCourseStartDate().isEqual(payDate.atStartOfDay()) || course.getCourseStartDate().isAfter(payDate.atStartOfDay()))
+                        && course.getCourseStartDate().isBefore(newDate.atStartOfDay()) && course.getCourseCost() != null)
+                .toList();
+        List<Courses> spendMonthCourses = courses.stream()
+                .filter(course -> (course.getCourseStartDate().isEqual(payDate.atStartOfDay()) || course.getCourseStartDate().isAfter(payDate.atStartOfDay()))
+                        && course.getCourseStartDate().isBefore(todayDate.atStartOfDay()) && course.getCourseCost() != null)
+                .toList();
+        int allCourseCount = allMonthCourses.size();
+        int spendCourseCount = spendMonthCourses.size();
+        int restCourseNumbers = allCourseCount - spendCourseCount;
+        if (restCourseNumbers < 0) {
+            restCourseNumbers = 0;
+        }
+        String courseNumbers = String.valueOf(restCourseNumbers);
+        return new Table.PlainTextCell(courseNumbers);
     }
 }
