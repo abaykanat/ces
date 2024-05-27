@@ -1,5 +1,7 @@
 package com.company.ces_productive.screen.groups;
 
+import com.company.ces_productive.app.CreateOrder;
+import com.company.ces_productive.app.DocNumbGenerate;
 import com.company.ces_productive.entity.*;
 import com.company.ces_productive.listener.GroupsEventListener;
 import io.jmix.core.DataManager;
@@ -22,6 +24,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @UiController("CES_Groups.edit")
 @UiDescriptor("groups-edit.xml")
@@ -51,6 +54,10 @@ public class GroupsEdit extends StandardEditor<Groups> {
     private MessageBundle messageBundle;
     @Autowired
     private GroupsEventListener groupsEventListener;
+    @Autowired
+    private DocNumbGenerate docNumbGenerate;
+    @Autowired
+    private CreateOrder createOrder;
 
     @Subscribe
     public void onInitEntity(InitEntityEvent<Groups> event) {
@@ -76,41 +83,52 @@ public class GroupsEdit extends StandardEditor<Groups> {
     @Subscribe("groupStudentsTable.exclude")
     public void onGroupStudentsTableExclude(final Action.ActionPerformedEvent event) {
         Students student = groupStudentsTable.getSingleSelected();
-        if (Objects.requireNonNull(student).getStudStatus() == StudentStatus.STUDY || student.getStudStatus() == StudentStatus.FREEZE) {
+        if (student == null) {
+            return;
+        }
+        if (student.getStudStatus() == StudentStatus.STUDY || student.getStudStatus() == StudentStatus.FREEZE) {
             dialogs.createOptionDialog()
                     .withCaption("Подтверждение")
-                    .withMessage("Вы действительно хотели:" + student.getStudLastName() + " " + student.getStudFirstName() + " исключить из данной группы?")
+                    .withMessage("Вы действительно хотели: " + student.getStudLastName() + " " + student.getStudFirstName() + " исключить из данной группы?")
                     .withActions(
                             new DialogAction(DialogAction.Type.YES, Action.Status.PRIMARY).withHandler(e -> {
                                 List<Orders> studOrders = new ArrayList<>(student.getStudOrders());
                                 List<PaymentParam> removePayParams = new ArrayList<>();
+                                List<Groups> studGroups = new ArrayList<>(student.getStudGroups());
                                 for (Orders studOrder : studOrders) {
                                     if (studOrder.getOrderStatus() == OrderStatus.CREATED && studOrder.getOrderGroup().equals(getEditedEntity())
-                                            && !(studOrder.getOrderNumber().equals("ORDDIF"))) {
+                                            && !studOrder.getOrderNumber().equals("ORDDIF")) {
                                         List<PaymentParam> payParams = student.getStudPayParam();
                                         for (PaymentParam payParam : payParams) {
                                             if (payParam.getPayParamGroups().getId().equals(studOrder.getOrderGroup().getId())) {
                                                 removePayParams.add(payParam);
                                             }
                                         }
-                                        student.getStudOrders().remove(studOrder);
                                         dataManager.remove(studOrder);
                                     }
                                 }
-                                for (PaymentParam removePayParam : removePayParams) {
-                                    student.getStudPayParam().remove(removePayParam);
-                                    dataManager.remove(removePayParam);
+                                if (studGroups.size() == 1) {
+                                    BigDecimal negativeFinalAmount = student.getStudActualAmount();
+                                    if (negativeFinalAmount.compareTo(BigDecimal.ZERO) < 0) {
+                                        String branchCode = student.getStudBranch().getBranchCode();
+                                        BigDecimal finalAmount = negativeFinalAmount.negate();
+                                        String ordNum = docNumbGenerate.getNextNumber("ORDDIF", branchCode);
+                                        createOrder.createNewOrder(ordNum, LocalDateTime.now(), student.getStudBranch(), finalAmount,
+                                                OrderPurpose.SUBSCRIPTION, OrderStatus.CREATED, student, LocalDate.now(), null, null);
+                                    }
+                                    student.setStudStatus(StudentStatus.STOPPED);
+                                    dataManager.save(student);
                                 }
                                 getEditedEntity().getGroupStudents().remove(student);
+                                student.setStudPeriodDesc("Выведен из группы: " + LocalDate.now());
+                                student.setStudDescription("Выведен из группы: " + getEditedEntity().getGroupName() + " " + LocalDateTime.now());
                                 dataManager.save(getEditedEntity());
-                                student.setStudPeriodDesc("Выведен из группы: "+ LocalDate.now());
-                                student.setStudDescription("Выведен из группы: "+getEditedEntity().getGroupName()+ " " +LocalDateTime.now());
-                                dataManager.save(student);
+                                for (PaymentParam removePayParam : removePayParams) {
+                                    dataManager.remove(removePayParam);
+                                }
                                 closeWithDiscard();
                             }),
-                            new DialogAction(DialogAction.Type.NO).withHandler(e -> {
-                                closeWithDiscard();
-                            })
+                            new DialogAction(DialogAction.Type.NO).withHandler(e -> closeWithDiscard())
                     )
                     .show();
         } else {
