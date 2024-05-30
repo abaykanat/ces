@@ -52,24 +52,24 @@
         <keyValueCollection id="studentsPriceDc">
             <loader id="studentsPriceDl">
                 <query>
-                    <![CDATA[select g.groupName, s.studFirstName, s.studLastName, d.directionType, d.directionBranch,
-                            d.directionName, p.payParamPayDay, p.payParamDiscontAmount, COUNT(s.studID)
-                    from CES_Groups g
-                    join g.groupStudents s
-                    join g.groupDirection d
-                    join s.studPayParam p
-                    where g.groupBranch in :currBranch
-                    group by g.groupName, s.studFirstName, s.studLastName, d.directionType, d.directionBranch,
-                            d.directionName, p.payParamPayDay, p.payParamDiscontAmount]]>
+                    <![CDATA[select g.groupName, d.directionType, d.directionBranch, d.directionName,
+                             s.studFirstName, s.studLastName, MAX(p.payParamPayDay), MAX(p.payParamDiscontAmount)
+                             from CES_Groups g
+                             join g.groupDirection d
+                             join g.groupStudents s
+                             join s.studPayParam p
+                             where g.groupBranch in :currBranch
+                             group by g.groupName, d.directionType, d.directionBranch, d.directionName,
+                             s.studFirstName, s.studLastName]]>
                 </query>
             </loader>
             <properties>
                 <property name="groupName" datatype="string"/>
-                <property name="studFirstName" datatype="string"/>
-                <property name="studLastName" datatype="string"/>
                 <property name="directionType" class="com.company.ces_productive.entity.courses.CourseType"/>
                 <property name="directionBranch" class="com.company.ces_productive.entity.Branches"/>
                 <property name="directionName" datatype="string"/>
+                <property name="studFirstName" datatype="string"/>
+                <property name="studLastName" datatype="string"/>
                 <property name="payParamPayDay" datatype="localDate"/>
                 <property name="payParamDiscontAmount" datatype="bigInteger"/>
                 <property name="COUNT" datatype="long"/>
