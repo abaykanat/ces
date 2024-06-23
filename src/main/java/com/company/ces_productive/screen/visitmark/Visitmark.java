@@ -22,10 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Year;
+import java.time.*;
+import java.time.chrono.ChronoLocalDate;
 import java.util.*;
 
 @UiController("CES_Visitmark")
@@ -150,6 +148,7 @@ public class Visitmark extends Screen {
         }
         if (course.getCourseCost().equals(BigDecimal.ZERO)) {
             course.setCourseStatus(CourseStatus.HELD);
+            dataManager.save(course);
             notifications.create(Notifications.NotificationType.HUMANIZED)
                     .withCaption("Checkout is done!")
                     .withDescription("This lesson on 'English Club' for this group was successfully marked")
@@ -173,7 +172,7 @@ public class Visitmark extends Screen {
                                 notifications.create(Notifications.NotificationType.ERROR)
                                         .withCaption("Calculation error")
                                         .withDescription("The payment date for student " + student.getStudLastName() + " " + student.getStudFirstName()
-                                                +" in the group has not been updated. Contact the branch manager for update" + "Reason:" + visitReason)
+                                                + " in the group has not been updated. Contact the branch manager for update" + "Reason:" + visitReason)
                                         .show();
                                 proceed = false;
                                 break;
@@ -265,7 +264,7 @@ public class Visitmark extends Screen {
                         .show();
                 return;
             }
-            if (course.getCourseStatus() == CourseStatus.NOT_DONE) {
+            if (course.getCourseStatus() == CourseStatus.NOT_DONE || course.getCourseStatus() == CourseStatus.NEW) {
                 List<Students> visitStudents = Objects.requireNonNull(course).getCourseGroup().getGroupStudents();
                 for (Students visitStudent : visitStudents) {
                     List<Visits> visits = visitStudent.getStudVisits().stream()
@@ -277,6 +276,8 @@ public class Visitmark extends Screen {
                         BigDecimal newActualAmount = actualAmount.subtract(visitAmount);
                         visitStudent.setStudActualAmount(newActualAmount);
                         dataManager.save(visitStudent);
+                        visit.setVisitStatus(visitsTable.getItems().getItem(visit).getVisitStatus());
+                        dataManager.save(visit);
                         }
                     }
                 course.setCourseStatus(CourseStatus.HELD);

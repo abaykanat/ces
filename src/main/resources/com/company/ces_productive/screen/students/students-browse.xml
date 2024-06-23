@@ -34,7 +34,7 @@
     <dialogMode height="600"
                 width="800"/>
     <layout expand="studentsesTable" spacing="true">
-        <filter id="filter" columnsCount="3" dataLoader="studentsesDl" autoApply="false" captionPosition="TOP">
+        <filter id="filter" columnsCount="3" dataLoader="studentsesDl" autoApply="true" captionPosition="TOP">
             <properties include=".*"/>
             <configurations>
                 <configuration id="defaultFilter"

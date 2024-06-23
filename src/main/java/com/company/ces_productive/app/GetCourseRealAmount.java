@@ -59,7 +59,7 @@ public class GetCourseRealAmount {
                 if (orders.getOrderGroup().equals(group)
                         && orders.getOrderStatus() == OrderStatus.PAID
                         && !orders.getOrderNumber().contains("ORDDIF")
-                        && orders.getOrderPeriodEnd().isAfter(LocalDate.now().minusMonths(1).minusDays(7))) {
+                        && orders.getOrderPeriodEnd().isAfter(LocalDate.now().minusMonths(1).minusDays(10))) {
                     paidOrders.add(orders);
                 }
             }
@@ -69,7 +69,7 @@ public class GetCourseRealAmount {
         if (!paymentParams.isEmpty()) {
             for (PaymentParam paymentParam : paymentParams) {
                 LocalDate payDayDate = paymentParam.getPayParamPayDay();
-                LocalDate oneMonthAgo = LocalDate.now().minusMonths(1).minusDays(7);
+                LocalDate oneMonthAgo = LocalDate.now().minusMonths(1).minusDays(10);
                 if (payDayDate.isAfter(oneMonthAgo)) {
                     if (paymentParam.getPayParamGroups().getId().equals(group.getId())) {
                         BigDecimal amount = calculateRealAmount(orderCount, group, courses, payDayDate).getCalcAmount();

@@ -233,4 +233,20 @@ public class StudentsEdit extends StandardEditor<Students> {
         String courseNumbers = String.valueOf(restCourseNumbers);
         return new Table.PlainTextCell(courseNumbers);
     }
+
+    @Install(to = "visitsesTable", subject = "styleProvider")
+    protected String visitTableStyleProvider(Visits visits, String property) {
+        if (property == null) {
+            if (Boolean.TRUE.equals(visits.getVisitStatus())) {
+                return "Visits-visitStatus";
+            }
+        } else if (property.equals("visitStatus")) {
+            return switch (visits.getVisitStatus()) {
+                case ATTENDED -> "attended";
+                case ABSENT -> "absent";
+                case NOT_DEFINED -> "not_defined";
+            };
+        }
+        return null;
+    }
 }

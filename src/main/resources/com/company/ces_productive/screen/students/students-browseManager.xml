@@ -54,7 +54,7 @@
                 <action id="payment" caption="msg://payment.caption" icon="MONEY"/>
                 <action id="book" caption="msg://book.caption" icon="BOOK"/>
                 <action id="freeze" caption="msg://freeze.caption" icon="UNLOCK_ALT"/>
-                <action id="stopped" caption="msg://stopped.caption" icon="STOP"/>
+                <action id="stopped" caption="msg://stopped.caption" icon="STOP" visible="false"/>
                 <action id="runReport" type="runReport" caption="msg://runReport.caption"/>
                 <action id="calcCourseAmount" caption="msg://studentsesTableCalcCourseAmountBtn.caption" icon="CALCULATOR"/>
             </actions>
