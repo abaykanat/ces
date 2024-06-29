@@ -211,27 +211,37 @@ public class StudentsEdit extends StandardEditor<Students> {
 
     @Install(to = "paymentParamsTable.numberOfCourse", subject = "columnGenerator")
     private Component paymentParamsTableNumberOfCourseColumnGenerator(PaymentParam payParam) {
+        LocalDate todayDate = LocalDate.now();
         Groups group = payParam.getPayParamGroups();
         LocalDate payDate = payParam.getPayParamPayDay();
-        LocalDate newDate = payDate.plusMonths(1);
-        LocalDate todayDate = LocalDate.now();
-        List<Courses> courses = group.getGroupCourse();
-        List<Courses> allMonthCourses = courses.stream()
-                .filter(course -> (course.getCourseStartDate().isEqual(payDate.atStartOfDay()) || course.getCourseStartDate().isAfter(payDate.atStartOfDay()))
-                        && course.getCourseStartDate().isBefore(newDate.atStartOfDay()) && course.getCourseCost() != null)
-                .toList();
-        List<Courses> spendMonthCourses = courses.stream()
-                .filter(course -> (course.getCourseStartDate().isEqual(payDate.atStartOfDay()) || course.getCourseStartDate().isAfter(payDate.atStartOfDay()))
-                        && course.getCourseStartDate().isBefore(todayDate.atStartOfDay()) && course.getCourseCost() != null)
-                .toList();
-        int allCourseCount = allMonthCourses.size();
-        int spendCourseCount = spendMonthCourses.size();
-        int restCourseNumbers = allCourseCount - spendCourseCount;
-        if (restCourseNumbers < 0) {
-            restCourseNumbers = 0;
+        if (payDate.isAfter(todayDate)) {
+            List<Courses> courses = group.getGroupCourse();
+            List<Courses> allMonthCourses = courses.stream()
+                    .filter(course -> (course.getCourseStartDate().isBefore(payDate.atStartOfDay()))
+                            && course.getCourseStartDate().isAfter(todayDate.atStartOfDay()) && course.getCourseCost() != null)
+                    .toList();
+            int allCourseCount = allMonthCourses.size();
+            String courseNumbers = String.valueOf(allCourseCount);
+            return new Table.PlainTextCell(courseNumbers);
+        } else if (payDate.isBefore(todayDate)) {
+            LocalDate newDate = payDate.minusMonths(1);
+            List<Courses> courses = group.getGroupCourse();
+            List<Courses> allMonthCourses = courses.stream()
+                    .filter(course -> (course.getCourseStartDate().isEqual(payDate.atStartOfDay()) || course.getCourseStartDate().isAfter(payDate.atStartOfDay()))
+                            && course.getCourseStartDate().isBefore(newDate.atStartOfDay()) && course.getCourseCost() != null)
+                    .toList();
+            List<Courses> spendMonthCourses = courses.stream()
+                    .filter(course -> (course.getCourseStartDate().isAfter(newDate.atStartOfDay()) && course.getCourseStartDate().isEqual(newDate.atStartOfDay())
+                            || course.getCourseStartDate().isBefore(payDate.atStartOfDay())) && course.getCourseCost() != null && course.getCourseStatus() == CourseStatus.HELD)
+                    .toList();
+            int allCourseCount = allMonthCourses.size();
+            int spendCourseCount = spendMonthCourses.size();
+            int restCourseNumbers = allCourseCount - spendCourseCount;
+            String courseNumbers = String.valueOf(restCourseNumbers);
+            return new Table.PlainTextCell(courseNumbers);
+        } else {
+            return new Table.PlainTextCell("0");
         }
-        String courseNumbers = String.valueOf(restCourseNumbers);
-        return new Table.PlainTextCell(courseNumbers);
     }
 
     @Install(to = "visitsesTable", subject = "styleProvider")

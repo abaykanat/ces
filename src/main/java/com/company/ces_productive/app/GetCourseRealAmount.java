@@ -15,40 +15,50 @@ public class GetCourseRealAmount {
         private BigDecimal amount;
         private int count;
         private String reason;
+
         public CalculationResult(BigDecimal amount, int count, String reason) {
             this.amount = amount;
             this.count = count;
             this.reason = reason;
         }
+
         public BigDecimal getAmount() {
             return amount;
         }
+
         public int getCount() {
             return count;
         }
+
         public String getReason() {
             return reason;
         }
     }
+
     public static class CalculationAmount {
         private BigDecimal calcAmount;
         private int calcCount;
         private String calcReason;
+
         public CalculationAmount(BigDecimal calcAmount, int calcCount, String calcReason) {
             this.calcAmount = calcAmount;
             this.calcCount = calcCount;
             this.calcReason = calcReason;
         }
+
         public BigDecimal getCalcAmount() {
             return calcAmount;
         }
+
         public int getCalcCount() {
             return calcCount;
         }
+
         public String getCalcReason() {
             return calcReason;
         }
     }
+
     public static CalculationResult getCourseRealAmount(Students student, Groups group, String courseName) {
         List<Courses> courses = group.getGroupCourse().stream()
                 .filter(course -> courseName.equals(course.getCourseName()) && course.getCourseStatus().equals(CourseStatus.NEW))
@@ -69,26 +79,20 @@ public class GetCourseRealAmount {
         if (!paymentParams.isEmpty()) {
             for (PaymentParam paymentParam : paymentParams) {
                 LocalDate payDayDate = paymentParam.getPayParamPayDay();
-                LocalDate oneMonthAgo = LocalDate.now().minusMonths(1).minusDays(10);
-                if (payDayDate.isAfter(oneMonthAgo)) {
-                    if (paymentParam.getPayParamGroups().getId().equals(group.getId())) {
-                        BigDecimal amount = calculateRealAmount(orderCount, group, courses, payDayDate).getCalcAmount();
-                        int count = calculateRealAmount(orderCount, group, courses, payDayDate).getCalcCount();
-                        String reason = calculateRealAmount(orderCount, group, courses, payDayDate).getCalcReason();
-                        if (amount.compareTo(BigDecimal.ZERO) > 0) {
-                            return new CalculationResult(amount, count, "Корректно");
-                        } else {
-                            return new CalculationResult(BigDecimal.ZERO, 0, reason);
-                        }
+                if (paymentParam.getPayParamGroups().getId().equals(group.getId())) {
+                    BigDecimal amount = calculateRealAmount(orderCount, group, courses, payDayDate).getCalcAmount();
+                    int count = calculateRealAmount(orderCount, group, courses, payDayDate).getCalcCount();
+                    String reason = calculateRealAmount(orderCount, group, courses, payDayDate).getCalcReason();
+                    if (amount.compareTo(BigDecimal.ZERO) > 0) {
+                        return new CalculationResult(amount, count, "Корректно");
+                    } else {
+                        return new CalculationResult(BigDecimal.ZERO, 0, reason);
                     }
-                } else {
-                    return new CalculationResult(BigDecimal.ZERO, 0, "Дата платежа неактуальная или просрочена. Обновите дату платежа или внесите платеж");
                 }
             }
-            return new CalculationResult(BigDecimal.ZERO, 0,"По параметру платежа отсутствует группа");
-        } else {
-            return new CalculationResult(BigDecimal.ZERO, 0,"Параметр платежа отсутствует");
+            return new CalculationResult(BigDecimal.ZERO, 0, "По параметру платежа отсутствует группа");
         }
+        return null;
     }
 
     private static CalculationAmount calculateRealAmount(int orderCount, Groups group, List<Courses> courses, LocalDate baseDate) {
