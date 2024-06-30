@@ -96,46 +96,51 @@ public class GetCourseRealAmount {
     }
 
     private static CalculationAmount calculateRealAmount(int orderCount, Groups group, List<Courses> courses, LocalDate baseDate) {
+        // Определение даты платежа на основе количества заказов и базовой даты
         LocalDate payDate = baseDate.minusMonths(orderCount);
         LocalDate newDate = payDate.plusMonths(1);
+        // Получение минимальной стоимости направления
         BigDecimal directionAmount = group.getGroupDirection().getDirectionMinCost();
+        // Поиск курса с самой ранней датой начала
         Optional<Courses> minDateCourses = courses.stream()
                 .min(Comparator.comparing(Courses::getCourseStartDate));
+        // Если курс с самой ранней датой найден
         if (minDateCourses.isPresent()) {
-            Courses minDateCourse = minDateCourses.get();
-            LocalDate minDate = minDateCourse.getCourseStartDate().toLocalDate();
-            if (payDate.equals(minDate) || payDate.isAfter(minDate)) {
-                List<Courses> filteredCourses = courses.stream()
-                        .filter(course -> (course.getCourseStartDate().isEqual(payDate.atStartOfDay()) || course.getCourseStartDate().isAfter(payDate.atStartOfDay()))
-                                && course.getCourseStartDate().isBefore(newDate.atStartOfDay()))
-                        .toList();
-                int courseCount = filteredCourses.size();
-                if (courseCount == 0) {
-                    return new CalculationAmount(BigDecimal.ZERO, 0,"Не найдены занятия для расчета стоимости. Дата платежа больше даты занятии");
-                }
-                BigDecimal calcAmount = directionAmount.divide(BigDecimal.valueOf(courseCount), RoundingMode.UP);
-                if (calcAmount.compareTo(BigDecimal.ZERO) == 0) {
-                    return new CalculationAmount(BigDecimal.ZERO, 0,"Не найдены занятия для расчета стоимости. Дата платежа больше даты оплаты");
-                }
-                return new CalculationAmount(calcAmount, courseCount,"Успешно");
-            } else if (payDate.isBefore(minDate)) {
-                List<Courses> filteredCourses = courses.stream()
-                        .filter(course -> (course.getCourseStartDate().isEqual(LocalDate.now().atStartOfDay()) || course.getCourseStartDate().isAfter(LocalDate.now().atStartOfDay()))
-                                && course.getCourseStartDate().isBefore(LocalDate.now().atStartOfDay().plusMonths(1)))
-                        .toList();
-                int courseCount = filteredCourses.size();
-                if (courseCount == 0) {
-                    return new CalculationAmount(BigDecimal.ZERO, 0,"Не найдены занятия для расчета стоимости. Дата платежа меньше даты занятии");
-                }
-                BigDecimal calcAmount = directionAmount.divide(BigDecimal.valueOf(courseCount), RoundingMode.UP);
-                if (calcAmount.compareTo(BigDecimal.ZERO) == 0) {
-                    return new CalculationAmount(BigDecimal.ZERO, 0,"Не найдены занятия для расчета стоимости. Дата платежа меньше даты оплаты");
-                }
-                return new CalculationAmount(calcAmount, courseCount,"Успешно");
+            LocalDate minDate = minDateCourses.get().getCourseStartDate().toLocalDate();
+            // Если дата платежа совпадает с самой ранней датой начала курса или позже
+            if (!payDate.isBefore(minDate)) {
+                return calculateAmountForPeriod(payDate, newDate, directionAmount, courses, "Дата платежа больше даты занятий");
+            } else {
+                // Если дата платежа раньше самой ранней даты начала курса
+                return calculateAmountForPeriod(LocalDate.now(), LocalDate.now().plusMonths(1), directionAmount, courses, "Дата платежа меньше даты занятий");
             }
         } else {
-            return new CalculationAmount(BigDecimal.ZERO, 0,"Не найдено актуальное расписание по группе");
+            // Если не найдено актуальное расписание по группе
+            return new CalculationAmount(BigDecimal.ZERO, 0, "Не найдено актуальное расписание по группе");
         }
-        return new CalculationAmount(BigDecimal.ZERO, 0,"Другая ошибка расчета");
     }
+
+    private static CalculationAmount calculateAmountForPeriod(LocalDate startDate, LocalDate endDate, BigDecimal directionAmount, List<Courses> courses, String errorMessage) {
+        // Фильтрация курсов, которые начинаются в пределах указанного периода
+        List<Courses> filteredCourses = courses.stream()
+                .filter(course -> !course.getCourseStartDate().isBefore(startDate.atStartOfDay())
+                        && course.getCourseStartDate().isBefore(endDate.atStartOfDay()))
+                .toList();
+        // Подсчет количества курсов в указанном периоде
+        int courseCount = filteredCourses.size();
+        // Если курсы не найдены, возвращаем ошибку
+        if (courseCount == 0) {
+            return new CalculationAmount(BigDecimal.ZERO, 0, "Не найдены занятия для расчета стоимости. " + errorMessage);
+        }
+        // Расчет суммы за один курс
+        BigDecimal calcAmount = directionAmount.divide(BigDecimal.valueOf(courseCount), RoundingMode.UP);
+        // Если рассчитанная сумма равна нулю, возвращаем ошибку
+        if (calcAmount.compareTo(BigDecimal.ZERO) == 0) {
+            return new CalculationAmount(BigDecimal.ZERO, 0, "Не найдены занятия для расчета стоимости. " + errorMessage);
+        }
+        // Возвращаем успешный расчет
+        return new CalculationAmount(calcAmount, courseCount, "Успешно");
+    }
+
+
 }

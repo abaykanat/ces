@@ -209,7 +209,7 @@ public class CoursesBrowseAll extends StandardLookup<Courses> {
         List<Branches> branchesList = new ArrayList<>();
         branchesList.add(branchField.getValue());
         coursesCalendarDl.setParameter("currBranch", branchesList);
-        coursesCalendarDl.setParameter("courseStartDate", LocalDateTime.now().minusDays(10));
+        coursesCalendarDl.setParameter("courseStartDate", LocalDateTime.now().minusDays(30));
         coursesCalendarDl.setParameter("courseEndDate", LocalDateTime.now().plusDays(30));
         coursesCalendarDl.setParameter("currTeacher", getCurrUsers());
         coursesCalendarDl.load();
@@ -225,7 +225,7 @@ public class CoursesBrowseAll extends StandardLookup<Courses> {
         List<User> userList = new ArrayList<>();
         userList.add(teacherField.getValue());
         coursesCalendarDl.setParameter("currBranch", branchesList);
-        coursesCalendarDl.setParameter("courseStartDate", LocalDateTime.now().minusDays(10));
+        coursesCalendarDl.setParameter("courseStartDate", LocalDateTime.now().minusDays(30));
         coursesCalendarDl.setParameter("courseEndDate", LocalDateTime.now().plusDays(30));
         coursesCalendarDl.setParameter("currTeacher", userList);
         coursesCalendarDl.load();
