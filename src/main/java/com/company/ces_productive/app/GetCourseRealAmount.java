@@ -82,7 +82,11 @@ public class GetCourseRealAmount {
             for (PaymentParam paymentParam : paymentParams) {
                 if (paymentParam.getPayParamGroups().getId().equals(group.getId())) {
                     LocalDate payDayDate = paymentParam.getPayParamPayDay();
-                    CalculationAmount calcAmountResult = calculateRealAmount(orderCount, group, courses, payDayDate);
+                    CalculationAmount calcAmountResult;
+                    boolean hasDiscount = Optional.ofNullable(paymentParam.getPayParamDiscountReason())
+                            .map(discountReason -> discountReason.getDiscontReasonName().contains("2+1"))
+                            .orElse(false);
+                    calcAmountResult = calculateRealAmount(orderCount, group, courses, payDayDate, hasDiscount);
                     if (calcAmountResult.getCalcAmount().compareTo(BigDecimal.ZERO) > 0) {
                         return new CalculationResult(calcAmountResult.getCalcAmount(), calcAmountResult.getCalcCount(), "Корректно");
                     } else {
@@ -95,7 +99,7 @@ public class GetCourseRealAmount {
         return new CalculationResult(BigDecimal.ZERO, 0, "Параметры платежа отсутствуют");
     }
 
-    private static CalculationAmount calculateRealAmount(int orderCount, Groups group, List<Courses> courses, LocalDate baseDate) {
+    private static CalculationAmount calculateRealAmount(int orderCount, Groups group, List<Courses> courses, LocalDate baseDate, boolean hasDiscount) {
         LocalDate payDate = baseDate.minusMonths(orderCount);
         LocalDate newDate = payDate.plusMonths(1);
         BigDecimal directionAmount = group.getGroupDirection().getDirectionMinCost();
@@ -104,16 +108,16 @@ public class GetCourseRealAmount {
         if (minDateCourses.isPresent()) {
             LocalDate minDate = minDateCourses.get().getCourseStartDate().toLocalDate();
             if (!payDate.isBefore(minDate)) {
-                return calculateAmountForPeriod(payDate, newDate, directionAmount, courses, "Дата платежа больше даты занятий");
+                return calculateAmountForPeriod(payDate, newDate, directionAmount, courses, "Дата платежа больше даты занятий", hasDiscount);
             } else {
-                return calculateAmountForPeriod(LocalDate.now(), LocalDate.now().plusMonths(1), directionAmount, courses, "Дата платежа меньше даты занятий");
+                return calculateAmountForPeriod(LocalDate.now(), LocalDate.now().plusMonths(1), directionAmount, courses, "Дата платежа меньше даты занятий", hasDiscount);
             }
         } else {
             return new CalculationAmount(BigDecimal.ZERO, 0, "Не найдено актуальное расписание по группе");
         }
     }
 
-    private static CalculationAmount calculateAmountForPeriod(LocalDate startDate, LocalDate endDate, BigDecimal directionAmount, List<Courses> courses, String errorMessage) {
+    private static CalculationAmount calculateAmountForPeriod(LocalDate startDate, LocalDate endDate, BigDecimal directionAmount, List<Courses> courses, String errorMessage, boolean hasDiscount) {
         List<Courses> filteredCourses = courses.stream()
                 .filter(course -> !course.getCourseStartDate().isBefore(startDate.atStartOfDay())
                         && course.getCourseStartDate().isBefore(endDate.atStartOfDay()))
@@ -122,7 +126,8 @@ public class GetCourseRealAmount {
         if (courseCount == 0) {
             return new CalculationAmount(BigDecimal.ZERO, 0, "Не найдены занятия для расчета стоимости. " + errorMessage);
         }
-        BigDecimal calcAmount = directionAmount.divide(BigDecimal.valueOf(courseCount), RoundingMode.UP);
+        int effectiveCourseCount = hasDiscount ? courseCount * 3 / 2 : courseCount;
+        BigDecimal calcAmount = directionAmount.divide(BigDecimal.valueOf(effectiveCourseCount), RoundingMode.UP);
         if (calcAmount.compareTo(BigDecimal.ZERO) == 0) {
             return new CalculationAmount(BigDecimal.ZERO, 0, "Не найдены занятия для расчета стоимости. " + errorMessage);
         }

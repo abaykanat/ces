@@ -171,7 +171,7 @@ public class PaymentParamEdit extends StandardEditor<PaymentParam> {
                             new DialogAction(DialogAction.Type.NO)
                     )
                     .show();
-        } else if (newPeriod.isBefore(currPeriod) && newPeriod.isAfter(currPeriod.minusMonths(1).minusDays(7))) {
+        } else if (newPeriod.isBefore(currPeriod) && newPeriod.isAfter(currPeriod.minusMonths(1).minusDays(10))) {
             List<Orders> orders = student.getStudOrders();
             if (payParamDiscontAmountValue != null && payParamDiscontAmountValue.compareTo(BigDecimal.ZERO) > 0) {
                 for (Orders order : orders) {
@@ -205,7 +205,7 @@ public class PaymentParamEdit extends StandardEditor<PaymentParam> {
                         dataManager.save(order);
                     }
                 }
-                paymentParam.setPayParamDiscount(null);
+                paymentParam.setPayParamDiscount(payParamDiscountReasonValue);
                 paymentParam.setPayParamDiscontAmount(BigDecimal.ZERO);
             }
             paymentParam.setPayParamPayDay(newPeriod);

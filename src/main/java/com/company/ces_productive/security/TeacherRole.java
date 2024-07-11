@@ -24,17 +24,9 @@ public interface TeacherRole {
     @EntityPolicy(entityClass = Visits.class, actions = EntityPolicyAction.ALL)
     void visits();
 
-    @EntityAttributePolicy(entityClass = Students.class, attributes = "*", action = EntityAttributePolicyAction.VIEW)
-    @EntityPolicy(entityClass = Students.class, actions = {EntityPolicyAction.READ, EntityPolicyAction.UPDATE})
-    void students();
-
     @EntityAttributePolicy(entityClass = Courses.class, attributes = "*", action = EntityAttributePolicyAction.VIEW)
     @EntityPolicy(entityClass = Courses.class, actions = {EntityPolicyAction.READ, EntityPolicyAction.UPDATE, EntityPolicyAction.CREATE})
     void courses();
-
-    @EntityAttributePolicy(entityClass = Groups.class, attributes = "*", action = EntityAttributePolicyAction.VIEW)
-    @EntityPolicy(entityClass = Groups.class, actions = EntityPolicyAction.READ)
-    void groups();
 
     @EntityAttributePolicy(entityClass = Direction.class, attributes = "*", action = EntityAttributePolicyAction.VIEW)
     @EntityPolicy(entityClass = Direction.class, actions = EntityPolicyAction.READ)
@@ -66,4 +58,19 @@ public interface TeacherRole {
     @EntityAttributePolicy(entityClass = Documentation.class, attributes = "*", action = EntityAttributePolicyAction.VIEW)
     @EntityPolicy(entityClass = Documentation.class, actions = {EntityPolicyAction.READ, EntityPolicyAction.UPDATE})
     void documentation();
+
+    @EntityAttributePolicy(entityClass = Groups.class, attributes = "*", action = EntityAttributePolicyAction.VIEW)
+    @EntityPolicy(entityClass = Groups.class, actions = EntityPolicyAction.READ)
+    void groups();
+
+    @EntityAttributePolicy(entityClass = DiscountReason.class, attributes = "*", action = EntityAttributePolicyAction.VIEW)
+    void discountReason();
+
+    @EntityAttributePolicy(entityClass = Students.class, attributes = "*", action = EntityAttributePolicyAction.VIEW)
+    @EntityPolicy(entityClass = Students.class, actions = {EntityPolicyAction.READ, EntityPolicyAction.UPDATE})
+    void students();
+
+    @EntityAttributePolicy(entityClass = PaymentParam.class, attributes = "*", action = EntityAttributePolicyAction.VIEW)
+    @EntityPolicy(entityClass = PaymentParam.class, actions = EntityPolicyAction.READ)
+    void paymentParam();
 }
