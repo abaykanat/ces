@@ -214,35 +214,32 @@ public class StudentsEdit extends StandardEditor<Students> {
         LocalDate todayDate = LocalDate.now();
         Groups group = payParam.getPayParamGroups();
         LocalDate payDate = payParam.getPayParamPayDay();
+        List<Courses> courses = group.getGroupCourse();
+
         if (payDate.isAfter(todayDate)) {
-            List<Courses> courses = group.getGroupCourse();
-            List<Courses> allMonthCourses = courses.stream()
-                    .filter(course -> (course.getCourseStartDate().isBefore(payDate.atStartOfDay()))
-                            && course.getCourseStartDate().isAfter(todayDate.atStartOfDay()) && course.getCourseCost() != null)
+            List<Courses> upcomingCourses = courses.stream()
+                    .filter(course -> (course.getCourseStartDate().isAfter(todayDate.atStartOfDay())
+                            && course.getCourseStartDate().isBefore(payDate.atStartOfDay()))
+                            && course.getCourseCost() != null)
                     .toList();
-            int allCourseCount = allMonthCourses.size();
-            String courseNumbers = String.valueOf(allCourseCount);
-            return new Table.PlainTextCell(courseNumbers);
-        } else if (payDate.isBefore(todayDate)) {
-            LocalDate newDate = payDate.minusMonths(1);
-            List<Courses> courses = group.getGroupCourse();
+            return new Table.PlainTextCell(String.valueOf(upcomingCourses.size()));
+        } else {
+            LocalDate oneMonthAgo = payDate.minusMonths(1);
             List<Courses> allMonthCourses = courses.stream()
-                    .filter(course -> (course.getCourseStartDate().isEqual(payDate.atStartOfDay()) || course.getCourseStartDate().isAfter(payDate.atStartOfDay()))
-                            && course.getCourseStartDate().isBefore(newDate.atStartOfDay()) && course.getCourseCost() != null)
+                    .filter(course -> course.getCourseStartDate().isAfter(oneMonthAgo.atStartOfDay())
+                            && course.getCourseStartDate().isBefore(payDate.atStartOfDay())
+                            && course.getCourseCost() != null)
                     .toList();
             List<Courses> spendMonthCourses = courses.stream()
-                    .filter(course -> (course.getCourseStartDate().isAfter(newDate.atStartOfDay()) && course.getCourseStartDate().isEqual(newDate.atStartOfDay())
-                            || course.getCourseStartDate().isBefore(payDate.atStartOfDay())) && course.getCourseCost() != null && course.getCourseStatus() == CourseStatus.HELD)
+                    .filter(course -> course.getCourseStartDate().isBefore(todayDate.atStartOfDay())
+                            && course.getCourseCost() != null
+                            && course.getCourseStatus() == CourseStatus.HELD)
                     .toList();
-            int allCourseCount = allMonthCourses.size();
-            int spendCourseCount = spendMonthCourses.size();
-            int restCourseNumbers = allCourseCount - spendCourseCount;
-            String courseNumbers = String.valueOf(restCourseNumbers);
-            return new Table.PlainTextCell(courseNumbers);
-        } else {
-            return new Table.PlainTextCell("0");
+            int restCourseNumbers = allMonthCourses.size() - spendMonthCourses.size();
+            return new Table.PlainTextCell(String.valueOf(restCourseNumbers));
         }
     }
+
 
     @Install(to = "visitsesTable", subject = "styleProvider")
     protected String visitTableStyleProvider(Visits visits, String property) {
