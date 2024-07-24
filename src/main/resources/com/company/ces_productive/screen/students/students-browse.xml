@@ -44,7 +44,7 @@
                     <propertyFilter property="studLastName" operation="CONTAINS" operationEditable="true"
                                     caption="msg://searchName.caption" height="100%"/>
                     <propertyFilter property="studFirstName" operation="CONTAINS" operationEditable="true"
-                                    caption="msg://studFirstName.caption"/>
+                                    caption="msg://studFirstName.caption" height="100%"/>
                 </configuration>
             </configurations>
         </filter>
