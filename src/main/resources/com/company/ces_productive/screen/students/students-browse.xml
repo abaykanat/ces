@@ -43,8 +43,8 @@
                                default="true">
                     <propertyFilter property="studLastName" operation="CONTAINS" operationEditable="true"
                                     caption="msg://searchName.caption" height="100%"/>
-                    <propertyFilter property="studMoblieNumber" operation="CONTAINS" operationEditable="true"
-                                    caption="msg://textField1.caption"/>
+                    <propertyFilter property="studFirstName" operation="CONTAINS" operationEditable="true"
+                                    caption="msg://studFirstName.caption"/>
                 </configuration>
             </configurations>
         </filter>
